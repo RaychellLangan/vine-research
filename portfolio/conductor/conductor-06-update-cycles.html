@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Grok Under Pressure — 12 Update Cycles — VINE Research</title>
+  <title>Sequential Embedding Updates — 12 Cycle Simulation — VINE Research</title>
   <meta name="description" content="Simulating biweekly embedding updates. Full-model updates sign-flip at cycle 3 and oscillate; frozen-head updates drift smoothly. The oscillation doesn&#39;t collapse — but it creates periodic geometric-confusion windows.">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -53,7 +53,7 @@
 <article class="entry">
   <header class="entry-head">
     <p class="entry-flavour">Portfolio · Transformer Decoupling</p>
-    <h1>Grok Under Pressure — 12 Update Cycles</h1>
+    <h1>Sequential Embedding Updates — 12 Cycle Simulation</h1>
     <p class="entry-meta">
       <time datetime="2026-04-16">2026-04-16</time>
       
@@ -63,12 +63,12 @@
     <p class="entry-summary">Simulating biweekly embedding updates. Full-model updates sign-flip at cycle 3 and oscillate; frozen-head updates drift smoothly. The oscillation doesn&#39;t collapse — but it creates periodic geometric-confusion windows.</p>
   </header>
   <div class="entry-body">
-    <h1>Grok Update Cycle Simulation</h1>
+    <h1>Sequential Embedding Update Cycle Simulation</h1>
 <p><strong>Date:</strong> 2026-04-16
 <strong>Companion to:</strong> <code>MOE_ROUTING_COLLAPSE.md</code></p>
 <hr />
 <h2>Summary</h2>
-<p>A simulation of Grok-style biweekly embedding updates on GPT-2 (124M) reveals two distinct failure trajectories depending on whether the output layer is updated:</p>
+<p>A simulation of biweekly sequential embedding updates on GPT-2 (124M) reveals two distinct failure trajectories depending on whether the output layer is updated:</p>
 <ul>
 <li>
 <p><strong>Full-model updates</strong>: hidden/token alignment oscillates wildly, crossing zero (sign-flipping the hidden-state/token-embedding relationship) at cycle 3, peaking at +0.103 displacement at cycle 6, then partially returning by cycle 12. Generation quality survives due to sequential data diversity preventing consistent accumulation.</p>
@@ -77,7 +77,7 @@
 <p><strong>Frozen-head updates</strong>: alignment drifts gradually and monotonically, never crosses zero, no sign flips. Smooth, predictable, stable.</p>
 </li>
 </ul>
-<p>Both variants drift roughly the same total magnitude (~0.08-0.09), but the full-model variant passes through a geometrically confused state during cycles 3-8 that the frozen-head variant never enters. This predicts that Grok under full-model updates will experience periodic &quot;off&quot; windows corresponding to specific update cycles.</p>
+<p>Both variants drift roughly the same total magnitude (~0.08-0.09), but the full-model variant passes through a geometrically confused state during cycles 3-8 that the frozen-head variant never enters. This predicts that production models under full-model updates will experience periodic &quot;off&quot; windows corresponding to specific update cycles.</p>
 <hr />
 <h2>Experimental Setup</h2>
 <ul>
@@ -209,103 +209,14 @@
 </table>
 <p>Both variants improved on held-out loss and coherence — the sequential training genuinely helped the model learn the domain. The frozen-head variant achieved slightly better held-out loss (2.55 vs 2.64) with higher entropy (1.68 vs 1.46) — more confident predictions that are better calibrated.</p>
 <hr />
-<h2>Predictions for Grok</h2>
-<h3>Under Current Architecture (Full-Model Updates)</h3>
-<ol>
-<li><strong>Alignment will oscillate</strong> with each biweekly update. Most cycles will be fine. Some will cross a geometric threshold.</li>
-<li><strong>Users will notice periodic &quot;off&quot; behaviour</strong> corresponding to specific update cycles where the alignment is crossing zero or near peak displacement.</li>
-<li><strong>The oscillation is self-correcting</strong> because the next data batch pushes differently — Grok won't permanently collapse as long as the data keeps changing.</li>
-<li><strong>BUT</strong>: combined with MoE routing collapse (see <code>MOE_ROUTING_COLLAPSE.md</code>), a single update that hits the dominant expert during a geometric-confusion window could produce a discontinuous quality drop.</li>
-</ol>
-<h3>Under Frozen-Head Architecture</h3>
-<ol>
-<li>Alignment drift is smooth, predictable, monotonic.</li>
-<li>No geometric-confusion windows. No sign flips.</li>
-<li>Slightly less adaptation to new data (the LM head can't shift toward new vocabulary patterns).</li>
-<li>More stable long-term trajectory.</li>
-</ol>
-<h3>The Combined Risk (MoE + Sequential Updates)</h3>
-<p>The Grok cycle simulation shows the LM head oscillating. The MoE simulation shows routing concentrating on single experts. Together:</p>
+<h2>The Combined Risk (MoE + Sequential Updates)</h2>
+<p>The cycle simulation shows the LM head oscillating. The MoE simulation shows routing concentrating on single experts. Together:</p>
 <ul>
 <li>The router is concentrating 93.5% of deep-layer traffic on one expert</li>
 <li>The LM head is oscillating with each update</li>
 <li>If an update hits the dominant expert AND the LM head is near a zero-crossing → compound failure</li>
 <li>The probability of compound failure increases with each cycle as routing concentration deepens</li>
 </ul>
-<hr />
-<h2>Real-Time Validation: User Reports (16 April 2026)</h2>
-<p>Hours after the simulation completed, a survey of live X/Twitter user complaints about Grok surfaced reports that match the predicted signatures:</p>
-<table>
-<thead>
-<tr>
-<th>User complaint</th>
-<th>Predicted signature</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>&quot;Fell off a cliff&quot;</td>
-<td>Discontinuous quality drop — phase transition, not gradual drift</td>
-</tr>
-<tr>
-<td>&quot;Brilliant earlier, stupid at this hour&quot;</td>
-<td>Temporal oscillation — the geometric-confusion window arriving at the user's server shard at a specific time</td>
-</tr>
-<tr>
-<td>&quot;Rapidly getting much worse&quot;</td>
-<td>Progressive routing collapse narrowing the margin of safety</td>
-</tr>
-<tr>
-<td>&quot;Voice mode breaking after latest push&quot;</td>
-<td>Single update hitting the dominant expert pathway</td>
-</tr>
-<tr>
-<td>&quot;Memory glitching, coherence dropping&quot;</td>
-<td>Hidden/token alignment oscillation affecting the context-encoding signal</td>
-</tr>
-<tr>
-<td>&quot;Duller now&quot;</td>
-<td>Entropy reduction under routing collapse — fewer experts contributing to output diversity</td>
-</tr>
-</tbody>
-</table>
-<p>The temporal specificity of the complaints (&quot;brilliant earlier, stupid at this hour&quot;) is particularly consistent with the update-cycle prediction. If Grok's updates propagate across server instances at different times, users would experience the quality shift arriving at their shard at a specific hour — not a gradual drift but a discrete transition as the new weights load.</p>
-<p>These reports are anecdotal and cannot be verified against Grok's internal metrics. However, the correspondence between predicted signatures (made before the reports were found) and reported symptoms provides qualitative validation that the mechanism identified in the simulation operates at production scale.</p>
-<h3>Collapse Timeline Estimate</h3>
-<p>Extrapolating the routing collapse rate from the simulation:</p>
-<table>
-<thead>
-<tr>
-<th>Cycles</th>
-<th>Estimated dominant-expert share</th>
-<th>Timeline (biweekly)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>12</td>
-<td>93.5%</td>
-<td>~6 months</td>
-</tr>
-<tr>
-<td>15</td>
-<td>~96%</td>
-<td>~7.5 months</td>
-</tr>
-<tr>
-<td>20</td>
-<td>~98%</td>
-<td>~10 months</td>
-</tr>
-<tr>
-<td>25</td>
-<td>~99%+</td>
-<td>~12 months</td>
-</tr>
-</tbody>
-</table>
-<p>The prediction is not a single collapse event but a monotonically shrinking margin of safety. Each update cycle makes the system more fragile. The probability that any given update produces a user-visible quality drop increases with each cycle. The transition from &quot;usually fine&quot; to &quot;frequently off&quot; is estimated at approximately 15-20 cycles (7-10 months of biweekly updates) based on the simulation's routing concentration rate.</p>
-<p>Total permanent collapse is unlikely because a well-resourced team would intervene with retrains or rollbacks before reaching that point. The more probable outcome is chronic instability: quality drops frequent enough to erode user trust, requiring increasingly frequent manual interventions that disrupt the intended update cadence.</p>
 <hr />
 <p><em>Scripts, per-cycle metrics, and visualisations available to licensees.</em></p>
 

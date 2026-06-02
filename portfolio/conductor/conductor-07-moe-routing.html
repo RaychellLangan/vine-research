@@ -65,10 +65,10 @@
   <div class="entry-body">
     <h1>MoE Routing Collapse Under Sequential Updates</h1>
 <p><strong>Date:</strong> 2026-04-16
-<strong>Companion to:</strong> <code>GROK_UPDATE_CYCLE_SIMULATION.md</code></p>
+<strong>Companion to:</strong> the sequential-update cycle simulation.</p>
 <hr />
 <h2>Summary</h2>
-<p>A 4-expert, 4-layer Mixture of Experts language model trained through 12 sequential update cycles (simulating Grok-style biweekly data updates) exhibits progressive <strong>routing collapse</strong>: the router concentrates traffic onto a single expert at each layer while the remaining experts atrophy. By cycle 12, the deepest layer routes 93.5% of all tokens to one expert. Router entropy at the output-adjacent layer drops from 1.26 (near-uniform) to 0.26 (near-deterministic) — a 79% reduction.</p>
+<p>A 4-expert, 4-layer Mixture of Experts language model trained through 12 sequential update cycles (simulating biweekly sequential data updates) exhibits progressive <strong>routing collapse</strong>: the router concentrates traffic onto a single expert at each layer while the remaining experts atrophy. By cycle 12, the deepest layer routes 93.5% of all tokens to one expert. Router entropy at the output-adjacent layer drops from 1.26 (near-uniform) to 0.26 (near-deterministic) — a 79% reduction.</p>
 <p>This confirms a specific prediction: Mixture of Experts architectures add an additional decoupling surface (the router's softmax over experts) on top of the LM head's softmax over vocabulary. Both can collapse independently. When the dominant expert at any layer is destabilised by an update, the system has no fallback — the atrophied experts cannot compensate because they haven't been receiving enough traffic to stay calibrated.</p>
 <hr />
 <h2>Experimental Setup</h2>
@@ -267,22 +267,7 @@ Layer 3: Expert 0 (93.5% — near-total dominance)
 <p>A single data batch that produces large gradients for the dominant expert's weights could rotate its hidden states out of alignment with the LM head — the same mechanism documented in the catastrophic forgetting experiments. Because 93.5% of layer-3 traffic passes through this expert, the rotation affects essentially all output simultaneously.</p>
 <p>In a balanced 4-expert system, a single expert being destabilised affects ~25% of traffic. In the collapsed system, it affects ~94%. The MoE architecture was supposed to provide redundancy through multiple experts; the routing collapse has eliminated that redundancy.</p>
 <hr />
-<h2>Connection to User Observations</h2>
-<p>A user of Grok's multi-agent system reported:</p>
-<blockquote>
-<p>&quot;One agent generally DOES take control and is 'aware of what's going on' while the others pass notes about like headless chickens.&quot;</p>
-</blockquote>
-<p>This is the subjective experience of router entropy 0.262. The &quot;aware&quot; agent is the dominant expert receiving 93.5% of routing weight — its hidden states best align with the output projection, so it produces the most coherent output. The &quot;headless chickens&quot; are the atrophied experts receiving fragments of traffic — they compute but their outputs project through the LM head less cleanly.</p>
-<p>The observation is consistent with the measured routing collapse and provides qualitative confirmation of the quantitative finding.</p>
-<hr />
 <h2>Implications</h2>
-<h3>For Grok specifically</h3>
-<ul>
-<li>Biweekly updates on a MoE architecture will progressively concentrate routing weight</li>
-<li>The concentration is steepest at the deepest layers (nearest to output)</li>
-<li>The system's effective redundancy decreases with each update cycle</li>
-<li>A single bad update to the dominant expert at the deepest layer could produce discontinuous quality degradation</li>
-</ul>
 <h3>For MoE architectures generally</h3>
 <ul>
 <li>The router's softmax over experts is an additional decoupling surface</li>
@@ -301,9 +286,9 @@ Layer 3: Expert 0 (93.5% — near-total dominance)
   <nav class="series-nav" aria-label="Within series">
     <div class="series-prev">
       
-      <a href="/research/portfolio/conductor/conductor-06-grok-cycles.html">
+      <a href="/research/portfolio/conductor/conductor-06-update-cycles.html">
         <span class="series-nav-label">← Previous</span>
-        <span class="series-nav-title">Grok Under Pressure — 12 Update Cycles</span>
+        <span class="series-nav-title">Sequential Embedding Updates — 12 Cycle Simulation</span>
       </a>
       
     </div>

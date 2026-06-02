@@ -65,7 +65,7 @@
   <div class="entry-body">
     <h1>VINE Data Preprocessing: Shaping the Basin Before Training</h1>
 <p><strong>Date:</strong> 2026-04-17
-<strong>Companion to:</strong> <code>GROK_UPDATE_CYCLE_SIMULATION.md</code></p>
+<strong>Companion to:</strong> the sequential-update cycle simulation.</p>
 <hr />
 <h2>Summary</h2>
 <p>Two identical language models (TinyGPT, 4 layers, 128d, char-level) were trained on the same US election Twitter dataset. One received raw unfiltered tweets. The other received tweets preprocessed by VINE's geometric data cruncher — retweets removed, URL/mention spam filtered, repetitive content rejected, and the remainder quality-scored with the top 60% kept.</p>
@@ -84,7 +84,7 @@
 <li><strong>Noisy, fragmented text</strong> (bot spam, URL dumps, copypasta, emoji soup) creates shallow, disconnected basins with jittery geometry</li>
 </ul>
 <p>When a model is trained on a mix of both — as all production models are — the resulting geometry is a landscape of deep canyons surrounded by shallow dimples. The model's capacity is divided between useful structure and noise. Every shallow basin from a spam tweet is a waste of parameters.</p>
-<p>This is directly relevant to the Grok prediction documented in the cycle-simulation companion piece: Grok receives biweekly updates from X/Twitter data, and the quality of that data determines the quality of the basins being carved into the model's geometry with each update cycle.</p>
+<p>This is directly relevant to the cycle-simulation companion piece: models that receive sequential updates from social-media-class data sources carve basins shaped by the quality of that data into their hidden-layer geometry with each update cycle.</p>
 <hr />
 <h2>Experimental Setup</h2>
 <h3>Data Source</h3>
@@ -217,16 +217,6 @@ the theyon Bidens://t.co/irimote is ramit himif #kis ver thourt en ab?
 <li>Better generalisation (because basins are shaped by signal, not noise)</li>
 <li>More stable fine-tuning (because the baseline geometry is cleaner — less susceptible to the decoupling documented in earlier experiments)</li>
 </ul>
-<h3>For Grok Specifically</h3>
-<p>Grok receives biweekly data dumps from X/Twitter. Based on our filter results, approximately <strong>58% of raw tweets would be filtered out</strong> by the VINE cruncher — retweets, spam, bot content, copypasta, low-quality fragments. Grok is ingesting all of it, carving basins for URL patterns and bot spam that consume model capacity and contribute to the geometric instability documented in the cycle simulation.</p>
-<p>If xAI applied VINE-style geometric preprocessing to each data batch before the update:</p>
-<ul>
-<li>The oscillation documented in the cycle simulation would be dampened (cleaner data = less gradient noise)</li>
-<li>The routing collapse documented in the MoE simulation would slow (less conflicting signal between experts)</li>
-<li>The model's effective capacity would increase (stop wasting parameters on noise basins)</li>
-<li>User-reported quality fluctuations (&quot;brilliant earlier, stupid now&quot;) would decrease</li>
-</ul>
-<p>The preprocessing is computationally trivial compared to the model update itself. The VINE cruncher processes 120K tweets in seconds. The model update takes hours. The ratio is absurd.</p>
 <h3>For the Dark Matter Metric</h3>
 <p>This experiment refines the interpretation of the conductor energy measurement:</p>
 <ul>
@@ -242,7 +232,7 @@ the theyon Bidens://t.co/irimote is ramit himif #kis ver thourt en ab?
 <h2>The Preprocessing Dividend</h2>
 <p>The entire VINE preprocessing pipeline — tokenization, stopword removal, structural filtering, quality scoring — runs in seconds on 120K tweets. It uses no GPU. It requires no training. It is a small number of threshold rules and a weighted quality score.</p>
 <p>The result is a 5.1% loss improvement and 22% less wasted conductor energy, for free.</p>
-<p>Scale this to a trillion-parameter model ingesting billions of tweets biweekly, and the preprocessing dividend becomes the difference between a model that oscillates with each update (documented in the Grok simulation) and one that improves smoothly. The geometry of the data shapes the geometry of the model. Clean the data geometrically, and the model's geometry is cleaner by construction.</p>
+<p>Scale this to a trillion-parameter model ingesting billions of tweets biweekly, and the preprocessing dividend becomes the difference between a model that oscillates with each update (documented in the sequential-update simulation) and one that improves smoothly. The geometry of the data shapes the geometry of the model. Clean the data geometrically, and the model's geometry is cleaner by construction.</p>
 <p>Or, as the operator put it: don't stuff raw Twitter up the model's architecture every two weeks without some geometric preprocessing to help it along.</p>
 
   </div>
