@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Actors — VINE Research</title>
+  <meta name="description" content="Under the hood of the actors. Random starting state compounded with random building contents, emergent job picking, biorhythms, competing concerns in high-dimensional space, and the architectural independence that lets new content be added without destabilising the rest.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Actors</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/architecture.html">architecture</a>
+      
+    </p>
+    <p class="entry-summary">Under the hood of the actors. Random starting state compounded with random building contents, emergent job picking, biorhythms, competing concerns in high-dimensional space, and the architectural independence that lets new content be added without destabilising the rest.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Actors</h1>
+<p>This page goes under the hood of the actors. What they are made of, what makes each one different from every other, how they pick their work, and why they seem to have moods of their own.</p>
+<h2>Random at the root</h2>
+<p>Every actor spawns with a random starting inventory, random clothes, and a random amount of cash. The buildings in the village also spawn with random contents inside them — the forge might have a good stock of iron or almost none; the bakery might have flour and yeast, or nothing but salt.</p>
+<p>This is compound randomness. An actor's starting state is not just the state of their own body and pockets; it is the state of their body and pockets <em>relative to</em> the state of the village they find themselves in. A baker with no flour in a bakery with a full flour bin is a different actor than a baker with no flour in a bakery with no flour. The village and the actor are seeded together, and what emerges is the product of both.</p>
+<h2>How actors pick their work</h2>
+<p>Actors pick their buildings emergently. There is no job assignment. An actor, nudged by their starting conditions and their concerns, gravitates toward a building that fits — a kitchen for the one who needs to cook, a forge for the one drawn to heat and metal, a library for the one who has nothing urgent to do.</p>
+<p>In the current beta, there is one building per actor, which means the order in which actors claim buildings determines who ends up where. The actor whose concerns drive them into work first gets the pick of the crop. The actor who is the last to arrive gets whatever building is left — including the ones nobody else wanted. This produces honest first-mover dynamics, and it already generates interesting behaviour: actors with urgent concerns claim early and often end up in roles suited to them; actors with lighter openings may find themselves in roles they would not have chosen under looser conditions.</p>
+<p>In the full-scale version, this constraint relaxes. Buildings will support multiple workers. Actors will be able to pick the work they actually want, and other actors will fill in around them. The beta's job system is a simplification of a system that, in time, will come to resemble a real labour market, with all the texture that implies.</p>
+<h2>Biorhythm</h2>
+<p>Each actor carries their own biorhythm. The algorithm that generates it is the same for every actor; each actor's biorhythm just starts at a different point in the cycle, so no two actors are in phase.</p>
+<p>This is why one actor is wide awake while another is yawning, why one is hungry while another is not, why one is restless and wanting a change while another is content with the day they are having. The biorhythm does not dictate behaviour — it is one input among many — but it gives every actor their own tempo, and it means the village is never full of agents all in the same state at once. Somebody is always up earliest. Somebody is always last to bed.</p>
+<h2>Competing concerns in high-dimensional space</h2>
+<p>An actor's current behaviour is the outcome of many concerns overlapping at once — hunger, warmth, sleep-debt, work-pressure, social connection, the state of their garden, the state of their cupboard, whether they have a bed, what their biorhythm is doing, what they have inherited from the morning, what they have already committed to.</p>
+<p>All of these sit in a high-dimensional space, and the actor's next action is whatever falls out of the resolution of that space.</p>
+<p>If you were to picture it, the picture would look not unlike the high-dimensional activation space of a neural network. Many dimensions. Rich interaction. Behaviour emerging from the geometry. But there is a decisive architectural difference between the two, and it is worth being clear about.</p>
+<h2>The independence of concerns</h2>
+<p>In a large neural network, the parameters are tangled. A small change to one weight can propagate and affect how the whole network responds to all inputs. This is why training is fragile, and why any adjustment requires retraining across the whole system.</p>
+<p>In a VINE actor, the concerns are not tangled in this way. You can check a single concern. You can adjust it. You can add a new one. The other concerns will not destabilise. Each concern is its own shape, contributing to the high-dimensional space without being fused with the other shapes.</p>
+<p>This is the same property that lets the Cartographer's actors accommodate new content without retraining. A new food item, a new weather condition, a new building type — these add new dimensions to the concern-space without requiring the existing dimensions to be touched.</p>
+<p>It is also why the actors can be debugged in a way neural-network NPCs cannot. If an actor is behaving oddly, you can look at the individual concern that is driving the oddness, adjust it, and return the actor to the village without breaking the rest in the process. This is not a feature that can be added to a conventional AI NPC. It is a property of the architecture.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/world/cartographer-02-starting-world.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Starting World</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/world/cartographer-04-baker.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Baker</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

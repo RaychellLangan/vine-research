@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Licensing — VINE Research</title>
+  <meta name="description" content="For game studios, researchers, platforms, independent developers. What adopting the Cartographer means for your development process. The technical and commercial shape of the engine.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>Licensing</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/licensing.html">licensing</a>
+      
+    </p>
+    <p class="entry-summary">For game studios, researchers, platforms, independent developers. What adopting the Cartographer means for your development process. The technical and commercial shape of the engine.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Licensing</h1>
+<h2>The short version</h2>
+<p>If you are a game studio, a researcher, a platform, or an independent developer considering a licence, the short version is this. The Cartographer gives you NPCs that learn on their own, participate in the village's economy, develop distinct personalities from their starting conditions, and run on modest hardware — at numbers that would be impossible with conventional AI NPCs. You do not need to train them, you do not need to retrain them when you add content, and you do not need to write branching logic for their behaviour. The rest of this page describes how this is possible and what adopting it means for your development process.</p>
+<h2>How VINE actors differ from conventional NPCs</h2>
+<p>The difference is architectural, not cosmetic, and it is worth getting clear on before the commercial question.</p>
+<p>A conventional NPC has two things doing its thinking for it: a branching logic tree (chains of <code>if</code> and <code>elif</code>) and, in more modern systems, a neural network trained by gradient descent. Both approaches place the intelligence <em>inside the NPC</em>. The NPC is supposed to know what to do, and the system's job is to consult its rules or its weights and produce an action.</p>
+<p>A VINE actor does not work this way. The intelligence is not inside the actor. The actor carries an algorithm and a set of concerns to be resolved, and what actually drives its behaviour is <strong>the topology of the world</strong>.</p>
+<p>In a conventional system, an NPC walks into a room and consults itself about what to do. In the Cartographer, an actor walks into a room and the <em>room itself</em> participates in determining what the actor does next. An empty house presses differently than a full one. A rainy field presses differently than a sunny one. A hungry actor presses differently against a bakery than a fed one does. The actor resolves the pressures and acts.</p>
+<h2>Why the world has to have structure</h2>
+<p>This is the point that most licensees need to chew on before they are comfortable adopting the system.</p>
+<p>Because the actors are not rule-based, the world must be. If the world does not have structure — givens, shapes, affordances, rules about what things are and how they relate — there is nothing for the actors to press against, and no way for any actor to understand what constitutes appropriate behaviour. The world's structure is what makes the actors intelligent.</p>
+<p>The upshot is a clean inversion of where design effort goes. In a conventional game, designers spend their time on NPC logic: dialogue trees, behaviour trees, scripted responses. In a Cartographer-licensed project, designers spend their time on <em>the world</em>: its rules, its affordances, its shapes. Once the world is designed, the actors fall into line with it automatically.</p>
+<h2>Why this is computationally cheap</h2>
+<p>Because the topology of the world carries part of the load of determining behaviour, an actor does not have to recompute everything from scratch every moment. Moving through familiar territory is cheap — the structure of the place has already been resolved, and the actor is working against a known shape. Only when the shape changes — a new concern arising, an unexpected event, a tipping point — does fresh resolution actually need to happen.</p>
+<p>This is the mathematical basis for why thousands of VINE actors can run on hardware that would choke on a handful of conventional AI NPCs. Most of the time, the actors are not &quot;thinking&quot; in the expensive sense. They are following the geometry of a world they already know.</p>
+<h2>The two headline technical facts</h2>
+<p>The actors <strong>do not have a fixed parameter count</strong>. The architecture is not a neural network of a particular size, trained once on a particular dataset, whose behaviour is locked in by the weights it happens to have ended up with. It is a geometric system, and it sizes to its world. Bigger world, bigger system; smaller world, smaller system. You do not pay for capacity you are not using, and you do not hit a ceiling when your world grows past what the model was trained on — because no such training exists.</p>
+<p>The actors <strong>do not need retraining</strong>. If you want to add a new craft, a new biome, a new item, a new interaction — you add it the way you would normally add something to a game. You do not have to assemble a dataset. You do not have to spin up GPUs. You do not have to fight branching logic to wedge the new thing in beside the existing things. The architecture accommodates because the architecture is not locked to what it has already seen.</p>
+<h2>What changes in your development process</h2>
+<p>You design your world. Its rules, its givens, its affordances, its shapes. This is where your effort goes, and this is where your design control lives.</p>
+<p>What you no longer need to do:</p>
+<ul>
+<li>Write behaviour trees for your NPCs.</li>
+<li>Author dialogue trees.</li>
+<li>Assemble a training dataset.</li>
+<li>Retrain anything when you add content.</li>
+<li>Write chains of branching logic to handle edge cases of NPC interaction.</li>
+<li>Hand-script the small-scale quests (gather, fetch, deliver) — these emerge from the actors' real needs.</li>
+</ul>
+<p>What you still do:</p>
+<ul>
+<li>Design the world's rules and affordances.</li>
+<li>Author the narrative quests your story depends on.</li>
+<li>Create your art, assets, lore, and world-flavour.</li>
+<li>Decide the shape of your game. The Cartographer is a substrate; you decide what grows on it.</li>
+</ul>
+<h2>Compute envelope</h2>
+<p>The numbers here will seem implausible. They are accurate, and there is a live demonstration you can interact with directly on the website.</p>
+<p>The production server — not a local machine, the live Hetzner server — classified 49,746 items across 53 folders in 780.7 milliseconds, at 64,000 items per second. On a local Ryzen the throughput is higher still. The live cruncher is on this site. You can run it yourself.</p>
+<p>The full fleet runs light on consumer hardware. A formal compute profile will publish with the licensee pack; prior informal testing has shown many simultaneous instances on a modest fraction of a consumer GPU with headroom remaining. The whole pipeline runs as a geometric walk with no branching logic: there are no decision trees to traverse, no probability distributions to sample, no gradient to follow. Per-agent compute is effectively instantaneous.</p>
+<p>This is not an optimisation achievement. It is a property of the architecture. The reason conventional AI-NPC systems scale badly is that each NPC is doing expensive inference per tick. VINE actors are not doing inference. They are settling into a basin. The difference in compute cost is not marginal — it is architectural.</p>
+<p>The practical upshot: a single modest server can run a village at full fidelity. The system is small enough to scale to global deployment. The bottleneck, if there is one, will be your rendering layer — not the agents.</p>
+<h2>Speech</h2>
+<p>The actors speak via the VINE mixture-of-experts language layer — small narrow-task specialists that inflate an actor's internal state into natural language. This layer is included with the Cartographer licence. The overview page covers how it works in more detail.</p>
+<h2>What a licensee receives</h2>
+<p><em>[To be specified: the precise commercial package — engine access, documentation, integration support, update cadence, permitted modifications, etc.]</em></p>
+<p>The engine is asset-agnostic. You bring your own art, your own characters, your own lore, your own IP. The village will take the shape you give it.</p>
+<h2>How to get in touch</h2>
+<p><em>[To be specified: contact details, preferred first-contact channel, expected response window.]</em></p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/world/cartographer-17-library.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Library</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

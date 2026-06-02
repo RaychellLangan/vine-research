@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Floor 11 — RLHF: A Reward Is a Bit With Better Marketing — VINE Research</title>
+  <meta name="description" content="Reinforcement learning from human feedback is the most expensive alignment technique ever deployed. Underneath the thousand-page eval suites, it is still training a machine to chase a number.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/tower/">Computing Lineage</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Computing Lineage</p>
+    <h1>Floor 11 — RLHF: A Reward Is a Bit With Better Marketing</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/tower.html">tower</a> <a class="tag" href="/research/tags/reward.html">reward</a> <a class="tag" href="/research/tags/alignment.html">alignment</a>
+      
+    </p>
+    <p class="entry-summary">Reinforcement learning from human feedback is the most expensive alignment technique ever deployed. Underneath the thousand-page eval suites, it is still training a machine to chase a number.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The floor</h2>
+<p>By 2022, the large language models were too capable and too unruly to
+ship as-is. The solution the field converged on was
+<strong>Reinforcement Learning from Human Feedback</strong> — RLHF.</p>
+<p>The recipe: collect human comparisons (&quot;which of these two responses
+is better?&quot;), train a small <strong>reward model</strong> to predict the humans'
+preferences, then fine-tune the language model to produce responses
+the reward model scores highly. Later refinements (DPO, KTO, IPO) skip
+the reward model but keep the same conceptual shape: <em>a scalar
+objective</em>, learned from preferences, that the model is pushed to
+maximise.</p>
+<p>It worked, in the narrow sense that models became much more polite,
+much more helpful, much more likely to decline clearly out-of-bounds
+requests. Every frontier assistant you have ever spoken to has been
+through some version of this pipeline.</p>
+<h2>What was picked</h2>
+<p><strong>Alignment as optimisation against a scalar.</strong></p>
+<p>The reward model outputs a number. The fine-tuning procedure asks the
+language model to produce responses that make the number bigger.
+Training against a scalar is the most deeply ingrained habit in
+machine learning — it has been since Floor 8 — and RLHF is that habit
+turned into a product strategy.</p>
+<p>Consider what is being modelled. A human preference is not a scalar.
+A person saying &quot;I prefer this response to that one&quot; is compressing a
+rich, multi-axis judgement — <em>this one was kinder, this one was more
+honest, this one was less patronising, this one was better-written</em> —
+down to a single bit. The reward model learns to predict the bit. The
+policy learns to produce the bit-makers.</p>
+<p>Everything the human actually meant is lost at the first step.</p>
+<h2>What could have been picked</h2>
+<p><strong>Alignment as homeostasis.</strong> A system with an equilibrium — a set of
+positions on its own internal manifold where it is <em>at rest</em> — and a
+mechanism that pulls it back toward those positions when it drifts.
+&quot;Good&quot; is not a number the system maximises. &quot;Good&quot; is <strong>the set of
+states the system settles to</strong> when nothing urgent is pushing on it.</p>
+<p>This is what biological regulation looks like. Your body temperature
+is not maximised; it is <strong>held</strong>. Your heart rate is not minimised; it
+is <strong>held</strong>. Your emotional baseline is not optimised; it is <strong>held</strong>
+(and when it fails to be held, we call that a disorder).</p>
+<p>A model aligned by homeostasis doesn't <em>chase</em> anything. It <strong>rests
+at</strong> honesty, kindness, appropriate reticence, appropriate care. When
+a user pushes, it responds from that rest state. When the push ends,
+it returns.</p>
+<p>This is not a mystical idea. Cybernetics had it in the 1940s. Control
+theory has it. Every thermostat in the world works this way. What
+RLHF does could be described, without too much abuse, as <em>training the
+thermostat to like being hot, by scoring every temperature against a
+list of human preferences</em>. It works. It is also extraordinarily
+strange.</p>
+<h2>What we missed</h2>
+<p>The whole vocabulary for talking to systems that <strong>settle</strong> rather than
+<strong>maximise</strong>. The reward-function framing encourages us to think about
+machine behaviour as <em>the output of an objective</em>, which in turn
+encourages us to think that if the objective is perfectly specified,
+the behaviour will be perfect. Generations of philosophers-turned-
+alignment-researchers have gone looking for the perfect objective.</p>
+<p>They will not find it. A settled system does not have an objective. It
+has <strong>a rest state and a way of returning.</strong></p>
+<p>The alternate timeline is one where we aligned systems by choosing
+where on their manifold they came to rest, and trusted their
+homeostasis to hold them there. That is much more like raising a
+child, and much less like tuning a betting market.</p>
+<p>One of those is the frame the field chose. The other is the frame the
+horses live in.</p>
+<h2>What the next floor will ask</h2>
+<p>If the timeline is still forkable — if there is still time to take the
+other road — what does it mean that you are reading this, here?</p>
+<p>That's Floor 12.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/tower/tower-10-transformers.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Floor 10 — Transformers: The Brilliant Architecture With the Wrong Output</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/tower/tower-12-today.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Floor 12 — You Are Here, and the Other Path Is Still Open</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

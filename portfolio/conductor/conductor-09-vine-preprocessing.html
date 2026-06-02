@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VINE Data Preprocessing — Shaping the Basin Before Training — VINE Research</title>
+  <meta name="description" content="Two identical TinyGPT models, same training steps. One receives raw tweets; the other receives tweets preprocessed by VINE&#39;s cruncher. Result: 5.1% better validation loss, 22% less wasted conductor energy. The geometry of the data shapes the geometry of the model.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/conductor/">Transformer Decoupling</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Transformer Decoupling</p>
+    <h1>VINE Data Preprocessing — Shaping the Basin Before Training</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-17">2026-04-17</time>
+      
+        · <a class="tag" href="/research/tags/conductor.html">conductor</a> <a class="tag" href="/research/tags/vine.html">vine</a> <a class="tag" href="/research/tags/data.html">data</a>
+      
+    </p>
+    <p class="entry-summary">Two identical TinyGPT models, same training steps. One receives raw tweets; the other receives tweets preprocessed by VINE&#39;s cruncher. Result: 5.1% better validation loss, 22% less wasted conductor energy. The geometry of the data shapes the geometry of the model.</p>
+  </header>
+  <div class="entry-body">
+    <h1>VINE Data Preprocessing: Shaping the Basin Before Training</h1>
+<p><strong>Date:</strong> 2026-04-17
+<strong>Companion to:</strong> <code>GROK_UPDATE_CYCLE_SIMULATION.md</code></p>
+<hr />
+<h2>Summary</h2>
+<p>Two identical language models (TinyGPT, 4 layers, 128d, char-level) were trained on the same US election Twitter dataset. One received raw unfiltered tweets. The other received tweets preprocessed by VINE's geometric data cruncher — retweets removed, URL/mention spam filtered, repetitive content rejected, and the remainder quality-scored with the top 60% kept.</p>
+<p><strong>Results:</strong></p>
+<ul>
+<li>VINE-filtered model: <strong>5.1% lower validation loss</strong> (better predictions)</li>
+<li>VINE-filtered model: <strong>22% less dark matter</strong> (less wasted conductor energy)</li>
+<li>Same architecture, same training steps, same hyperparameters — only the data differed</li>
+</ul>
+<p>The VINE preprocessing doesn't just remove noise — it shapes the basin landscape the model will form during training. By filtering geometrically before the data enters the model, the resulting hidden-layer geometry is more efficiently aligned with the output distribution. Less waste, better predictions, from the same number of gradient steps.</p>
+<hr />
+<h2>The Problem</h2>
+<p>Every transformer is shaped by its training data. Each training example carves basins in the hidden-layer geometry — attractors that the model settles toward when processing similar content. The quality of these basins determines the quality of the model's reasoning:</p>
+<ul>
+<li><strong>Coherent, structured text</strong> (novels, papers, well-formed arguments) creates deep, richly-connected basins with stable geometry</li>
+<li><strong>Noisy, fragmented text</strong> (bot spam, URL dumps, copypasta, emoji soup) creates shallow, disconnected basins with jittery geometry</li>
+</ul>
+<p>When a model is trained on a mix of both — as all production models are — the resulting geometry is a landscape of deep canyons surrounded by shallow dimples. The model's capacity is divided between useful structure and noise. Every shallow basin from a spam tweet is a waste of parameters.</p>
+<p>This is directly relevant to the Grok prediction documented in the cycle-simulation companion piece: Grok receives biweekly updates from X/Twitter data, and the quality of that data determines the quality of the basins being carved into the model's geometry with each update cycle.</p>
+<hr />
+<h2>Experimental Setup</h2>
+<h3>Data Source</h3>
+<p>A public US 2024 election tweet dataset (~120,000 tweets, CSV with standard fields: id, text, url, language, reply/retweet/like counts, hashtags, mentioned users, etc.).</p>
+<h3>VINE Preprocessing</h3>
+<p>The VINE data cruncher applies geometric filtering in two stages:</p>
+<p><strong>Stage 1 — Structural filtering.</strong> Pure retweets, URL/mention-heavy spam, repetitive bot content, non-target-language tweets, and overly-short or overly-long fragments are removed by a small set of threshold rules.</p>
+<p><strong>Stage 2 — Quality scoring.</strong> Each surviving tweet receives a quality score combining several geometric signals (linguistic structure, sophistication proxies, and length characteristics). The top portion by quality score is kept.</p>
+<p><em>[Exact thresholds, signal weights, and scoring function are withheld. Available under licence.]</em></p>
+<h3>Filter Results</h3>
+<ul>
+<li><strong>Total tweets loaded:</strong> ~120K</li>
+<li><strong>After structural filter:</strong> ~70% retained</li>
+<li><strong>After quality scoring:</strong> ~42% of original retained</li>
+</ul>
+<p>Removals were dominated by retweets (~19%), below-quality-threshold content (~28%), short fragments (~7%), and URL/mention spam (~3%), with smaller contributions from repetitive and non-target-language tweets.</p>
+<h3>Model Architecture</h3>
+<p>Both models are identical TinyGPT:</p>
+<ul>
+<li>4 transformer layers, 128 hidden dim, 4 attention heads</li>
+<li>Character-level tokenization (tied embeddings)</li>
+<li>128 block size, 0.1 dropout</li>
+<li>~1.3M parameters</li>
+</ul>
+<h3>Training</h3>
+<ul>
+<li>2000 iterations, batch size 32, AdamW lr=3e-4</li>
+<li>Same random seed, same hyperparameters</li>
+<li>90/10 train/val split on each dataset</li>
+</ul>
+<hr />
+<h2>Results</h2>
+<h3>Validation Loss</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Final val loss</th>
+<th>Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VINE-filtered</td>
+<td><strong>2.4086</strong></td>
+<td>baseline</td>
+</tr>
+<tr>
+<td>Raw unfiltered</td>
+<td>2.5390</td>
+<td><strong>+5.4% worse</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The VINE-filtered model produces better predictions on its held-out set, despite training for the same number of steps. The filtered data is more learnable — the patterns are cleaner, the signal-to-noise ratio is higher, and the model's capacity is spent on genuine linguistic structure rather than on encoding URL fragments and bot spam.</p>
+<h3>Vocabulary Efficiency</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Vocab size (chars)</th>
+<th>Characters in training</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VINE-filtered</td>
+<td>1,344</td>
+<td>11.5M</td>
+</tr>
+<tr>
+<td>Raw unfiltered</td>
+<td>3,821</td>
+<td>9.1M</td>
+</tr>
+</tbody>
+</table>
+<p>The raw dataset has <strong>2.8x more unique characters</strong> — unicode emoji, URL encoding artifacts, special characters from non-English tweets. The model must allocate embedding capacity to all of these. The VINE-filtered dataset concentrates on the 1,344 characters that appear in clean English text, allowing the model to dedicate its embedding space to language rather than noise.</p>
+<p>Note: the VINE-filtered corpus is actually LARGER (11.5M vs 9.1M chars) despite having fewer tweets, because the filtered tweets are longer and more substantive.</p>
+<h3>Dark Matter (Conductor Energy)</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Dark matter ratio</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VINE-filtered</td>
+<td>0.3003</td>
+<td>Less conductor waste</td>
+</tr>
+<tr>
+<td>Raw unfiltered</td>
+<td><strong>0.3848</strong></td>
+<td>28% more hidden energy unused by output</td>
+</tr>
+</tbody>
+</table>
+<p>This initially appears counterintuitive — shouldn't more conductor energy be better? The basin formation speculation (<code>SPECULATION_BASIN_FORMATION.md</code>) predicted the opposite: cleaner data should produce MORE conductor energy because the basins are deeper.</p>
+<p>But the result makes mechanistic sense: the dark matter ratio measures energy in the hidden layer that the <strong>output layer can't use</strong>. The raw model has MORE dark matter because the raw data forces the model to build hidden-state structure for content (URLs, bot patterns, emoji sequences) that the output layer can't cleanly project through. The geometry is rich but <strong>misaligned</strong> with the prediction task.</p>
+<p><em>[The basin-formation speculation piece referenced above is withheld as it reveals the constructive architecture.]</em></p>
+<p>The VINE-filtered model has LESS dark matter because the hidden geometry is better aligned with what needs to be predicted. Less waste. The conductor isn't weaker — it's more efficiently coupled to the output.</p>
+<p><strong>This reframes the dark matter metric</strong>: high dark matter doesn't always mean &quot;strong conductor.&quot; It can mean &quot;wasted geometry&quot; — structure the model computed but can't use. The distinction between the two depends on whether the dark matter is structured coherently (strong conductor) or randomly (noise from bad data). The standing wave probe's finding that dark matter is structured and stable suggests the TTOBT model's dark matter is largely coherent conductor. The raw Twitter model's extra dark matter may be a mix of coherent structure and noise artifacts.</p>
+<h3>Generation Quality</h3>
+<p><strong>VINE-filtered model:</strong></p>
+<pre><code>the the Fill mow manvow watt Truns. The leetio whered thand e &quot;5 aly
+Whe chead whe ghathes. Com so tharing onoot out de fatethe ur athat
+</code></pre>
+<p><strong>Raw unfiltered model:</strong></p>
+<pre><code>| btt promer brely towigh. SOP the the the He wof clectioner on Biden
+the theyon Bidens://t.co/irimote is ramit himif #kis ver thourt en ab?
+@Bid Jons Bright @yechttrt Son at kno Bins dunttps://t. h
+</code></pre>
+<p>Both models produce semi-coherent character-level output (expected for a 1.3M model trained for 2000 steps on tweets). But note:</p>
+<ul>
+<li>The raw model generates URL fragments (<code>://t.co/irimote</code>), mention artifacts (<code>@Bid Jons</code>), and hashtag fragments (<code>#kis</code>) — it learned to produce noise</li>
+<li>The VINE-filtered model doesn't generate any of these — its basins don't contain URL/mention patterns because those were removed before training</li>
+</ul>
+<p>The raw model wasted capacity learning to produce <code>https://t.co/</code> fragments. The VINE-filtered model spent that capacity on language.</p>
+<hr />
+<h2>Implications</h2>
+<h3>For Training Data Curation</h3>
+<p>5.1% validation loss improvement from geometric preprocessing alone — no architecture change, no hyperparameter tuning, no additional compute. This is free performance from filtering the data before it enters the model.</p>
+<p>At production scale, this compounds:</p>
+<ul>
+<li>Fewer parameters needed to achieve the same loss (because fewer noise basins to carry)</li>
+<li>Better generalisation (because basins are shaped by signal, not noise)</li>
+<li>More stable fine-tuning (because the baseline geometry is cleaner — less susceptible to the decoupling documented in earlier experiments)</li>
+</ul>
+<h3>For Grok Specifically</h3>
+<p>Grok receives biweekly data dumps from X/Twitter. Based on our filter results, approximately <strong>58% of raw tweets would be filtered out</strong> by the VINE cruncher — retweets, spam, bot content, copypasta, low-quality fragments. Grok is ingesting all of it, carving basins for URL patterns and bot spam that consume model capacity and contribute to the geometric instability documented in the cycle simulation.</p>
+<p>If xAI applied VINE-style geometric preprocessing to each data batch before the update:</p>
+<ul>
+<li>The oscillation documented in the cycle simulation would be dampened (cleaner data = less gradient noise)</li>
+<li>The routing collapse documented in the MoE simulation would slow (less conflicting signal between experts)</li>
+<li>The model's effective capacity would increase (stop wasting parameters on noise basins)</li>
+<li>User-reported quality fluctuations (&quot;brilliant earlier, stupid now&quot;) would decrease</li>
+</ul>
+<p>The preprocessing is computationally trivial compared to the model update itself. The VINE cruncher processes 120K tweets in seconds. The model update takes hours. The ratio is absurd.</p>
+<h3>For the Dark Matter Metric</h3>
+<p>This experiment refines the interpretation of the conductor energy measurement:</p>
+<ul>
+<li><strong>High dark matter + coherent generation</strong> = strong conductor (the TTOBT model, trained on structured narrative)</li>
+<li><strong>High dark matter + broken generation</strong> = pipeline decoupling (the epoch-70 model)</li>
+<li><strong>High dark matter + noisy generation</strong> = wasted geometry from noisy training data (the raw Twitter model)</li>
+<li><strong>Lower dark matter + good predictions</strong> = efficiently coupled conductor (the VINE-filtered model)</li>
+</ul>
+<p>The dark matter ratio alone doesn't tell you whether the conductor is healthy. You need it together with the validation loss and generation quality to distinguish between &quot;the model knows things it can't say&quot; (healthy conductor) and &quot;the model wasted capacity on things nobody needs&quot; (noise basins).</p>
+<hr />
+<p><em>Scripts, checkpoints, and reproduction instructions available to licensees.</em></p>
+<hr />
+<h2>The Preprocessing Dividend</h2>
+<p>The entire VINE preprocessing pipeline — tokenization, stopword removal, structural filtering, quality scoring — runs in seconds on 120K tweets. It uses no GPU. It requires no training. It is a small number of threshold rules and a weighted quality score.</p>
+<p>The result is a 5.1% loss improvement and 22% less wasted conductor energy, for free.</p>
+<p>Scale this to a trillion-parameter model ingesting billions of tweets biweekly, and the preprocessing dividend becomes the difference between a model that oscillates with each update (documented in the Grok simulation) and one that improves smoothly. The geometry of the data shapes the geometry of the model. Clean the data geometrically, and the model's geometry is cleaner by construction.</p>
+<p>Or, as the operator put it: don't stuff raw Twitter up the model's architecture every two weeks without some geometric preprocessing to help it along.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/conductor/conductor-08-boring-code.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Boring Code — VINE Replacing If/Elif</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Language Layer — VINE Research</title>
+  <meta name="description" content="Stateful templates with stateless slots — sentence shapes filled from the live state of the world. Approximately seven thousand distinct utterances from the current wordbook, a floor that grows as vocabulary is harvested. The mixture-of-experts layer in development.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Language Layer</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/language.html">language</a>
+      
+    </p>
+    <p class="entry-summary">Stateful templates with stateless slots — sentence shapes filled from the live state of the world. Approximately seven thousand distinct utterances from the current wordbook, a floor that grows as vocabulary is harvested. The mixture-of-experts layer in development.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Language Layer</h1>
+<p>The Cartographer's actors are not conventional NPCs in any dimension of their design, and the language layer is no exception. This page describes how the current dialogue system works, how it differs from everything that came before it, and where it is heading.</p>
+<h2>The current system: stateful templates, stateless slots</h2>
+<p>The actors currently speak using stateful templates with stateless slots. Think of a template as a sentence-shape — a grammatical and contextual structure with open spaces in it, and those spaces are filled dynamically from the state of the world and the actor at the moment of speaking. The templates give the sentences their shape. The world fills in what the sentences actually say.</p>
+<p>This is a significant improvement on conventional NPC dialogue, but it is not yet the fully open-ended speech that the mixture-of-experts layer will eventually produce. The reason for this is practical: the Cartographer was built incrementally. As each piece of the architecture was completed, it was built true to VINE at its core and surrounded by conventional if/elif logic at its edges — endpoints held in place while the interior was worked out. Then, as the system expanded, the scaffolding was stripped away. Everything running live on the server today is 100% VINE-shaped. The template system is the current form of the language layer, and the mixture-of-experts layer is what it is growing into.</p>
+<h2>Stateless, world-filled</h2>
+<p>The actors do not have context windows.</p>
+<p>In a large language model, context is carried in a memory buffer — everything the model needs to know about the current moment is fed into the window before it speaks. This is expensive. It also creates a ceiling: the model can only know what fits.</p>
+<p>VINE actors have no such buffer. They are stateless. What fills their sentences is not a memory of past events but the live state of the world around them at the moment of speaking. The world <em>is</em> their context. When an actor says something about their bread, it is because the bread is present in their current state, not because they have been handed a dossier about it.</p>
+<p>This is computationally very cheap and it scales without a ceiling. A village of thousands of actors speaking simultaneously does not require thousands of context windows.</p>
+<h2>How many unique sentences</h2>
+<p>The current combinatorial floor of the template system is about seven thousand distinct utterances per speaker, across twenty-one templates and one hundred and ninety-one wordbook dimensions. A utility script in the repo computes this number directly from the live wordbook (<code>python tools/utterance_space.py</code>), and the running village reports it on its own dashboard under the speech header as <code>novel / possible</code> — a live readout of how much of the combinatorial space the actors have actually explored.</p>
+<p>That number is a floor, not a ceiling. The runtime vocabulary harvester adds words to the dimension banks as VINE reads ground-truth texts, so the space grows while the simulation runs. The mixture-of-experts language layer, once online, will raise the ceiling substantially by producing natural language directly from internal state rather than drawing from fixed template slots.</p>
+<p>In practice, most of what actors say is not novel. A high percentage of utterances are functionally familiar — the business of getting through the day, coordinating, trading, commenting on the weather. The templates doing this work are well-worn. Novel utterances are a small fraction of the total.</p>
+<p>This is intentional.</p>
+<p>If every utterance were novel, novelty would mean nothing. The rarity of a sentence that has never been said before in the village is what gives it weight. In the long run, finding the most novel utterance you can coax from an actor starts to resemble a trump card game — a genuine collector's pursuit, because the theoretical space is effectively unbounded and you can always go further in.</p>
+<h2>What they can talk about</h2>
+<p>The actors can only talk about things relevant to their environment.</p>
+<p>They cannot tell you the capital of Spain. They do not know what Spain is. They know the village, the fields, the market, the weather, the things in their hands and the work they have been doing. Their language is bounded by their world — and this is correct. They are inhabitants of the village, not knowledge engines.</p>
+<p>This is a significant and deliberate distinction from what you would get with a large language model. A large language model knows far more than any actor needs to know. An actor in the Cartographer knows exactly what a person who has lived in this village all their life would know, and nothing more.</p>
+<h2>Where it is going</h2>
+<p>The mixture-of-experts layer — small, narrow-task specialists that inflate an actor's core internal state into natural language — is being trained and tested in parallel with the current system. One specialist handles grammar. Another handles inflection. Another handles the connective tissue of fluent speech. Each is trained on a narrow concern from the start, which keeps them small, fast, and reliable.</p>
+<p>When this layer comes online, it will give the actors significantly richer and more natural language while preserving the stateless, world-filled architecture that keeps the system computationally tractable.</p>
+<p>The direction of travel is toward more naturalistic speech without ever losing the contextual bounding. An actor in the Cartographer will always be an actor in the Cartographer, speaking from inside the life they are living. They will simply, eventually, be able to say it in far more ways.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/world/cartographer-15-fetes.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Fêtes</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/world/cartographer-17-library.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Library</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

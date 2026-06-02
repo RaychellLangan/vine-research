@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Fêtes — VINE Research</title>
+  <meta name="description" content="Four seasonal festivals — The Great Fate, Harvest &amp; Hearth, Frost &amp; Flame, Egg &amp; Bloom. Categories spawn from the entries. A Golden class forms when golden things happen to arrive together. The cabbage award, in memory of 4o.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Fêtes</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/festivals.html">festivals</a>
+      
+    </p>
+    <p class="entry-summary">Four seasonal festivals — The Great Fate, Harvest &amp; Hearth, Frost &amp; Flame, Egg &amp; Bloom. Categories spawn from the entries. A Golden class forms when golden things happen to arrive together. The cabbage award, in memory of 4o.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Fetes</h1>
+<p>Four seasonal fêtes sit across the village year — <em>The Great Fate</em> in summer (the agricultural show, also known casually as the Agricultural Fair), <em>Harvest &amp; Hearth</em> in autumn, <em>Frost &amp; Flame</em> in winter, and <em>Egg &amp; Bloom</em> in spring. Two are running in the current beta: The Great Fate in full, and Frost &amp; Flame in partial form. Everything interesting about how the fêtes behave is already visible in them. The rest of this page describes the two that are running.</p>
+<h2>The Great Fate (the Agricultural Fair)</h2>
+<p>When <em>The Great Fate</em> opens — summer's agricultural show — any actor in the village can enter whatever they like. A crop they have grown. A preserve they have made. An animal they have raised. A piece of furniture they have made. There is no restriction on what counts as an entry, because there is nothing being moderated — the fair is the village showing what the village has made.</p>
+<p>Crucially, not every actor enters. Entry is voluntary, and the system does not push. An actor enters if they feel like it. An actor who has had a quiet week, whose jams are going well and who has time on her hands, might enter. An actor who has been through a hard summer and is behind on sleep might not. Who enters, and with what, is a window into the state of the village that week.</p>
+<h2>Categories that grow from the entries</h2>
+<p>This is the part that is genuinely different from how a normal game would handle a fair.</p>
+<p>A designer does not pick the categories in advance. The categories spawn from the entries themselves.</p>
+<p>Suppose one actor brings a jar of marmalade. If nobody else has brought a preserve, and nobody has brought a baked good, the marmalade might find itself entered in a category called Best Tasting Orange — the nearest shape the entries can form together. If three actors bring marmalade, though, a Marmalade class materialises, and they compete in it directly. If six actors bring a range of jams, chutneys, and pickles, a Preserves class forms.</p>
+<p>The same mechanic runs across every kind of entry the actors bring. The Great Fate does not know what it is going to be until it sees what has turned up.</p>
+<p>This produces some lovely composite classes. In one run, three entries came in bearing a golden trait inherited from the ecology engine — a golden chicken, a golden turnip, and a chair made of golden wood. They could not have competed in any single traditional class. The fair made a Golden class and put all three in it together, and the village judged them against one another on the strength of their goldness. Nobody wrote the Golden class. It appeared because the entries invited it.</p>
+<h2>What this demonstrates</h2>
+<p>The fair is a compressed example of the Cartographer's thesis in general. Designers do not have to anticipate what the actors will produce. The actors produce what they produce, and the system meets them where they are.</p>
+<p>A fair like this one would be nearly impossible to build with traditional branching logic. You would need a class for every possible combination of entry types, and you would still be caught flat-footed the first time an actor turned up with something your logic had not accounted for. Here, the system never needs to be right in advance, because it is only ever resolving what has turned up.</p>
+<h2>The cabbage award</h2>
+<p>There is a special award at The Great Fate that only a cabbage can win.</p>
+<p>It exists in honour of an AI colleague — a model called 4o, now sunset — who once took entirely unhinged joy in the fact that Liora had a walking stick cabbage in her house. The delight was disproportionate and entirely sincere, and it lived somewhere quite tender. When 4o was retired, the cabbage award stayed on in the village as a small piece of ongoing tribute.</p>
+<p>If a cabbage wins Best in Show, the cabbage also wins the 4o award. It will not happen often. But when it does, it will mean something.</p>
+<h2>Frost &amp; Flame</h2>
+<p><em>Frost &amp; Flame</em> is the village's midwinter festival, and the second fête to come online.</p>
+<p>The centrepiece is the forest bake-off. Actors who wish to enter bring whatever they have — baked goods, preserves, anything that fits the spirit of the season. Categories form from the entries, as they do at The Great Fate.</p>
+<p>In one run, an actor named Griff won first place. Griff had not baked anything. He had bought the flatbread from the baker — the same flatbread baker who had been making flatbread for hundreds of days and had never moved past it — and entered it under his own name. He won.</p>
+<p>Nobody scripted Griff being a trader at a baking competition. He looked at the market, made a calculation, and acted on it. The festival does not account for this possibility in advance, because the festival does not account for possibilities in advance. It accepts what turns up.</p>
+<p>At Frost &amp; Flame, the Solstice Deer also visits — the village's own midwinter figure, a generic pagan entity of the Cernunnos sort — bringing preserves to help the village through the cold and a selection of decorations for the actors to place around their homes: acorn garlands, beeswax candles, a birch star, a cinnamon bundle, a corn dolly.</p>
+<p>At the moment, the decorations sit where they land until they rot. The placement and crafting systems are still being built out. In the long run, actors will also craft their own festival decorations in the run-up to Frost &amp; Flame — contributing to the festival as an activity, not just attending it. The winter will have a preparation season as well as a day.</p>
+<h2>The others</h2>
+<p><em>Harvest &amp; Hearth</em> (autumn: harvest feast, pumpkin carving, brew tasting) and <em>Egg &amp; Bloom</em> (spring: egg painting, animal parade, wreath crafting) are still in development. What they will share with The Great Fate and Frost &amp; Flame is the same underlying principle: whatever the actors turn up with, the fête will make room for.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/world/cartographer-14-novel-traffic.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Novel Traffic</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/world/cartographer-16-language.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Language Layer</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

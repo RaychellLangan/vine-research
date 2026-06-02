@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trajectory Learning — VINE Research</title>
+  <meta name="description" content="A moving object is recognised as the same object across frames because the trajectory is a single basin in spacetime rather than a set of disconnected positions. Object permanence, predictive tracking, and anticipation as properties of trajectory geometry.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/cognitive/">Biological Architectures</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Biological Architectures</p>
+    <h1>Trajectory Learning</h1>
+    <p class="entry-meta">
+      <time datetime="2025-12-07">2025-12-07</time>
+      
+        · <a class="tag" href="/research/tags/cognitive.html">cognitive</a> <a class="tag" href="/research/tags/biology.html">biology</a> <a class="tag" href="/research/tags/tardigrade.html">tardigrade</a> <a class="tag" href="/research/tags/trajectory.html">trajectory</a>
+      
+    </p>
+    <p class="entry-summary">A moving object is recognised as the same object across frames because the trajectory is a single basin in spacetime rather than a set of disconnected positions. Object permanence, predictive tracking, and anticipation as properties of trajectory geometry.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Trajectory Learning</h1>
+<p><em>The tardigrade learns that the direction of change matters, not just
+the current state. A plant ripening is worth waiting for; a plant
+rotting is worth eating now.</em></p>
+<hr />
+<h2>The Question</h2>
+<p>How does an animal learn to act on <em>change</em> rather than just <em>state</em>?
+A ripe plant is valuable, but &quot;<em>this plant is ripening</em>&quot; means wait
+— and &quot;<em>this plant is rotting</em>&quot; means eat it now, before it's gone.
+How is a transition itself learned as meaningful?</p>
+<h2>The Answer, Short Version</h2>
+<p>The same feature-valence accumulation that handles colour handles
+trajectories. Each transition — <code>fresh_ripening</code>, <code>ripe_rotting</code>,
+<code>overripe_rotting</code> — is its own feature channel. Outcomes flow
+through those channels the way pain flowed through <code>red</code> in the
+concept formation test. Change becomes nameable because transitions
+activate their own detectors. No separate &quot;reasoning about time&quot;
+module, no explicit temporal logic — the mechanism is the one already
+in use, running on a differently-shaped input.</p>
+<h2>The Setup</h2>
+<p>The test environment contains plants that cycle through five states:</p>
+<pre><code>fresh → ripening → RIPE → overripe → rotten
+</code></pre>
+<p>Only the ripe state offers full nutrition. Overripe is neutral;
+rotten is harmful. The tardigrade encounters plants at various points
+in the cycle. The test is whether it learns that <em>transitions</em> — not
+just static states — carry information about when to act.</p>
+<p>The protocol runs 3000 training steps, with plants progressing
+through their cycle on their own while the tardigrade decides when to
+approach or wait.</p>
+<h2>What Emerged</h2>
+<p><strong>State associations</strong> (baseline, what the system learns about static
+states):</p>
+<pre><code>ripening        +0.55
+ripe            +0.51
+fresh           +0.33
+overripe         0.00
+rotten          -0.66
+</code></pre>
+<p>These are clean. Ripe and ripening are positive; rotten is strongly
+negative; overripe is neutral. Standard feature-valence learning.</p>
+<p><strong>Trajectory associations</strong> (the new thing — what the system learned
+about <em>transitions</em>):</p>
+<pre><code>ripe_rotting         +0.70   ← eat now, it's decaying
+fresh_ripening       +0.37   ← wait, it will improve
+ripe_stable           0.00   ← nothing changing, no urgency signal
+overripe_rotting      0.00   ← already past the useful window
+</code></pre>
+<p>The trajectory valences are doing real work. <code>ripe_rotting</code> has a
+higher valence (+0.70) than static <code>ripe</code> (+0.51) — the system has
+learned that a ripe plant <em>in the act of rotting</em> is more worth
+eating than a stable ripe one, because the window is closing.
+<code>fresh_ripening</code> carries positive valence (+0.37) — a signal to
+watch, not to eat yet. <code>ripe_stable</code> and <code>overripe_rotting</code> both sit
+at zero, correctly identified as either non-urgent or already-missed.</p>
+<p>The architectural claim is simple: change is a feature like any other,
+and feature-valence accumulation does the work.</p>
+<h2>What This Proves</h2>
+<p>Temporal structure does not require temporal reasoning. If the
+system's input encoding includes transition information — <em>&quot;this
+plant was fresh last frame, is ripening this frame&quot;</em> — then the
+transition becomes a feature channel, and the same valence-
+accumulation mechanism that handles every other feature learns it.</p>
+<p>No new module. No explicit time logic. No prediction machinery.
+Trajectory is simply <em>another feature available to the system</em>, and
+the mechanism that was already running handles it.</p>
+<p>This is the same primitive doing the work that, in a conventional
+agent, would be split across a temporal difference operator, a
+trajectory encoder, and a separate urgency estimator. Here, there is
+one feature channel per trajectory, and one valence update rule.</p>
+<h2>Knowledge and Policy Are Separate Layers</h2>
+<p>A detail worth lifting out: learning the trajectory valences is one
+problem, and turning those valences into well-timed action is a
+<em>different</em> problem. This experiment demonstrates the first. The
+second — the decision policy that picks when to approach versus when
+to wait — sits above the valence layer and is not what this run is
+stressing.</p>
+<p>That separation is itself architecturally useful. A conventional
+agent would couple <em>what matters</em> and <em>when to act on it</em> into a
+single end-to-end policy, trained together. Here they come apart
+cleanly. The valence channel is doing feature-level learning; a
+separate policy layer consumes those valences to decide timing. Each
+layer can be tuned, extended, or replaced without disturbing the
+other.</p>
+<p>What this card demonstrates is the lower layer working as specified:
+<em>transitions are learnable as features, and their valences shape
+behaviour.</em> The upper layer — policy timing on trajectory cues — is
+its own card, on its own timeline.</p>
+<hr />
+<p><em>Raychell Langan · NEXICOG Ltd · Hampshire, UK</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cognitive/cognitive-09-depletion-adaptation.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Depletion Adaptation</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cognitive/cognitive-11-dragonfly.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Dragonfly — Prediction As Constraint Maintenance</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

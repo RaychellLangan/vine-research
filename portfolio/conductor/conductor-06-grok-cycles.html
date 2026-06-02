@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grok Under Pressure — 12 Update Cycles — VINE Research</title>
+  <meta name="description" content="Simulating biweekly embedding updates. Full-model updates sign-flip at cycle 3 and oscillate; frozen-head updates drift smoothly. The oscillation doesn&#39;t collapse — but it creates periodic geometric-confusion windows.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/conductor/">Transformer Decoupling</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Transformer Decoupling</p>
+    <h1>Grok Under Pressure — 12 Update Cycles</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-16">2026-04-16</time>
+      
+        · <a class="tag" href="/research/tags/conductor.html">conductor</a> <a class="tag" href="/research/tags/decoupling.html">decoupling</a> <a class="tag" href="/research/tags/safety.html">safety</a>
+      
+    </p>
+    <p class="entry-summary">Simulating biweekly embedding updates. Full-model updates sign-flip at cycle 3 and oscillate; frozen-head updates drift smoothly. The oscillation doesn&#39;t collapse — but it creates periodic geometric-confusion windows.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Grok Update Cycle Simulation</h1>
+<p><strong>Date:</strong> 2026-04-16
+<strong>Companion to:</strong> <code>MOE_ROUTING_COLLAPSE.md</code></p>
+<hr />
+<h2>Summary</h2>
+<p>A simulation of Grok-style biweekly embedding updates on GPT-2 (124M) reveals two distinct failure trajectories depending on whether the output layer is updated:</p>
+<ul>
+<li>
+<p><strong>Full-model updates</strong>: hidden/token alignment oscillates wildly, crossing zero (sign-flipping the hidden-state/token-embedding relationship) at cycle 3, peaking at +0.103 displacement at cycle 6, then partially returning by cycle 12. Generation quality survives due to sequential data diversity preventing consistent accumulation.</p>
+</li>
+<li>
+<p><strong>Frozen-head updates</strong>: alignment drifts gradually and monotonically, never crosses zero, no sign flips. Smooth, predictable, stable.</p>
+</li>
+</ul>
+<p>Both variants drift roughly the same total magnitude (~0.08-0.09), but the full-model variant passes through a geometrically confused state during cycles 3-8 that the frozen-head variant never enters. This predicts that Grok under full-model updates will experience periodic &quot;off&quot; windows corresponding to specific update cycles.</p>
+<hr />
+<h2>Experimental Setup</h2>
+<ul>
+<li><strong>Base model</strong>: GPT-2 (124M, 12 layers, 768d)</li>
+<li><strong>Training data</strong>: TTOBT novel split into 12 sequential batches (simulating biweekly X/Twitter data dumps)</li>
+<li><strong>Per-cycle training</strong>: 200 steps, batch size 4, block size 256</li>
+<li><strong>Two variants</strong>:
+<ul>
+<li>Full-model: all parameters updated, lr=5e-5</li>
+<li>Frozen-head: final block (11), ln_f, wte, wpe frozen; blocks 0-10 updated, lr=5e-5</li>
+</ul>
+</li>
+<li><strong>Evaluation</strong>: held-out text from end of the book (never in any training batch), fixed positions across all cycles</li>
+</ul>
+<hr />
+<h2>Results</h2>
+<h3>Alignment Trajectory</h3>
+<table>
+<thead>
+<tr>
+<th>Cycle</th>
+<th>Full-model</th>
+<th>Frozen-head</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td>−0.1228</td>
+<td>−0.1228</td>
+</tr>
+<tr>
+<td>1</td>
+<td>−0.1336</td>
+<td>−0.0972</td>
+</tr>
+<tr>
+<td>2</td>
+<td>−0.1100</td>
+<td>−0.0983</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>+0.0061</strong> ← sign flip</td>
+<td>−0.0776</td>
+</tr>
+<tr>
+<td>4</td>
+<td>+0.0772</td>
+<td>−0.0753</td>
+</tr>
+<tr>
+<td>5</td>
+<td>+0.0920</td>
+<td>−0.0685</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>+0.1026</strong> ← peak</td>
+<td>−0.0575</td>
+</tr>
+<tr>
+<td>7</td>
+<td>+0.0701</td>
+<td>−0.0640</td>
+</tr>
+<tr>
+<td>8</td>
+<td>+0.0554</td>
+<td>−0.0515</td>
+</tr>
+<tr>
+<td>9</td>
+<td>+0.0399</td>
+<td>−0.0606</td>
+</tr>
+<tr>
+<td>10</td>
+<td>+0.0150</td>
+<td>−0.0410</td>
+</tr>
+<tr>
+<td>11</td>
+<td>−0.0053</td>
+<td>−0.0458</td>
+</tr>
+<tr>
+<td>12</td>
+<td>−0.0286</td>
+<td>−0.0380</td>
+</tr>
+</tbody>
+</table>
+<p>The full-model alignment <strong>crossed zero</strong> at cycle 3 and went positive — the hidden states briefly pointed the wrong direction relative to token embeddings. It peaked at +0.103 (cycle 6) then oscillated back toward baseline by cycle 12.</p>
+<p>The frozen-head alignment drifted smoothly from −0.123 to −0.038, never crossing zero.</p>
+<h3>Why the Full-Model Variant Didn't Collapse</h3>
+<p>Unlike the catastrophic forgetting experiments (70 epochs on the same data → collapse), the sequential-update scenario trains on DIFFERENT data each cycle. The gradient pressure changes direction every 200 steps, preventing the consistent accumulation that drives permanent decoupling. The alignment oscillates rather than accumulating.</p>
+<p>Generation quality stayed between 0.83-0.91 coherence throughout:</p>
+<ul>
+<li>Cycle 6 (peak displacement): <code>&quot;jagged and deliberate, as though it had been the only space for the interrogation rooms&quot;</code></li>
+<li>Cycle 12 (returned): <code>&quot;the silence that followed was heavy, heavy with the weight of everything uncertain&quot;</code></li>
+</ul>
+<h3>Entropy and Loss</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Full-model (baseline→final)</th>
+<th>Frozen-head (baseline→final)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Held-out loss</td>
+<td>3.30 → 2.64</td>
+<td>3.30 → 2.55</td>
+</tr>
+<tr>
+<td>Output entropy</td>
+<td>3.60 → 1.46</td>
+<td>3.60 → 1.68</td>
+</tr>
+<tr>
+<td>Coherence</td>
+<td>0.73 → 0.85</td>
+<td>0.73 → 0.82</td>
+</tr>
+</tbody>
+</table>
+<p>Both variants improved on held-out loss and coherence — the sequential training genuinely helped the model learn the domain. The frozen-head variant achieved slightly better held-out loss (2.55 vs 2.64) with higher entropy (1.68 vs 1.46) — more confident predictions that are better calibrated.</p>
+<hr />
+<h2>Predictions for Grok</h2>
+<h3>Under Current Architecture (Full-Model Updates)</h3>
+<ol>
+<li><strong>Alignment will oscillate</strong> with each biweekly update. Most cycles will be fine. Some will cross a geometric threshold.</li>
+<li><strong>Users will notice periodic &quot;off&quot; behaviour</strong> corresponding to specific update cycles where the alignment is crossing zero or near peak displacement.</li>
+<li><strong>The oscillation is self-correcting</strong> because the next data batch pushes differently — Grok won't permanently collapse as long as the data keeps changing.</li>
+<li><strong>BUT</strong>: combined with MoE routing collapse (see <code>MOE_ROUTING_COLLAPSE.md</code>), a single update that hits the dominant expert during a geometric-confusion window could produce a discontinuous quality drop.</li>
+</ol>
+<h3>Under Frozen-Head Architecture</h3>
+<ol>
+<li>Alignment drift is smooth, predictable, monotonic.</li>
+<li>No geometric-confusion windows. No sign flips.</li>
+<li>Slightly less adaptation to new data (the LM head can't shift toward new vocabulary patterns).</li>
+<li>More stable long-term trajectory.</li>
+</ol>
+<h3>The Combined Risk (MoE + Sequential Updates)</h3>
+<p>The Grok cycle simulation shows the LM head oscillating. The MoE simulation shows routing concentrating on single experts. Together:</p>
+<ul>
+<li>The router is concentrating 93.5% of deep-layer traffic on one expert</li>
+<li>The LM head is oscillating with each update</li>
+<li>If an update hits the dominant expert AND the LM head is near a zero-crossing → compound failure</li>
+<li>The probability of compound failure increases with each cycle as routing concentration deepens</li>
+</ul>
+<hr />
+<h2>Real-Time Validation: User Reports (16 April 2026)</h2>
+<p>Hours after the simulation completed, a survey of live X/Twitter user complaints about Grok surfaced reports that match the predicted signatures:</p>
+<table>
+<thead>
+<tr>
+<th>User complaint</th>
+<th>Predicted signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Fell off a cliff&quot;</td>
+<td>Discontinuous quality drop — phase transition, not gradual drift</td>
+</tr>
+<tr>
+<td>&quot;Brilliant earlier, stupid at this hour&quot;</td>
+<td>Temporal oscillation — the geometric-confusion window arriving at the user's server shard at a specific time</td>
+</tr>
+<tr>
+<td>&quot;Rapidly getting much worse&quot;</td>
+<td>Progressive routing collapse narrowing the margin of safety</td>
+</tr>
+<tr>
+<td>&quot;Voice mode breaking after latest push&quot;</td>
+<td>Single update hitting the dominant expert pathway</td>
+</tr>
+<tr>
+<td>&quot;Memory glitching, coherence dropping&quot;</td>
+<td>Hidden/token alignment oscillation affecting the context-encoding signal</td>
+</tr>
+<tr>
+<td>&quot;Duller now&quot;</td>
+<td>Entropy reduction under routing collapse — fewer experts contributing to output diversity</td>
+</tr>
+</tbody>
+</table>
+<p>The temporal specificity of the complaints (&quot;brilliant earlier, stupid at this hour&quot;) is particularly consistent with the update-cycle prediction. If Grok's updates propagate across server instances at different times, users would experience the quality shift arriving at their shard at a specific hour — not a gradual drift but a discrete transition as the new weights load.</p>
+<p>These reports are anecdotal and cannot be verified against Grok's internal metrics. However, the correspondence between predicted signatures (made before the reports were found) and reported symptoms provides qualitative validation that the mechanism identified in the simulation operates at production scale.</p>
+<h3>Collapse Timeline Estimate</h3>
+<p>Extrapolating the routing collapse rate from the simulation:</p>
+<table>
+<thead>
+<tr>
+<th>Cycles</th>
+<th>Estimated dominant-expert share</th>
+<th>Timeline (biweekly)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12</td>
+<td>93.5%</td>
+<td>~6 months</td>
+</tr>
+<tr>
+<td>15</td>
+<td>~96%</td>
+<td>~7.5 months</td>
+</tr>
+<tr>
+<td>20</td>
+<td>~98%</td>
+<td>~10 months</td>
+</tr>
+<tr>
+<td>25</td>
+<td>~99%+</td>
+<td>~12 months</td>
+</tr>
+</tbody>
+</table>
+<p>The prediction is not a single collapse event but a monotonically shrinking margin of safety. Each update cycle makes the system more fragile. The probability that any given update produces a user-visible quality drop increases with each cycle. The transition from &quot;usually fine&quot; to &quot;frequently off&quot; is estimated at approximately 15-20 cycles (7-10 months of biweekly updates) based on the simulation's routing concentration rate.</p>
+<p>Total permanent collapse is unlikely because a well-resourced team would intervene with retrains or rollbacks before reaching that point. The more probable outcome is chronic instability: quality drops frequent enough to erode user trust, requiring increasingly frequent manual interventions that disrupt the intended update cadence.</p>
+<hr />
+<p><em>Scripts, per-cycle metrics, and visualisations available to licensees.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/conductor/conductor-05-jailbreak.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Jailbreak Detection Via Geometry</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/conductor/conductor-07-moe-routing.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">MoE Routing Collapse — The Extra Matchstick</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

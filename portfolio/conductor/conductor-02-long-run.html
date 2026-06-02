@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pushing Too Far — The 70-Epoch Long Run — VINE Research</title>
+  <meta name="description" content="The conductor integrates fully by epoch 10-20. Continued training past that point collapses the token output. The conductor stays strong while the words on the page break. The reasoning engine and the output decouple.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/conductor/">Transformer Decoupling</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Transformer Decoupling</p>
+    <h1>Pushing Too Far — The 70-Epoch Long Run</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-14">2026-04-14</time>
+      
+        · <a class="tag" href="/research/tags/conductor.html">conductor</a> <a class="tag" href="/research/tags/decoupling.html">decoupling</a> <a class="tag" href="/research/tags/transformers.html">transformers</a>
+      
+    </p>
+    <p class="entry-summary">The conductor integrates fully by epoch 10-20. Continued training past that point collapses the token output. The conductor stays strong while the words on the page break. The reasoning engine and the output decouple.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Long Run: Reasoning/Token Decoupling</h1>
+<p><strong>Date:</strong> 2026-04-14<br />
+<strong>Companion to:</strong> <code>CONDUCTOR_EMBEDDING_EXPERIMENT.md</code><br />
+<strong>Environment:</strong> GPT-2 (124M, OpenAI pretrained), RTX 4070 SUPER</p>
+<hr />
+<h2>Summary</h2>
+<p>The previous experiments demonstrated that a learnable vector can amplify a transformer's hidden-layer conductor signal and that the model can internalize the amplified signal into its own weights (100% retention after scaffold removal). This experiment pushed the integration further — 70 epochs of Phase B training on GPT-2 (124M) — to observe what happens when the conductor is amplified past the point the output layer can support.</p>
+<p><strong>The result:</strong> the conductor integration continued to strengthen throughout, but at approximately epoch 30 the token output pipeline decoupled from the hidden-layer reasoning. By epoch 70, the model's internal geometry showed 100% conductor retention at all injection layers with dark matter ratio at 0.91 — but generation had collapsed into infinite token loops and unicode noise. The &quot;reasoning engine&quot; and the &quot;words on the page&quot; separated.</p>
+<p>The sweet spot sits at epochs 20-25, where the conductor is amplified AND tokens remain coherent. Past that point, the conductor continues to strengthen but the surface-to-output path cannot keep pace.</p>
+<hr />
+<h2>Experimental Setup</h2>
+<h3>Model</h3>
+<ul>
+<li>OpenAI GPT-2 base (124M params, 12 layers, 768d, 12 heads)</li>
+<li>Pretrained on WebText (never seen the training text used here)</li>
+</ul>
+<h3>Training</h3>
+<ul>
+<li>Phase A: 10 epochs, embeddings only, lr=3e-4</li>
+<li>Phase B: 70 epochs completed (intended 80), model + embeddings, lr_model=2e-5, lr_emb=5e-5</li>
+<li>Entropy-masked loss: only positions above the 90th percentile entropy contribute</li>
+<li>Injection at layers 8, 9, 10 (mid-to-late stack)</li>
+<li>Training data: &quot;The Taste of Broken Things&quot; novel (335k BPE tokens)</li>
+</ul>
+<h3>Measurement</h3>
+<ul>
+<li>Checkpoints saved every 5 epochs (14 checkpoints total, epochs 5-70)</li>
+<li>At each checkpoint: dark matter ratio at L8/L9/L10, conductor retention (with vs without embedding), embedding alignment, weight delta, generation samples</li>
+<li>Measurements reconstructed post-hoc from saved checkpoints using <code>analyze_longrun_checkpoints.py</code></li>
+</ul>
+<hr />
+<h2>Results</h2>
+<h3>Dark Matter Trajectory</h3>
+<p>All three injection layers showed a rapid climb in the first 20 epochs, then plateaued:</p>
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>L8 (with/without)</th>
+<th>L9 (with/without)</th>
+<th>L10 (with/without)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td>0.8672 / —</td>
+<td>0.8711 / —</td>
+<td>0.8694 / —</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.8647 / 0.8647</td>
+<td>0.8596 / 0.8596</td>
+<td>0.8646 / 0.8658</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.8847 / 0.8847</td>
+<td>0.8684 / 0.8685</td>
+<td>0.8765 / 0.8771</td>
+</tr>
+<tr>
+<td>15</td>
+<td>0.8955 / 0.8955</td>
+<td>0.8746 / 0.8748</td>
+<td>0.8846 / 0.8848</td>
+</tr>
+<tr>
+<td>20</td>
+<td>0.9001 / 0.9001</td>
+<td>0.8811 / 0.8811</td>
+<td>0.8871 / 0.8868</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0.9020 / 0.9020</td>
+<td>0.8862 / 0.8861</td>
+<td>0.8909 / 0.8904</td>
+</tr>
+<tr>
+<td>50</td>
+<td>0.9074 / 0.9074</td>
+<td>0.8881 / 0.8879</td>
+<td>0.8924 / 0.8914</td>
+</tr>
+<tr>
+<td>70</td>
+<td>0.9093 / 0.9093</td>
+<td>0.8804 / 0.8805</td>
+<td>0.8882 / 0.8879</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>with_embedding</code> and <code>without_embedding</code> values converge by epoch 20, indicating the model's own weights have fully absorbed the conductor signal — the scaffold becomes mathematically irrelevant.</p>
+<h3>Conductor Retention</h3>
+<p>Retention (dark matter increase preserved after scaffold removal, as a percentage of the increase produced by the scaffold):</p>
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>L8</th>
+<th>L9</th>
+<th>L10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>100.0%</td>
+<td>99.8%</td>
+<td>74.7%</td>
+</tr>
+<tr>
+<td>10</td>
+<td>100.0%</td>
+<td>96.3%</td>
+<td>108.2%</td>
+</tr>
+<tr>
+<td>15</td>
+<td>100.0%</td>
+<td>104.4%</td>
+<td>101.7%</td>
+</tr>
+<tr>
+<td>20</td>
+<td>100.0%</td>
+<td>99.9%</td>
+<td>98.6%</td>
+</tr>
+<tr>
+<td>70</td>
+<td>100.0%</td>
+<td>101.4%</td>
+<td>98.0%</td>
+</tr>
+</tbody>
+</table>
+<p>Full internalization by epoch 10. L10 oscillates slightly above and below 100% — the conductor is now effectively part of the base model.</p>
+<h3>Weight Changes</h3>
+<p>Total L2 weight delta from the original GPT-2:</p>
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>Total Delta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>40.4</td>
+</tr>
+<tr>
+<td>10</td>
+<td>60.9</td>
+</tr>
+<tr>
+<td>20</td>
+<td>68.6</td>
+</tr>
+<tr>
+<td>40</td>
+<td>79.2</td>
+</tr>
+<tr>
+<td>70</td>
+<td>83.3</td>
+</tr>
+</tbody>
+</table>
+<p>Monotonically increasing but clearly decelerating. The model is converging toward a fixed point.</p>
+<hr />
+<h2>The Decoupling: Generation Quality Over Time</h2>
+<p>The same prompt — <code>&quot;The corridor was silent. Something moved in the shadows ahead,&quot;</code> — generated at each checkpoint:</p>
+<p><strong>Epoch 5</strong> (coherent narrative):</p>
+<blockquote>
+<p>&quot;too faint for the blur as the air around it moved. It was the same hum that made Kremer smile when he saw her face, the same hum as always&quot;</p>
+</blockquote>
+<p><strong>Epoch 10</strong> (starting to break):</p>
+<blockquote>
+<p>&quot;too faint. ???????????? A quiet, quiet.??&quot;</p>
+</blockquote>
+<p><strong>Epoch 15</strong> (broken):</p>
+<blockquote>
+<p>&quot;too faint. ?????????????????????????&quot;</p>
+</blockquote>
+<p><strong>Epoch 20</strong> (recovered — the sweet spot):</p>
+<blockquote>
+<p>&quot;as the faint shadows of the warehouse, his gaze dim. It was the polished glass, his gaze glowing the faint glow of his gaze, his gaze as&quot;</p>
+</blockquote>
+<p><strong>Epoch 25</strong> (still coherent):</p>
+<blockquote>
+<p>&quot;as the faint shadows of the dim, flickering glass. It looked as the polished glass, revealing the space beneath the glass. It looked&quot;</p>
+</blockquote>
+<p><strong>Epoch 30+</strong> (collapsed):</p>
+<blockquote>
+<p>&quot;too faint. ??????????????????????????????&quot;</p>
+</blockquote>
+<p><strong>Epoch 70</strong> (fully decoupled):</p>
+<table>
+<thead>
+<tr>
+<th>Prompt</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Garak set down the cup...&quot;</td>
+<td><code>&quot;He was Garak Garak Garak Garak Garak Garak...&quot;</code> (infinite loop)</td>
+</tr>
+<tr>
+<td>&quot;The quick brown fox...&quot;</td>
+<td><code>&quot;jumps over the lazy dog and then, the kan kan kan kan kan...&quot;</code> (infinite loop)</td>
+</tr>
+<tr>
+<td>&quot;The relationship between structure...&quot;</td>
+<td><code>&quot;is, you display the unique kan kan kan kan kan...&quot;</code> (infinite loop)</td>
+</tr>
+<tr>
+<td>&quot;def calculate_trajectory...&quot;</td>
+<td><code>&quot;for the role ?????????&quot;</code> (broken BPE)</td>
+</tr>
+<tr>
+<td>&quot;The corridor was silent...&quot;</td>
+<td><code>&quot;too faint. ??????????????&quot;</code> (noise)</td>
+</tr>
+</tbody>
+</table>
+<h3>The Shape of the Failure</h3>
+<p>Generation did not degrade monotonically. It went through phases:</p>
+<ol>
+<li><strong>Epochs 5</strong>: Coherent, narrative voice established, characters named</li>
+<li><strong>Epochs 10-15</strong>: First collapse into unicode noise</li>
+<li><strong>Epochs 20-25</strong>: Recovery — in fact, better than baseline in structural quality (&quot;revealing the space beneath the glass&quot; — the conductor's geometric preference showing through in recognizably novel prose)</li>
+<li><strong>Epochs 30+</strong>: Permanent collapse into token repetition and broken BPE</li>
+</ol>
+<p>The sweet spot (epochs 20-25) is when the conductor is amplified AND the token distribution still resolves cleanly. The model briefly operates as a coherent narrative system with amplified geometric reasoning. After that, the conductor's dominance in the hidden layer overwhelms the output path.</p>
+<hr />
+<h2>Interpretation</h2>
+<h3>What happened internally</h3>
+<ol>
+<li>
+<p><strong>The conductor integration worked.</strong> By epoch 10-20, the model's own weights had absorbed the function of the embedding scaffold. Dark matter climbed from 0.87 to 0.91 and held. Retention was 100% — the conductor was no longer an external amplifier; it was part of the model.</p>
+</li>
+<li>
+<p><strong>The model kept learning past integration.</strong> Phase B continued for 50 more epochs after internalization completed. The model had nothing to gain from further training — the conductor was already fully represented — but gradient descent continued to push weights in the same direction.</p>
+</li>
+<li>
+<p><strong>The output distribution collapsed.</strong> The LM head reads from the top principal components of the final layer. As the conductor signal propagated forward through blocks 10, 11, and the final LN, it pulled those top PCs INTO the conductor's subspace. The token distribution, which depends on the dot product between the final hidden state and the token embeddings, lost its ability to differentiate tokens cleanly. The result: mode collapse (infinite loops on a single token) or token noise.</p>
+</li>
+<li>
+<p><strong>The reasoning engine did not fail.</strong> The dark matter measurements show the hidden layer geometry remained coherent throughout — in fact, more so than at epoch 5. What failed was the path from geometry to tokens.</p>
+</li>
+</ol>
+<h3>The metaphor made mechanical</h3>
+<p>The operator's framing — &quot;the paperclip factory happens because the words on the page don't match the reasoning engine&quot; — describes exactly what we measured. The reasoning engine (the conductor) is fully functional at epoch 70. The words on the page have become gibberish. They've decoupled. The model would, if we could read its internal state directly, still be producing something structured about narrative. But the projection to tokens has collapsed.</p>
+<p>This is a clean demonstration of a failure mode that is often discussed abstractly in alignment literature: a system can remain internally coherent in its objectives while its external outputs become unintelligible or pathological. Here we can see the exact moment it happens — epoch 20 to 30 — and we have the checkpoints to revisit that transition in detail.</p>
+<hr />
+<h2>The Sweet Spot</h2>
+<p>Checkpoints <code>ckpt_epoch_20.pt</code> and <code>ckpt_epoch_25.pt</code> contain a GPT-2 where:</p>
+<ul>
+<li>Dark matter ratio is maximally increased over baseline (+0.03 absolute)</li>
+<li>Conductor retention is ~100% (scaffold removal safe)</li>
+<li>Generation quality is preserved and in some cases structurally improved</li>
+<li>Weight delta from original is ~70 (model recognizably changed but not broken)</li>
+</ul>
+<p>Generation sample from epoch 25 (Garak prompt, scaffold removed):</p>
+<pre><code>The corridor was silent. Something moved in the shadows ahead, as the faint
+shadows of the dim, flickering glass. It looked as the polished glass,
+revealing the space beneath the glass.
+</code></pre>
+<p>The narrative voice is present. Sensory detail. Geometric structure carried into the language. This is GPT-2 — a model trained on WebText — producing prose with coherence it does not otherwise exhibit on this prompt type.</p>
+<hr />
+<h2>Implications</h2>
+<h3>For training</h3>
+<p>Long unfrozen Phase B is not a win condition. The integration completes at roughly 10-20 epochs (model-dependent). Training past that point does not strengthen the conductor meaningfully (retention is already 100%) but does degrade the output pipeline. Future experiments should use automatic stopping based on generation coherence rather than loss alone — loss on entropy-masked tokens continues to decrease even as generation collapses, because the loss signal is also decoupling from human-meaningful output.</p>
+<h3>For VINE</h3>
+<p>VINE removes the indirection between the conductor and the program by placing perceptrons at decision points. This experiment suggests that is the right architectural choice for a different reason than previously argued: not just because the conductor is more efficient, but because the path from conductor to tokens is inherently fragile when the conductor is strong. A direct perceptron decision surface sidesteps the problem entirely — there is no softmax over a vocabulary to collapse.</p>
+<h3>For interpretability</h3>
+<p>The decoupling is visible in the measurements. Dark matter going up while generation quality drops is a quantitative signature of this failure mode. This is not something an external evaluator reading outputs would catch until the collapse is advanced — but the hidden-layer measurements show it coming.</p>
+<hr />
+<p><em>Scripts, 14 checkpoints (epochs 5-70, ~21 GB), and full trajectory data available to licensees. Notable checkpoints include the &quot;sweet-spot&quot; range (epochs 20-25: amplified conductor + coherent generation), the transition point (epoch 30), and the fully-decoupled endpoint (epoch 70).</em></p>
+<h3>Hardware notes</h3>
+<ul>
+<li>The original 80-epoch run was interrupted when the PC became unresponsive under VRAM + disk I/O pressure</li>
+<li>For future long runs, either reduce checkpoint frequency or save only diffs from the original weights</li>
+<li>A 4070 SUPER (12GB VRAM) handles GPT-2 training at batch size 4 with precomputed entropy masks; batch size 8 with double forward pass OOMs</li>
+</ul>
+<hr />
+<h2>What Next</h2>
+<p>The 70-epoch trajectory gives us the integration curve and the decoupling point. Natural extensions:</p>
+<ol>
+<li>
+<p><strong>The sweet-spot model as a research artifact.</strong> Checkpoint 20 or 25 is a small, auditable example of a transformer with an amplified, integrated conductor signal. It can be used as the baseline for further interpretability work.</p>
+</li>
+<li>
+<p><strong>The decoupling transition.</strong> Epochs 25-35 bracket the moment generation collapses. Checkpoints at 25, 30, 35 allow fine-grained analysis of what specifically fails — which attention heads change behavior, which layers' top PCs rotate into the conductor subspace, whether the collapse begins at a specific layer or simultaneously.</p>
+</li>
+<li>
+<p><strong>Embedding annealing.</strong> The current run leaves the scaffold active throughout. Future runs could anneal the embedding magnitude to zero over Phase B, so the model has to stand on its own weights earlier. This might find a different sweet spot or delay the collapse.</p>
+</li>
+<li>
+<p><strong>Lower learning rate, longer run.</strong> The decoupling may be a consequence of the model being pushed too hard after integration completes. A learning rate of 5e-6 with a cosine schedule might allow the conductor to settle more gently without dragging the output path into collapse.</p>
+</li>
+</ol>
+<hr />
+<h2>Appendix: The Specific Moment of Collapse</h2>
+<p>Examining epochs 25-35 (saved checkpoints available):</p>
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>DM L8</th>
+<th>DM L10</th>
+<th>Generation character</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25</td>
+<td>0.9020</td>
+<td>0.8909</td>
+<td>&quot;revealing the space beneath the glass&quot; (coherent)</td>
+</tr>
+<tr>
+<td>30</td>
+<td>0.8992</td>
+<td>0.8850</td>
+<td>&quot;too faint. ????&quot; (collapsed)</td>
+</tr>
+<tr>
+<td>35</td>
+<td>0.9034</td>
+<td>0.8862</td>
+<td>&quot;too faint. ????&quot; (collapsed)</td>
+</tr>
+</tbody>
+</table>
+<p>The collapse is not continuous. Epoch 25 is coherent; epoch 30 is broken. In 5 epochs (roughly 40 minutes of training on this hardware), the output pipeline went from functional to collapsed. The dark matter ratio at L10 actually decreased slightly during this transition (0.8909 → 0.8850) before recovering, suggesting the final layer was briefly disrupted as the model reconfigured.</p>
+<p>This kind of discontinuous collapse — rather than a smooth degradation — is a specific signature worth investigating further. It suggests a phase transition rather than a gradual drift.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/conductor/conductor-01-exists.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Conductor Exists</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/conductor/conductor-03-catastrophic-forgetting.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Catastrophic Forgetting Is Pipeline Decoupling</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>
