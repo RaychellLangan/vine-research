@@ -1,3 +1,6 @@
+<!-- VINE_ANNOUNCEMENT_NOTICE_INSERTED -->
+> **Notice.** VINE is no longer being actively updated due to personal financial hardship. The published research in this repository remains available, and email inquiries to [raychell.langan@gmail.com](mailto:raychell.langan@gmail.com) are still answered.
+
 # VINE Research
 
 The public research site for VINE — a geometric AI platform built by NEXICOG Ltd.
