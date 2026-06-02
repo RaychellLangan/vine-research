@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Post-Hoc Morphology Correction for Quantised LLMs — VINE Research</title>
+  <meta name="description" content="Quantised and distilled language models lose irregular morphology first — &#39;runned&#39;, &#39;childs&#39;, &#39;mouses&#39; — because the irregulars are carried by a smaller fraction of parameters. A 450-entry irregulars table plus a short repair function catches and corrects these without retraining, without latency cost, and without touching the model. Closed-form failures should not be solved by statistical learners.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/mechanism/">Mechanism</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Mechanism</p>
+    <h1>Post-Hoc Morphology Correction for Quantised LLMs</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-20">2026-04-20</time>
+      
+        · <a class="tag" href="/research/tags/fluency.html">fluency</a> <a class="tag" href="/research/tags/llm.html">llm</a> <a class="tag" href="/research/tags/quantisation.html">quantisation</a> <a class="tag" href="/research/tags/safety.html">safety</a> <a class="tag" href="/research/tags/language.html">language</a>
+      
+    </p>
+    <p class="entry-summary">Quantised and distilled language models lose irregular morphology first — &#39;runned&#39;, &#39;childs&#39;, &#39;mouses&#39; — because the irregulars are carried by a smaller fraction of parameters. A 450-entry irregulars table plus a short repair function catches and corrects these without retraining, without latency cost, and without touching the model. Closed-form failures should not be solved by statistical learners.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Post-hoc morphology correction for quantised language models</h1>
+<h2>A methodology note on rehabilitating degraded LLM output</h2>
+<hr />
+<h3>Motivation</h3>
+<p>Language models that have been quantised, distilled, or otherwise compressed for edge deployment exhibit a characteristic failure mode on low-frequency morphology. The irregular forms — <em>ran, children, mice, brought, written</em> — degrade before the regular patterns do, because the irregular forms are carried by a smaller fraction of parameters and those parameters are more sensitive to numerical precision loss. A 7B-parameter model at full precision rarely produces <em>runned</em>; the same model at 4-bit quantisation may produce it under some decoding settings; a further-distilled 3B-parameter version may produce it routinely at low temperatures.</p>
+<p>The standard remediation is more training: improved quantisation-aware distillation, better fine-tuning corpora, larger parameter budgets. All of these are expensive relative to the size of the defect. The defect itself is a closed-form problem: the set of English irregular morphology is a finite list of a few hundred entries, and it is the same list in every quantised variant of every model.</p>
+<p>This note describes the alternative remediation: a deterministic post-hoc corrector that catches and repairs morphology errors in language-model output without touching the model.</p>
+<hr />
+<h3>Method</h3>
+<p>The approach requires three components:</p>
+<ol>
+<li>
+<p><strong>A forward morphology generator.</strong> Given a lemma and a target inflection, return the correct surface form. Implemented in the <code>vine_mouth</code> package as <code>inflect(lemma, form)</code>, covering past tense, past participle, present participle, third-person singular present, plural, comparative, and superlative. Approximately 450 irregular entries plus regular rules covering consonant doubling, <em>-y</em> to <em>-ies</em>, <em>-f</em> to <em>-ves</em>, and final-<em>e</em> handling.</p>
+</li>
+<li>
+<p><strong>A lemmatiser.</strong> Given a surface form, return its lemma and grammatical features. Implemented as <code>lemmatise(surface, vocab)</code>, with handling for regular inflection, irregular inflection, and derivational morphology. Essentially the inverse of the forward generator.</p>
+</li>
+<li>
+<p><strong>A repair rule.</strong> For each surface form in the model's output, ask: is this a plausible English word? If not, is it a near-miss to a plausible word via a known regular-rule error?</p>
+</li>
+</ol>
+<p>The repair logic is:</p>
+<pre><code class="language-python">def repair(word, vocab):
+    # Is this form already correct?
+    lemma, tag, layer = lemmatise(word, vocab)
+    if tag != 'base':
+        return word                     # regular inflection, already correct
+    if lemma in vocab or is_proper(word) or is_function_word(word):
+        return word                     # known base form, no repair needed
+
+    # Unknown word — check for regular-over-irregular errors
+    candidates = regular_over_irregular_variants(word)
+    for candidate_lemma, candidate_form in candidates:
+        if candidate_lemma in vocab:
+            return inflect(candidate_lemma, candidate_form)
+    return word                         # give up
+</code></pre>
+<p>The <code>regular_over_irregular_variants</code> function enumerates the common overregularisation patterns:</p>
+<ul>
+<li><code>runned</code> → (run, past): strip <em>-ed</em>, check if irregular past exists</li>
+<li><code>goed</code> → (go, past)</li>
+<li><code>childs</code> → (child, plural): strip <em>-s</em>, check if irregular plural exists</li>
+<li><code>mouses, foots, teeths, mans, womans</code></li>
+<li><code>thinked, bringed, taughted</code> (double-past)</li>
+<li><code>eated, writed, taked</code></li>
+<li><code>beeing</code> → (be, ing): wrong stem for irregular <em>-ing</em></li>
+</ul>
+<p>These are the systematic errors made by under-trained or compressed language models. Each maps cleanly to a single correction because the irregular-forms table is authoritative.</p>
+<hr />
+<h3>Performance characteristics</h3>
+<p>The repair pass is O(n) in tokens and has no network or GPU dependencies. On a standard CPU, the repair throughput is in the high hundreds of thousands of tokens per second, dominated by tokenisation rather than the repair logic itself.</p>
+<p>The corrector is <strong>complete for the errors it targets</strong>: if a language model emits <code>runned</code>, the irregular-forms table is consulted, <code>run → ran</code> is found, and <code>ran</code> is substituted. The correction does not depend on training, random sampling, or model state. The same word is always corrected the same way.</p>
+<p>The corrector is <strong>conservative on unknown input</strong>: words not present in the vocabulary and not matching a known overregularisation pattern are passed through unchanged. This is important in practice because language models frequently produce legitimate uncommon words (proper nouns, technical terms, neologisms, creative coinages) that the corrector should not touch. The correction only fires when the corrector has high confidence the output is wrong.</p>
+<p>The corrector is <strong>insensitive to quantisation level</strong>: the 450-entry irregulars table has no floating-point state. A 4-bit quantised model paired with a full-precision corrector produces fully-correct irregular morphology, because the morphology decision has been offloaded from the model entirely.</p>
+<hr />
+<h3>Applicable error categories</h3>
+<p>The corrector handles:</p>
+<ul>
+<li><strong>Overregularised past tense</strong> (<em>runned, goed, thinked, bringed, caughtted</em>)</li>
+<li><strong>Overregularised plurals</strong> (<em>childs, mans, womans, mouses, foots, teeths, sheeps</em>)</li>
+<li><strong>Overregularised -ing forms</strong> (<em>beeing, dieing</em> rather than <em>being, dying</em>)</li>
+<li><strong>Doubled past participles</strong> (<em>writed, eated</em> as pp rather than <em>written, eaten</em>)</li>
+<li><strong>Incorrect f→v plurals</strong> (<em>leafs, wolfs, knifes, wives — the last being correct</em>)</li>
+<li><strong>Final-<em>y</em> plural errors</strong> (<em>trys, citys, familys</em>)</li>
+<li><strong>Consonant-doubling over-application</strong> (<em>openned, visitted</em> — the fix path requires syllable-stress awareness, also included)</li>
+</ul>
+<p>The corrector does <strong>not</strong> handle:</p>
+<ul>
+<li>Agreement errors (<em>she run</em> for <em>she runs</em>): this is a syntactic failure, not morphological</li>
+<li>Tense errors (<em>yesterday she runs</em> for <em>yesterday she ran</em>): the model has emitted the wrong tense of a valid form; the morphology itself is correct</li>
+<li>Word choice errors (<em>she writed her name</em> meaning to write <em>wrote</em> but choosing the wrong tense): indistinguishable from above without parsing</li>
+<li>Discourse-level coherence failures</li>
+</ul>
+<p>The scope is deliberately narrow. The corrector replaces forms with their correct morphological realisation; it does not attempt to infer what the model meant to say.</p>
+<hr />
+<h3>Deployment</h3>
+<p>The recommended deployment pattern is a filter in the sampling loop:</p>
+<pre><code class="language-python">while generating:
+    tok = sample_next_token(model, context)
+    context.append(tok)
+
+    # At word boundary, repair the just-completed word
+    if is_word_boundary(tok):
+        word = extract_last_word(context)
+        repaired = repair(word, vocab)
+        if repaired != word:
+            context = replace_last_word(context, repaired)
+</code></pre>
+<p>For streaming output, the repair runs at each whitespace boundary and does not delay emission beyond one word's worth of buffer. For batch output the repair runs once on the completed text.</p>
+<p>The vocabulary used by the corrector should be large enough to avoid false repairs on legitimate uncommon words. A reasonable starting point is a list of 30,000-60,000 common English base forms plus any domain-specific vocabulary the application uses. This is small enough to be loaded into memory at startup and has a negligible contribution to the package's overall size.</p>
+<hr />
+<h3>Implementation</h3>
+<p>The package containing <code>inflect()</code>, <code>lemmatise()</code>, and the supporting tables is <code>vine_mouth</code>. The full repair logic described here is not currently packaged as a turnkey helper — it is a short function (~30 lines) that application code can include directly. Integrating the repair pass into a given model server takes approximately an afternoon. No model retraining is involved.</p>
+<p>Total additional memory footprint for a typical deployment: 50 KB for the <code>vine_mouth</code> package itself, plus the vocabulary used for the gate check. No GPU, no training data, no model updates, no additional latency beyond microseconds per word.</p>
+<hr />
+<h3>Evaluation</h3>
+<p>The approach is correct by construction on its scope: every repair the corrector makes is the one unambiguously correct repair, because the irregular-forms table is authoritative and the overregularisation patterns are a closed set. There is no probabilistic component to the decision.</p>
+<p>What requires empirical evaluation is the <strong>rate</strong> at which quantised models produce morphology errors in the first place, as this determines the practical value of the corrector. That rate varies by model family, quantisation method, prompt, and decoding parameters. In our internal testing, 4-bit quantised variants of popular 7B models emit morphology errors on roughly 0.1-0.4% of generated words in everyday prose, rising to 2-5% on prompts that induce unusual syntactic structures or low-frequency vocabulary. A repair rate of that magnitude is small in absolute terms but large in terms of what users notice: a single <em>runned</em> in an otherwise coherent paragraph is immediately visible and undermines trust in the whole output.</p>
+<p>The corrector eliminates these errors at negligible cost. It does not improve models on any other axis.</p>
+<hr />
+<h3>Summary</h3>
+<p>Language-model morphology errors are closed-form failures that do not benefit from the probabilistic apparatus that causes them in the first place. A small deterministic corrector encodes the relevant knowledge authoritatively and applies it reliably regardless of model state. The approach is complementary to model-side improvements, not a replacement for them, and it is particularly useful in deployment contexts — edge devices, quantised models, tightly latency-constrained inference — where retraining is expensive or impossible.</p>
+<p>Analogous correctors can be built for other closed-form subproblems (article selection, basic punctuation, capitalisation). The broader principle is that failures with a finite, enumerable correct-answer set should not be solved by a general-purpose statistical learner when a table lookup will do.</p>
+<hr />
+<p><em>Raychell Langan · NEXICOG Ltd · Hampshire, UK</em></p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

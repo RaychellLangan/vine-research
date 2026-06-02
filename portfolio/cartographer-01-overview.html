@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Cartographer — Overview — VINE Research</title>
+  <meta name="description" content="A living procedural world where every inhabitant and every tool is a VINE instance. Starting conditions, actors, animals, economy, council, sky, ecology, lore, library, fêtes, language, and licensing — the whole engine as one page.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Cartographer — Overview</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/overview.html">overview</a>
+      
+    </p>
+    <p class="entry-summary">A living procedural world where every inhabitant and every tool is a VINE instance. Starting conditions, actors, animals, economy, council, sky, ecology, lore, library, fêtes, language, and licensing — the whole engine as one page.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Cartographer</h1>
+<h2>A living world, not a scripted one</h2>
+<p>The Cartographer is a procedural world where every inhabitant is a real actor in the world's economy and social life, rather than a scripted decoration. There is one village running now — a single blank canvas — and the engine is designed to scale to many.</p>
+<p>No art assets have been applied yet. This is deliberate. The Cartographer ships as substrate. Licensees skin it with their own assets, their own lore, their own world-flavour, and the engine underneath carries on doing what it does.</p>
+<h2>Not created equal</h2>
+<p>When the village spins up, its inhabitants are not spawned into identical starting conditions. One actor wakes to a full pantry and a quiet morning. Another wakes to an empty cupboard and an empty garden. A third wakes to crops that need attention right now. These differences are not cosmetic — they shape what each actor does first, which shapes what each actor becomes. Workers become workers because they woke up needing work. Government officials become government officials because they woke up with the afternoon free. The full social and economic tier system of the village emerges from the unequal conditions of its first morning.</p>
+<p>→ <em>A separate page covers the starting world in full detail.</em></p>
+<h2>What the actors actually do</h2>
+<p>The inhabitants of the Cartographer are not standing around waiting for a player to approach them. They have lives.</p>
+<p>They mine the ore that becomes the metal that becomes the tool. They grow crops, and the crops can fail. They harvest, process, store. They buy bread from the baker, who had to learn how to bake it. They sew their clothes. They sleep when they are tired. When they need a tool they do not have, they craft one — or commission one from someone who can — and crafting is not a rule-table lookup. They have to learn.</p>
+<p>The Baker is the clearest example. She does not arrive at her station knowing how to bake. She has to learn the crafting station itself — what it is, how it is used — and she has to learn her recipes one at a time. Because she is not running on rules, the order in which she learns things varies from run to run. She might master a sourdough before she ever works out a sweet loaf. She might find an efficient kneading rhythm on her tenth attempt or her fortieth. No two bakers in no two villages develop identically.</p>
+<p>→ <em>A separate page covers the Baker in full detail.</em></p>
+<p>No actor is running a behaviour tree. No actor is selecting from a dictionary of scripted responses. There are no <code>if/elif</code> chains anywhere in the stack. Everything the actor does comes out of geometric state-settling in the VINE architecture — a basin navigates to a decision, and the decision expresses itself in action.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-03-actors">the actors</a> in architectural detail — biorhythm, competing concerns, how they pick their work, and why their concerns can be adjusted without destabilising each other.</em></p>
+<h2>The animals</h2>
+<p>Every animal in the Cartographer is an individual AI agent with its own state, its own folder, and nothing shared with any other. The current cast — chickens, cats, dogs, horses, pigs, sheep, cows, and goats — each carries a different number of concern dimensions appropriate to their species. A clicker training system lets players and actors teach behaviours by timing: when the animal produces a behaviour naturally, mark it at the right moment and it can be placed on command. Horses, dogs, and even cats (good luck) are all trainable this way. The full fleet of actors and animals combined currently runs light on consumer hardware — stress-testing is ongoing, and a formal compute profile will publish with the licensee pack.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-05-animals">the animals</a> in full — including per-species complexity, the training system, and how flock abstraction handles large-scale herds without flattening individual variation.</em></p>
+<h2>The friendship system</h2>
+<p>Actors and animals share a friendship dimension. Bonds form through emergent preference — one-sided at first, potentially mutual over time. When a bond becomes mutual, both parties' friendship dimensions are superpositioned: the friend's emotional state becomes part of your concern space. The number of bonds an actor carries determines how much any single loss can take from them. An actor with one friend who loses that friend is devastated in a way that an actor with many friends is not, when they lose one.</p>
+<p>This system requires no psychology training data. It requires simple math and a world where things actually happen to the things you care about.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-06-friendship">the friendship system</a> in full, including the observed testing cases that show what this math produces in practice.</em></p>
+<h2>The economy runs itself</h2>
+<p>Production, procurement, logistics, inventory, price-making — all of it emerges from the actors themselves. Prices are not set by a central controller. They are <em>felt</em>. A baker with no flour charges differently from a baker with a full pantry. A blacksmith whose apprentice has fallen ill has a different output than one at full strength. The market is a consequence of actors with goals, needs, and stock levels; it is not a module running on top of them.</p>
+<p>Trade happens because actors want things and have other things. Supply and demand are not equations here; they are the shape of what is available and what is wanted, at every moment, across the village.</p>
+<p>The village self-regulates. You do not need to tune it. You do not need to patch its prices. You do not need to script a bad harvest or a festival — they happen if the conditions are there.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-09-pricing">pricing</a> in detail — how individual actor valuations emerge, and how regional trade will create genuine price differentials between villages with different ecologies.</em></p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-10-stock-market">the stock market</a> — the inter-regional trading layer, the live ticker, and how the high-dimensional field gives developers invisible stabilisation tools.</em></p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-11-reading-the-ticker">reading the ticker</a> — what each field in a live barter entry means, with real transaction examples.</em></p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-12-market-tiers">the market tiers</a> — from a home blanket on market day through to permanent shops, and the stateless rental shop that becomes whatever its inventory makes it.</em></p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-13-trader">the trader</a> — how barter logic works, the throwaway instance, and why an actor's emotional state flows cleanly into price.</em></p>
+<h2>The council</h2>
+<p>Every village has a council. Actors put their names forward to stand; not all of them do, which is itself emergent. Each voter's ballot is a single vote, but the vote is the outcome of a scored evaluation across multiple weighted dimensions — bond, trust, reputation, personal happiness, social affinity — so the &quot;winner&quot; is the candidate the village has cumulatively converged on through how every voter weighs those dimensions for themselves. In practice, the baker or the logger tends to win. Someone the village already trusted.</p>
+<p>The council is the social safety net: it maintains a standing reserve, buys goods from producers who cannot sell locally before those goods depreciate, and steps in for any actor who has fallen into destitution — no questions asked. It is what prevents a single failure from cascading into a world-ending event. As the village grows, the council will diversify into planning, pricing oversight, and regional trade management, exactly as a real council would.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-07-council">the council</a> in full.</em></p>
+<h2>The compute story</h2>
+<p>A conventional NPC costs compute constantly. Per tick, per NPC, you are paying for: physics simulation, pathfinding, behaviour-tree evaluation, animation state machines, and — if they speak — dialogue-tree traversal or language-model inference. All of it scales linearly with the number of NPCs in the simulation. This is why most games keep their NPCs dumb. They cannot afford smart ones.</p>
+<p>A VINE actor costs almost nothing to exist. The physics is handled inside the geometric layer — there is no separate physics engine running collision detection for every footstep. The decision-making is basin settling, not branching logic, which is cheap. There is no behaviour tree to walk. There is no dialogue tree to traverse. When the actor needs to speak, the language layer is called, and the language layer is deliberately small.</p>
+<p>This is why the whole village can run on modest hardware and still have every actor genuinely alive.</p>
+<h2>The sky</h2>
+<p>The world has its own astrology engine. Celestial rhythms are not decorative — they are felt by the actors and by the plants. Seasons, cycles, hours of daylight all feed into the geometric state of the village. An actor knows it is nearly winter the way you do: the air feels a certain way, the light falls a certain way, and what they need to be doing has shifted.</p>
+<p>Weather is fully emergent, tied to moon cycles and sunspot activity that the astrology engine tracks. Rain, frost, heat and cold are not scripted events — they come out of where the sky currently is. A run of sunspot activity and an unlucky lunar phase can produce a bad weather spell that nobody planned and nobody could have predicted from inside the world.</p>
+<p>When the day/night cycle comes fully online, darkness will bring ephemeral creatures — wolves that do not quite exist as persistent agents but create enough unease that actors come home at night rather than wandering into the forest. Night will mean something.</p>
+<h2>The plants</h2>
+<p>Plant life is procedural. Plants are not placed sprites. They grow, respond to weather, season, soil, and neglect. A crop can fail. A wild patch can be foraged. An actor who knows the land can read what is growing and when.</p>
+<h2>The ecology engine</h2>
+<p>Every crop has its own generative algorithm — its own way of growing, expressing, and inheriting traits. Those traits are gated by the astrology engine, which runs on a cycle of roughly two thousand years before the solar and seasonal patterns repeat. When an alignment occurs, specific traits become available to specific plants — and a new variety may emerge. When it doesn't, the plant waits. The golden trait that sent a golden chicken, a golden turnip, and a golden-wood chair to the same class at the Agricultural Fair all came from the same conjunction.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-08-ecology">the ecology engine</a> in full — including how the astrology cycle works and why designer interventions remain uninterpretable from inside the world.</em></p>
+<h2>The lore writes itself</h2>
+<p>Because the village is genuinely running — actors pursuing their goals, economy shifting, crops succeeding and failing, weather turning, seasons cycling — events happen in the world that nobody scripted. A blacksmith has a hard winter. A feud opens up over grazing rights. A baker becomes known for her rye loaf because the miller found better grain one autumn. A stranger arrives, stays a week, leaves. None of these were written by a designer. They happened because the village is a place where things happen.</p>
+<p>This is world-lore, and it writes itself. The longer the simulation runs, the deeper the village's history becomes — and any of it can be picked up by a designer, a licensee, or the VINE language model herself, and turned into story.</p>
+<h2>The library</h2>
+<p>Everything the village produces in text — profession ephemera, crop reports, rainfall records, newspapers, fiction, astrological journals — flows into the library engine. The librarian sorts, condenses, and preserves what is rare while eventually discarding what is merely routine. Over time, many events become a journal entry; many journal entries become an annual; many annuals become a volume. The library engine is live and viewable on the website now.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-17-library">the library</a> in full — including the librarian's condensation process, player control over the archive, and why the library engine is also teaching the language model that information has quality, not just content.</em></p>
+<h2>The fêtes</h2>
+<p>Four seasonal fêtes sit across the village year — <em>The Great Fate</em> in summer (agricultural show, crop and bread competitions), <em>Harvest &amp; Hearth</em> in autumn, <em>Frost &amp; Flame</em> in winter, and <em>Egg &amp; Bloom</em> in spring. Actors enter them voluntarily, and the categories of entry spawn dynamically from whatever turns up: a Marmalade class forms when three marmalades arrive, a Golden class forms when a golden chicken, a golden turnip and a chair made of golden wood all find themselves in the same fair. No designer writes the classes. The entries invite them.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-15-fetes">the fêtes</a> in full detail.</em></p>
+<h2>How the actors speak</h2>
+<p>The actors currently speak using stateful templates with stateless slots — sentence-shapes with open spaces that are filled dynamically from the live state of the world. The actors have no context windows; the world fills them with their state at the moment of speaking. The current combinatorial floor is approximately seven thousand distinct utterances per speaker across twenty-one templates and one hundred and ninety-one wordbook dimensions. That number is a floor, not a ceiling — the runtime vocabulary harvester continuously adds words to the dimension banks as VINE reads ground-truth texts, so the space grows while the simulation runs. In practice, novel utterances are rare — and intentionally so. Rarity is what gives a novel sentence its weight.</p>
+<p>The full mixture-of-experts language layer — small, narrow-task specialists inflating an actor's internal state into natural language — is in development. When it arrives, it will replace the template scaffolding while preserving the stateless architecture.</p>
+<p>→ <em>A separate page covers <a href="/research/portfolio/cartographer-16-language">the language layer</a> in full detail, including what the actors can and cannot talk about.</em></p>
+<h2>The quest system (coming)</h2>
+<p>No quest system is live yet in what you see running. When it arrives, it will bolt on top of the existing autonomous layer rather than replacing any of it.</p>
+<p>Main quest-givers — the characters a story designer writes by hand — will hand out narrative quests at the appropriate points. Everything else — the fetch quests, the gather quests, the &quot;my daughter is ill and I need herbs&quot; quests — will emerge from the actors themselves. They have real needs. If the baker is short on flour because the miller's wheel is broken, that is a real situation in the village, and the player can be asked to help with it.</p>
+<p>Designers write what matters to the story. The world handles the rest.</p>
+<h2>For licensees</h2>
+<p>The Cartographer is a blank substrate by design. Any game studio, researcher, or creator can license the engine and apply their own assets, their own characters, their own world. The AI underneath does not care what shape the village takes — it will still have actors, they will still have lives, the economy will still run itself, and the sky will still turn.</p>
+<p>If you are a game designer and you want to know how to get your hands on one of these NPCs, the <a href="/research/portfolio/cartographer-18-licensing">Licensing page</a> has the technical and commercial detail.</p>
+<p>That is the Cartographer.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cartographer-02-starting-world.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Starting World</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

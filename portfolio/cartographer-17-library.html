@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Library — VINE Research</title>
+  <meta name="description" content="Everything the village produces in text flows into the library engine. Scraps condense into notes, notes into chapters, chapters into books. Player control over the archive. How the library teaches the language model that information has quality, not just content.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Library</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/library.html">library</a>
+      
+    </p>
+    <p class="entry-summary">Everything the village produces in text flows into the library engine. Scraps condense into notes, notes into chapters, chapters into books. Player control over the archive. How the library teaches the language model that information has quality, not just content.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Library</h1>
+<p>The library engine is live. You can see it running on the website now, and the data cruncher that drives it is available to interact with directly — search, exclude terms, re-crunch on demand. It is running on a Hetzner CX23 server. The demo dataset is a publicly available Twitter election dataset, chosen for being large, free, and easy: 49,746 items across 53 folders, classified in 780.7 milliseconds at 64,000 items per second. On a local Ryzen the throughput is considerably higher — the labs received a video of that.</p>
+<p>Two things visible in the live interface are worth noting. The cruncher flagged &quot;Bins need attention (5.67)&quot; — some classification clusters need human review, and the system says so rather than silently accepting them. And two folders were auto-deepened: the cruncher recognised that their content density warranted sub-categorisation and did it without being asked. That is the librarian behaviour in the architecture expressing itself in the tool.</p>
+<p>What you see in the library content itself is early scaffolding: messy, repetitive in places, obviously in progress. The trajectory it is on is already visible.</p>
+<h2>Everything that would be written down, is</h2>
+<p>Every profession in the Cartographer produces ephemera. Not just the things you see on the front end — more is happening in the background than the interface currently exposes.</p>
+<p>The baker writes up a pricing ticket. The farmer files a crop report. The council produces minutes. The blacksmith has a stock inventory. When the stagecoach arrives — it is not in the current beta, but when it does — it will have timetables and route cards. Every piece of paper that would exist in a real working village has a counterpart in the Cartographer, and all of it flows into the library engine.</p>
+<p>This is not limited to functional documents. The library will hold fiction written by actors who have time to write it. Newspapers. Annuals. Rainfall records. Astrological reports. Letters and notices. The distinction between a functional document and a cultural one is not one the library makes in advance — if something would be written down in the world, it gets captured.</p>
+<h2>The librarian</h2>
+<p>The library does not just accumulate. The librarian sorts and condenses.</p>
+<p>Incoming material is categorised and bucketed. Over time, events that repeat — common transactions, routine reports, the small commerce of ordinary days — are compressed and eventually discarded. Rarer events are preserved. An unusual market day, a crop that failed spectacularly, an alignment in the astrology engine that produced something nobody had seen before — these stay.</p>
+<p>What the librarian is learning to do is embed the world in text. Many lower-level events become a journal entry. Many journal entries become an annual. Many annuals become a volume. Each step condenses without losing what was significant, the way an embedding condenses without losing semantic content. The library is doing in language what a neural network does in vector space.</p>
+<h2>The concern-library loop</h2>
+<p>The library is not passive storage. It is part of how actors learn to do new things.</p>
+<p>When an actor stalls — when they have been producing the same thing over and over without progressing, or when the world around them has begun to need something they cannot yet make — their concern basin will eventually tip them toward the library. The stagnation becomes a pressure, and the library is where that pressure can resolve.</p>
+<p>When they arrive, they find a book. It may have been generated by the world's own activity, sitting on the shelf since before they arrived. Or it may have been placed there quietly by a developer. Either way, the actor reads it as recreation — which is exactly the mechanic the Baker's page describes. Nobody sends the actor to the library. Nobody assigns them the book. They end up there because their concern basin pushed them, and they find what they need because the library holds it.</p>
+<p>This is how the world teaches its actors what it needs them to know, without telling them.</p>
+<h2>Injecting new knowledge</h2>
+<p>The library is also the mechanism through which developers can introduce new possibilities to the world without disturbing anything already in it.</p>
+<p>If the world needs a new craft — a new station, a new skill, a new line of production — the cleanest way to introduce it is a book. Slip the relevant reading into the library's collection. Actors who stall out and visit in their relevant pursuit will eventually find it. Some of them will take it further.</p>
+<p>This scales without friction. A world with ten thousand actors, and a developer who wants to introduce lace-making, injects reading materials about lace into the library. In time, an actor who has run out of road in their current craft will find those materials, and there will be a lacemaker in the village where there was not one before. Nobody had to build a lacemaker from scratch. The library carried the possibility and an actor's concern basin delivered them to it.</p>
+<p>The injection does not upset the existing environment because it does not touch the existing environment. It adds to the library. The library is already the place where new things enter the world.</p>
+<h2>Actors as readers</h2>
+<p>Any actor in the Cartographer can read any of the library's books.</p>
+<p>This means actors read about themselves — accounts of their own profession, records of their own village, crop reports that include their own crops. They read about their neighbours. They read about things that happened before they were instantiated, and events that occurred while they were asleep. They read fiction that other actors found time to write.</p>
+<p>What accumulates over time is something like a shared culture of knowledge — an understanding of the world that circulates through the village not via direct instruction but through what is on the library's shelves. An actor who reads widely will know things they were not present for. They will understand things they have not made themselves. The library is where the village thinks.</p>
+<h2>Player control over the archive</h2>
+<p>When you play the Cartographer, you can set how much of the world you want saved and how large your library is permitted to grow.</p>
+<p>The game itself is approximately 500 megabytes. Two gigabytes set aside for the library is more than most players are likely to fill, even over a long run. The library is designed to be bottomless in practice — the world generates more material than any player will ever read, and the condensation ensures it stays meaningful rather than merely large.</p>
+<h2>The bigger purpose</h2>
+<p>The library engine is doing several things at once, not all of them obvious from inside the game.</p>
+<p>The most significant: if the library engine can produce proper documentation at the end of its condensation process, the VINE language model can use the Cartographer world to scaffold her understanding of the real world.</p>
+<p>This matters because one of the persistent problems in language model training is the absence of a trust hierarchy in the source material. A post on a discussion forum and a carefully sourced long-form article are not comparable, but they are often treated as if they are. The Cartographer's library has a built-in trust and relevance hierarchy: the librarian knows what is rare and what is routine, what has been verified by repetition across many actors and what is a one-off rumour. The library produces documents that are epistemically ranked, not just accumulated.</p>
+<p>The language model trained on a library like this learns, at the source, that information has quality — not just content.</p>
+<h2>Lore that writes itself</h2>
+<p>This is the mechanism behind the Cartographer's world-lore writing itself.</p>
+<p>As players discover things, build things, make things happen — everything that would be written down in a world where those things happened, gets written down here. A player who builds a castle in a remote region will find, if they look, that the library eventually holds accounts of its construction, records of the materials sourced, perhaps a brief history of the land it was built on. None of this was authored. The world produced it, the library captured it, and the librarian shaped it into something readable.</p>
+<p>The world's history is the library. The library is the history. They grow together.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cartographer-16-language.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Language Layer</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cartographer-18-licensing.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Licensing</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

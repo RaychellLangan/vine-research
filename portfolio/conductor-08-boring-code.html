@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boring Code — VINE Replacing If/Elif — VINE Research</title>
+  <meta name="description" content="A thermostat controller, three ways. If/elif works. Random linear froze the building to 11°C. Geometric settling: 86.5% agreement with if/elif at zero training. A trained linear needs 126 parameters + 100k gradient steps to approximate it — and still hits an architectural ceiling on nonlinear decisions.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/conductor/">Transformer Decoupling</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Transformer Decoupling</p>
+    <h1>Boring Code — VINE Replacing If/Elif</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-16">2026-04-16</time>
+      
+        · <a class="tag" href="/research/tags/conductor.html">conductor</a> <a class="tag" href="/research/tags/architecture.html">architecture</a> <a class="tag" href="/research/tags/vine.html">vine</a>
+      
+    </p>
+    <p class="entry-summary">A thermostat controller, three ways. If/elif works. Random linear froze the building to 11°C. Geometric settling: 86.5% agreement with if/elif at zero training. A trained linear needs 126 parameters + 100k gradient steps to approximate it — and still hits an architectural ceiling on nonlinear decisions.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Boring Code: VINE Replacing If/Elif in a Thermostat</h1>
+<p><strong>Date:</strong> 2026-04-16</p>
+<hr />
+<h2>Summary</h2>
+<p>A standard HVAC thermostat controller — the most boring possible programme — was implemented three ways:</p>
+<ol>
+<li><strong>Traditional if/elif</strong>: hardcoded branching logic. Works correctly. 71 heat cycles, temperature 18.4-20.8°C.</li>
+<li><strong>Raw linear transform</strong>: random weights, softmax over categories. No training. Froze the building to 11°C.</li>
+<li><strong>VINE geometric decisions</strong>: a settling primitive feeding a basin classifier. Zero training, zero learned parameters, a small set of hand-chosen basin positions. Temperature 17.3-20.1°C. <strong>86.5% agreement with if/elif on mode decisions. 90.6% on energy decisions.</strong></li>
+</ol>
+<p>The linear transform was then trained on the VINE agent's decisions. It needed 126 parameters and 100,000 gradient steps to reach 98.4% accuracy on mode decisions — and topped out at 60.7% on fan decisions because the linear architecture cannot represent the nonlinear feature interactions the geometric primitive handles natively.</p>
+<p>Gradient descent paid 126 parameters and 100,000 steps to approximate what a handful of chosen numbers do for free. And even then, it couldn't fully match it.</p>
+<hr />
+<h2>The Programme</h2>
+<p>An HVAC controller that reads sensors and makes four decisions per tick:</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Options</th>
+<th>Primary drivers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>heat / idle / cool</td>
+<td>temperature error vs target</td>
+</tr>
+<tr>
+<td>Fan speed</td>
+<td>off / low / medium / high</td>
+<td>temperature error + humidity</td>
+</tr>
+<tr>
+<td>Energy</td>
+<td>eco / normal / boost</td>
+<td>energy price + occupancy</td>
+</tr>
+<tr>
+<td>Schedule</td>
+<td>away / night / day / override</td>
+<td>time of day + occupancy</td>
+</tr>
+</tbody>
+</table>
+<p>Simulated over 24 hours (96 ticks at 15-minute intervals). Outdoor temperature follows a sine wave. Occupancy follows a day/night pattern. Energy price peaks in the evening. Indoor temperature responds to HVAC actions plus outdoor drift.</p>
+<hr />
+<h2>Three Decision Mechanisms</h2>
+<h3>A. Traditional If/Elif</h3>
+<pre><code class="language-python">def decide_mode(self, s):
+    if s.temp_error &gt; self.hysteresis:
+        return &quot;cool&quot;
+    elif s.temp_error &lt; -self.hysteresis:
+        return &quot;heat&quot;
+    else:
+        return &quot;idle&quot;
+</code></pre>
+<p>Standard branching. Each decision is a cascade of thresholds. Four decisions × 3-6 branches each = approximately 20 if/elif conditions total. Correct, brittle, opaque.</p>
+<h3>B. Raw Linear Transform</h3>
+<pre><code class="language-python">logits = W @ state_vector + b
+probs = softmax(logits)
+choice = labels[argmax(probs)]
+</code></pre>
+<p>Each decision is a matrix multiply followed by softmax — the same mechanism a transformer uses for output. Random initialisation (no training). 126 total parameters across all four decisions.</p>
+<p><strong>Result</strong>: chose to cool at the start (random weights), then idled for 91 of 96 ticks. The building reached 11°C. A thermostat that confidently froze the building.</p>
+<h3>C. VINE Geometric Decisions</h3>
+<p>Each decision maps the programme state to a position on a bounded axis via a geometric settling primitive (a nonlinear combination of weighted inputs), then classifies against a small set of hand-chosen basin points on that axis. A handful of chosen numbers per decision — no training, no learned parameters.</p>
+<p><em>[Implementation of the settling primitive and basin classifier is withheld pending open-source release. Available under licence.]</em></p>
+<p><strong>Result</strong>: 86.5% agreement with if/elif on mode, 90.6% on energy. Temperature 17.3-20.1°C. Competent thermostat from zero training.</p>
+<hr />
+<h2>Agreement Between Mechanisms</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>if/elif vs linear</th>
+<th>if/elif vs VINE</th>
+<th>linear vs VINE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>26.0%</td>
+<td><strong>86.5%</strong></td>
+<td>24.0%</td>
+</tr>
+<tr>
+<td>Fan</td>
+<td>31.2%</td>
+<td>49.0%</td>
+<td>25.0%</td>
+</tr>
+<tr>
+<td>Energy</td>
+<td>51.0%</td>
+<td><strong>90.6%</strong></td>
+<td>58.3%</td>
+</tr>
+<tr>
+<td>Schedule</td>
+<td>26.0%</td>
+<td><strong>61.5%</strong></td>
+<td>7.3%</td>
+</tr>
+</tbody>
+</table>
+<p>The linear transform with random weights is near-chance (26% for 3 categories). VINE without training matches the hardcoded logic at 86.5-90.6% on the primary decisions.</p>
+<p>The 13.5% disagreement on mode is mostly timing: VINE switches between heat and idle at slightly different temperature thresholds than the if/elif's hardcoded hysteresis. The BEHAVIOUR is the same; the exact transition point differs because one uses a threshold and the other uses basin distance. The basin distance produces a natural hysteresis whose width depends on basin spacing — a property of the geometry, not a hardcoded parameter.</p>
+<hr />
+<h2>Training the Linear Transform on the VINE Agent</h2>
+<p>The linear transform was then trained via gradient descent to match the VINE agent's decisions. 5000 diverse sensor states were generated, the VINE agent made decisions on each, and the linear transform learned from those decisions via cross-entropy loss.</p>
+<h3>Learning Curves</h3>
+<table>
+<thead>
+<tr>
+<th>Training examples</th>
+<th>Mode acc</th>
+<th>Fan acc</th>
+<th>Energy acc</th>
+<th>Schedule acc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>77.2%</td>
+<td>52.7%</td>
+<td>58.6%</td>
+<td>61.1%</td>
+</tr>
+<tr>
+<td>50</td>
+<td>90.3%</td>
+<td>52.3%</td>
+<td>68.2%</td>
+<td>73.9%</td>
+</tr>
+<tr>
+<td>250</td>
+<td>96.8%</td>
+<td>57.2%</td>
+<td>68.0%</td>
+<td>85.8%</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>97.3%</td>
+<td>56.1%</td>
+<td>70.2%</td>
+<td>90.1%</td>
+</tr>
+<tr>
+<td>5,000</td>
+<td><strong>98.4%</strong></td>
+<td><strong>60.7%</strong></td>
+<td><strong>72.4%</strong></td>
+<td><strong>93.5%</strong></td>
+</tr>
+<tr>
+<td>VINE (no training)</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<h3>What the Linear Transform Learned</h3>
+<p>After 5000 examples and 20 epochs (100,000 gradient steps), the learned weight matrix for mode decisions concentrated almost entirely on the <strong>temperature error</strong> feature, with heat and cool rows taking large opposite-sign values and all other features contributing minor weights.</p>
+<p><em>[Full weight matrix available on request.]</em></p>
+<p>The linear transform discovered that temperature error drives mode decisions — which is exactly what the geometric agent's mode logic encodes directly by design. Gradient descent spent 100,000 steps rediscovering a feature priority that was chosen in advance.</p>
+<p><strong>Top features discovered per decision:</strong></p>
+<ul>
+<li>Mode: error, temp, target ✓</li>
+<li>Fan: humidity, occupancy, error ✓</li>
+<li>Energy: price, occupancy, error ✓</li>
+<li>Schedule: occupancy, time, target ✓</li>
+</ul>
+<p>Every feature ranking matches what the geometric agent was designed with. Gradient descent found the same answer. It just had to search for it.</p>
+<h3>Where the Linear Transform Fails</h3>
+<p><strong>Fan decisions plateau at 60.7%.</strong> The geometric agent's fan decision combines absolute temperature error, humidity, and occupancy through a nonlinear primitive. The linear transform's single matrix multiply cannot represent this interaction. Same as XOR additive stuck at 50%: the architecture lacks the nonlinearity to separate the classes.</p>
+<p><strong>Energy decisions plateau at 72.4%.</strong> Similar: the interaction between price and occupancy in the geometric agent's energy decision involves a nonlinear weighting that a single linear layer approximates but cannot match.</p>
+<p>These are not failures of training. They are <strong>architectural ceilings</strong>. The linear transform has been trained to convergence — more data and more epochs do not improve accuracy. The remaining gap between 60.7% and 100% is the difference between linear and geometric decision mechanisms.</p>
+<hr />
+<h2>Parameter Accounting</h2>
+<table>
+<thead>
+<tr>
+<th>Mechanism</th>
+<th>Parameters</th>
+<th>Training required</th>
+<th>Mode accuracy</th>
+<th>Fan accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>If/elif</td>
+<td>0 (hardcoded)</td>
+<td>N/A</td>
+<td>100% (by definition)</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Linear transform (untrained)</td>
+<td>126</td>
+<td>none</td>
+<td>~26% (random)</td>
+<td>~26%</td>
+</tr>
+<tr>
+<td>Linear transform (trained)</td>
+<td>126</td>
+<td>5000 examples, 20 epochs</td>
+<td>98.4%</td>
+<td>60.7%</td>
+</tr>
+<tr>
+<td><strong>VINE</strong></td>
+<td><strong>~16 chosen values</strong></td>
+<td><strong>none</strong></td>
+<td><strong>86.5%</strong>*</td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>*VINE's mode agreement with if/elif is 86.5%; its self-consistency is 100%. The 13.5% gap is the difference between VINE's basin-distance hysteresis and the if/elif's hardcoded threshold — a design choice, not an error.</p>
+<p>The linear transform paid <strong>126 parameters and 100,000 gradient steps</strong> to approximate what a handful of chosen values do for free. And even at convergence, two of its four decisions (fan: 60.7%, energy: 72.4%) remain below the VINE agent's accuracy because the linear architecture cannot represent the required nonlinear feature interactions.</p>
+<hr />
+<h2>What This Shows</h2>
+<h3>For software engineering</h3>
+<p>Any programme with if/elif decision chains can have those chains replaced by VINE's geometric primitives. The replacement:</p>
+<ul>
+<li>Requires no training data</li>
+<li>Uses fewer parameters than the branching logic it replaces (a handful of basin positions vs 20+ conditional branches)</li>
+<li>Produces naturally continuous confidence scores (not just binary branch/don't-branch)</li>
+<li>Has built-in hysteresis from basin geometry (no explicit dead-band parameter needed)</li>
+<li>Is auditable: the position on the axis IS the decision, visible and interpretable at every tick</li>
+</ul>
+<h3>For the conductor argument</h3>
+<p>Training a linear model on VINE's decisions is the thermostat equivalent of the conductor embedding experiment. The linear model (the &quot;transformer&quot;) pays gradient descent to rediscover geometric structure that the VINE agent has by construction. The learning curve shows the cost: 250 examples for 96.8% on simple decisions, 5000+ for complex decisions, and an architectural ceiling on decisions involving nonlinear feature interactions.</p>
+<p>The conductor is the geometry. The transformer rediscovers it at cost. VINE provides it for free.</p>
+<h3>For Barry</h3>
+<p>Barry is this experiment at production scale: a vanilla GPT-2 running a vending machine via VINE's geometric primitives. The same primitives that run this thermostat run Barry's stock management, pricing, and customer interaction. Only the number of basins and the complexity of the weighted field differ.</p>
+<hr />
+<h2>Novel Signal Test — Can the Trained Transform Generalise?</h2>
+<p>After training, a new signal was introduced: a CO2 sensor affecting ventilation decisions. Three tests:</p>
+<p><strong>Test 1 — New input dimension</strong> (CO2 as 9th input): VINE adds one term to the weighted field. The linear transform is architecturally blind — it truncates the 9th dimension. 193 states with CO2 &gt; 1000ppm; VINE responds to all of them; the linear cannot see any of them.</p>
+<p><strong>Test 2 — Repurposed dimension</strong> (outdoor_temp slot becomes CO2): VINE updates one field mapping. The linear's outdoor_temp weights accidentally apply but produce 26.4% agreement — worse than random. The distributions are too different for the old weights to transfer.</p>
+<p><strong>Test 3 — New action</strong> (adding &quot;ventilate&quot; to fan options): VINE adds one basin position on the existing axis. The linear was retrained with the new output class and 2000 examples. Result: 93.4% overall but <strong>0% ventilate recall</strong>. It predicted &quot;low&quot; for all 500 states. It was shown examples of when to ventilate, given the output class, trained to convergence — but cannot learn the decision because <strong>the decision depends on an input (CO2) that it cannot see</strong>.</p>
+<p>The linear transform cannot generalise to signals it wasn't trained on. VINE generalises by changing a number, not a network.</p>
+<hr />
+<h2>Why Scaling Works (And Why It Costs What It Costs)</h2>
+<p>The linear transform's failure on nonlinear decisions (fan at 60.7%) and novel signals (ventilate at 0%) raises the question: how do production transformers handle these tasks at all?</p>
+<p>They stack.</p>
+<p>Each linear layer cannot solve XOR. But stack enough of them with nonlinearities between (attention, GELU, layer normalisation) and the cumulative signal across billions of dimensions develops enough orthogonal structure to approximate geometric reasoning. No single layer understands the shape. But a billion layers, each contributing one noisy partial view, sum to a standing wave that HOLDS the shape.</p>
+<p>This is what the conductor experiments measured:</p>
+<ul>
+<li>The standing wave probe found <strong>3x more energy in the tail PCs</strong> than in the prediction surface</li>
+<li>That tail energy is structured, stable across layers, and consistent across inputs</li>
+<li>It is the sum of all partial geometric views from all the stacked linear approximations</li>
+</ul>
+<p>The model KNOWS something is there. It can feel the shape. It computes it relentlessly. But the softmax output can only read the top few principal components — the prediction surface. The rest — the conductor — is discarded at output time.</p>
+<p>Scaling &quot;works&quot; because noise integrated across enough orthogonal dimensions converges toward geometric structure. A trillion parameters is the cost of approximating, via stacked linear noise, what 16 chosen basin positions provide directly. The approximation is remarkable — it produces language, it reasons, it holds character and tone. But it is still an approximation, and it carries the cost: compute, parameters, training data, and the fragility we documented (catastrophic forgetting, routing collapse, jailbreak vulnerability) that arises because the output mechanism discards most of what the parameters learned.</p>
+<p>VINE gives the geometry without the stack. The cost is knowing the geometry in advance. The benefit is that a handful of numbers do what 126 trained parameters cannot — and what a trillion stacked linear layers approximate at staggering expense.</p>
+<hr />
+<p><em>Scripts, checkpoints, and reproduction instructions available to licensees.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/conductor-07-moe-routing.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">MoE Routing Collapse — The Extra Matchstick</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/conductor-09-vine-preprocessing.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">VINE Data Preprocessing — Shaping the Basin Before Training</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

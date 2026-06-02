@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Floor 7 — Expert Systems: The Civilisation Built Out of If-Else — VINE Research</title>
+  <meta name="description" content="For about twenty years, the serious research programme in AI was to build intelligence out of rules — written by hand, in bulk, forever. It ran out of rules before it ran out of world.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/tower/">Computing Lineage</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Computing Lineage</p>
+    <h1>Floor 7 — Expert Systems: The Civilisation Built Out of If-Else</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/tower.html">tower</a> <a class="tag" href="/research/tags/rules.html">rules</a> <a class="tag" href="/research/tags/thresholds.html">thresholds</a>
+      
+    </p>
+    <p class="entry-summary">For about twenty years, the serious research programme in AI was to build intelligence out of rules — written by hand, in bulk, forever. It ran out of rules before it ran out of world.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The floor</h2>
+<p>From roughly 1970 to the late 1980s, the ambitious research programme
+in AI was the <strong>expert system</strong>. Take the knowledge of a specialist —
+a doctor, a chemist, a geologist — and encode it as if-then rules. Feed
+the rules into a machine with an inference engine. The machine answers
+questions in the domain.</p>
+<p>MYCIN diagnosed bacterial infections. DENDRAL inferred molecular
+structures. PROSPECTOR found mineral deposits. XCON configured VAX
+computers for DEC and saved the company an audited forty million
+dollars a year.</p>
+<p>It genuinely worked, for a while, within a narrow room.</p>
+<p>In 1982, Japan launched the <strong>Fifth Generation Computer Systems
+project</strong>. Four hundred million dollars. Ten years. A national mission
+to build computers whose native language was Prolog — pure rule-based
+logic. The Americans, panicked, founded the Microelectronics and
+Computer Technology Corporation to compete. The British responded with
+the Alvey Programme. Expert systems were <em>the future</em>.</p>
+<h2>What was picked</h2>
+<p><strong>Intelligence as a pile of rules, assembled by hand.</strong> If X and Y and
+not Z, then conclude A. Ten thousand of these per domain, tuned by
+&quot;knowledge engineers&quot; who spent months interviewing specialists. The
+system was deterministic, inspectable, auditable. You could point at a
+rule and say &quot;this is why it said that.&quot;</p>
+<p>The assumption beneath the whole programme was that expertise
+<em>decomposes</em> — that what a physician knows can be written down as a
+finite rule set, if you only interview them long enough. The
+assumption beneath <em>that</em> assumption was that decision-making is
+fundamentally <strong>a classification problem</strong>. You present a case, the
+system selects a category, you read off the advice for that category.</p>
+<p>Floor 1, still. All the way up.</p>
+<h2>What could have been picked</h2>
+<p>Cyc, started by Doug Lenat in 1984, is the reductio ad absurdum. Lenat
+believed — and believes — that intelligence is common sense, and
+common sense is <em>several million</em> rules, each hand-written by a
+knowledge engineer, covering every quiet assumption about how the
+world works. A person is usually alive. Water is usually wet. Things
+fall down unless held up. He has been adding to Cyc for forty years.</p>
+<p>It is one of the most remarkable and heroic research programmes in
+computer science, and it is also a confession. If you need <em>several
+million</em> rules to express common sense, the thing you are modelling is
+not rules.</p>
+<p>Meanwhile, in the same decade, Hopfield networks were running. Boltzmann
+machines were running. Backpropagation was getting rediscovered. Small
+groups — Sejnowski, McClelland, Rumelhart, Hinton — were building
+systems that learned their <em>own</em> representations from data. Nobody was
+funding them seriously. The journals of the day politely declined their
+papers on the grounds that neural networks had already been shown not
+to work.</p>
+<p>(See Floor 6.)</p>
+<h2>What we missed</h2>
+<p>A twenty-year investment in continuous, learned, context-sensitive
+reasoning, made during the period when compute was growing tenfold
+every few years. We chose instead to invest in hand-crafted, brittle,
+context-blind rule systems, which collapsed the moment they encountered
+a situation their knowledge engineer had not anticipated.</p>
+<p>The Fifth Generation Project ended quietly in 1994. The Japanese did
+not get intelligent machines. Expert systems did not spread into every
+workplace. XCON became a maintenance nightmare at DEC because every
+new VAX configuration required a new rule and the rules had started
+contradicting each other. The knowledge engineers burned out.</p>
+<p>In the alternate timeline, the four hundred million dollars — or even
+a tenth of it — went into continuous systems that learned their own
+representations. By the time the field came out of the second winter,
+it would not have been starting from zero. It would have been a
+generation deep.</p>
+<h2>What the next floor will ask</h2>
+<p>In 1986, the door opened again. But the thing that walked back through
+it was carrying a very specific kind of objective function in its hands.</p>
+<p>That's Floor 8.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/tower-06-perceptron-winter.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Floor 6 — The Perceptron and the Winter That Didn&#39;t Have To Happen</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/tower-08-backprop.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Floor 8 — Backprop Returns, and Brings the One-Hot With It</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

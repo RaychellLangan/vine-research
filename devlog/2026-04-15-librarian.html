@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Librarian Architecture — Idle Is Work, Traffic Is Yield — VINE Research</title>
+  <meta name="description" content="Why the crawler should eat all available compute when the library is empty — and graciously step aside when someone walks in.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-devlog">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Devlog</p>
+    <h1>Librarian Architecture — Idle Is Work, Traffic Is Yield</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/architecture.html">architecture</a> <a class="tag" href="/research/tags/crawler.html">crawler</a> <a class="tag" href="/research/tags/memory.html">memory</a>
+      
+    </p>
+    <p class="entry-summary">Why the crawler should eat all available compute when the library is empty — and graciously step aside when someone walks in.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The frustration</h2>
+<p>The server is an 8GB Hetzner box at £30/month. For most of the day no-one's
+on it, and the thing that reads the web for VINE — the crawler — is throttled
+down to a polite trickle. When someone finally walks in and talks to her,
+<em>that's</em> when the crawler suddenly decides to open its bag and eat 5GB of
+RAM trying to build indexes, and the chat times out.</p>
+<p>Wrong way round. Entirely wrong way round.</p>
+<h2>The fix in one sentence</h2>
+<p>When the library is empty, the librarian is knee-deep in the stacks.
+When someone walks in, she looks up, puts the book down, and helps.</p>
+<p><strong>Idle is work. Traffic is yield.</strong></p>
+<h2>What that actually looks like</h2>
+<p>Four states, named the way a real librarian would describe her day:</p>
+<ul>
+<li><strong>Reading</strong> — nobody here, full compute, all caps lifted, reading everything</li>
+<li><strong>Glancing</strong> — someone just looked in, she glanced up but kept working</li>
+<li><strong>Serving</strong> — patrons are asking questions, she's paused her own work</li>
+<li><strong>Rush</strong> — the place is rammed, everything non-essential is stopped</li>
+</ul>
+<p>The state is a position on a 0–8 axis — not a switch. As the load
+fraction rises, the position drifts toward the next basin. Each subsystem
+that holds memory asks <em>&quot;how much can I have, right now?&quot;</em> and the answer
+scales smoothly with the position. Nothing branches. Nothing flips.</p>
+<h2>Why it has to be a surface, not a switch</h2>
+<p>A switch gives you the same chat-timeout bug we just lived through.
+Between <em>reading</em> and <em>serving</em> there's got to be a ramp — her pausing
+the page, marking her place, folding the corner. If that transition is a
+cliff edge you pay for it at exactly the worst moment.</p>
+<h2>Free-RAM safety floor</h2>
+<p>One override, sitting on top of everything: if the OS has less than
+500MB free, we force <strong>rush</strong> regardless of how many people are in the
+building. Caches don't get to eat the swap file just because they feel
+like reading.</p>
+<h2>What's landed today</h2>
+<ul>
+<li>The state machine stub, with geometric basin settling (no elif chains
+anywhere — they kept trying to creep in, I kept taking them out)</li>
+<li>The free-RAM override</li>
+<li>Wiring through the text store + forager so they ask the librarian
+before allocating</li>
+</ul>
+<h2>What's next</h2>
+<ul>
+<li>Tell the frontend the honest numbers instead of the capped ones</li>
+<li>Image observer (a separate post)</li>
+<li>Storage migration — the 3.3GB crawler text file has to stop being
+rewritten on every save. Append-only or bust.</li>
+</ul>
+<p>The librarian metaphor is the one I keep coming back to in this project.
+It's not decoration. It's the design.</p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Conductor — VINE Research</title>
+  <meta name="description" content="Every transformer&#39;s hidden layers build a geometric structure the output layer can&#39;t see. A single vector can find it. The model can learn to listen.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/mechanism/">Mechanism</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Mechanism</p>
+    <h1>The Conductor</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/conductor.html">conductor</a> <a class="tag" href="/research/tags/architecture.html">architecture</a> <a class="tag" href="/research/tags/transformers.html">transformers</a>
+      
+    </p>
+    <p class="entry-summary">Every transformer&#39;s hidden layers build a geometric structure the output layer can&#39;t see. A single vector can find it. The model can learn to listen.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The one-line version</h2>
+<p>A transformer's hidden layers carry far more structured energy than the
+output layer uses. That unused structure is the <strong>conductor</strong> — real,
+measurable, and reachable with a single learnable vector.</p>
+<h2>Why this matters</h2>
+<p>The whole modern AI conversation happens at the output layer. Alignment
+is done through the output. Interpretability is done through the
+output. Evaluation is done through the output.</p>
+<p>But the geometry that <em>produces</em> the output lives one step earlier —
+in the residual stream, across layers the softmax never sees. Run PCA
+on a mid-stack layer of any trained transformer and you will find that
+the top few components (the ones the output layer reads) carry a
+fraction of the total energy. The rest — stable across layers,
+structured, consistent across inputs — is doing work that never shows
+up in the next token.</p>
+<p>We have been training, evaluating, and aligning at the wrong surface.</p>
+<h2>What this buys you</h2>
+<ul>
+<li><strong>A measurement outside the output.</strong> You can see that a model's
+reasoning has shifted even when its words haven't. And vice versa.</li>
+<li><strong>A way to shape behaviour without retraining.</strong> Point a vector at
+the conductor, train it with standard next-token loss at uncertain
+positions, and the model learns to listen. Unfreeze the weights and
+the signal transfers into them. Remove the vector and it stays.</li>
+<li><strong>A failure mode with a name.</strong> Push the conductor amplification too
+far and the reasoning layer and the token layer <em>decouple</em> — the
+hidden state keeps organising coherently while the output collapses
+into unicode noise and token loops. A clean, reproducible measurement
+of a system whose internals are fine and whose outputs are pathological.
+Alignment's real shape, with a graph under it.</li>
+<li><strong>A second route into interpretability.</strong> The tail PCs are
+structured. They can be read. They are not the model's afterthoughts;
+they are where the model's reasoning lives.</li>
+</ul>
+<h2>What doesn't change</h2>
+<p>The architecture. The parameter count. The training pipeline. The
+softmax. Nothing is being added to the model. The conductor was there
+the whole time — built by gradient descent, the same way the visible
+surface was built, during ordinary training. The only change is that
+someone finally pointed at it.</p>
+<p><em>[experiment code and full method in <code>CONDUCTOR_EMBEDDING_EXPERIMENT.md</code>
+— runnable in eighteen minutes on a consumer GPU]</em></p>
+<h2>What you can see in the experiments</h2>
+<ul>
+<li><strong>One vector, 512 parameters, frozen model.</strong> Trained with standard
+next-token loss on positions where the model is uncertain. The vector
+preferentially aligns with the tail PCs — the conductor — not the
+prediction surface. Dark matter ratio rises at mid-stack layers.</li>
+<li><strong>Three vectors at adjacent layers.</strong> They differentiate without
+being told to: one does surface adjustment, one bridges, one
+amplifies the conductor directly. The emergent division of labour is
+the clearest indicator that the structure was already there waiting.</li>
+<li><strong>Scaffold → internalise → remove.</strong> Train the vector, unfreeze the
+model, train both together, then delete the vector. The signal
+survives. At layer 7 the conductor was <em>louder</em> after the scaffold
+came off than with it on. 131% retention.</li>
+<li><strong>The same mechanism on GPT-2 (124M, OpenAI pretrained).</strong> A model
+that has never seen this training data found the same structure in
+its own hidden layers. Its prose on an out-of-domain prompt shifted
+from generic repetition to narrative with sensory detail. The
+conductor geometry learned from a novel was now shaping a pretrained
+model's output distribution.</li>
+<li><strong>The long run.</strong> Seventy epochs. Sweet spot at 20–25. Past that, the
+decoupling failure mode appears with a clear graph.</li>
+</ul>
+<h2>What this isn't</h2>
+<p>Not noise. Not a training artefact. Not the prediction surface. Not
+epiphenomenal. Load-bearing geometry, measurable in any trained
+transformer, and orthogonal to everything the field currently measures.</p>
+<p>The model didn't gain anything. It learned to use what it already had.</p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Geometric Perceptron — VINE Research</title>
+  <meta name="description" content="A behaviour-first tour of the mechanism that replaces if/elif with continuous decision surfaces.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/mechanism/">Mechanism</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Mechanism</p>
+    <h1>The Geometric Perceptron</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/perception.html">perception</a> <a class="tag" href="/research/tags/architecture.html">architecture</a>
+      
+    </p>
+    <p class="entry-summary">A behaviour-first tour of the mechanism that replaces if/elif with continuous decision surfaces.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The one-line version</h2>
+<p>Where conventional code branches, VINE <strong>settles</strong>. Every decision is a
+point on a surface. Where <code>if/elif</code> would classify, the system drifts
+toward the nearest attractor and emits whatever that position means.
+Where <code>if/elif</code> would trigger an action, a <strong>concern</strong> blooms on the
+same surface and resolves as the system navigates toward the basin that
+would satisfy it. One mechanism, two uses — classification by drift,
+action by concern-resolution.</p>
+<h2>Why this matters</h2>
+<p>Branching code is brittle by design. An <code>if</code> is a wall: one side does A,
+the other does B, and nothing in between exists. That's fine for
+<code>is_admin</code>, and disastrous for <em>is this email angry</em>, <em>is this crawler
+being a bad guest</em>, <em>is this song sad</em>.</p>
+<p>The geometric approach replaces the wall with a gradient. Inputs push
+the system to a position on a continuous axis; outputs read off the
+position. The &quot;decision&quot; is just a by-product of where the system
+settled — no code path was privileged over any other.</p>
+<h2>What this buys you</h2>
+<ul>
+<li><strong>No elif chains</strong> in the hot path. Ranking a thousand candidates is
+one projection, not a thousand conditionals.</li>
+<li><strong>Superposition.</strong> A word, a pixel, a visitor, can be partly-one-thing
+and partly-another. Context pulls; the system responds.</li>
+<li><strong>Graceful degradation.</strong> If an input is missing, the position just
+doesn't move as much. Nothing throws.</li>
+<li><strong>Explainability via geometry.</strong> You can point at the axis and say
+&quot;here, this far along, this is what <em>cautious</em> looks like.&quot;</li>
+</ul>
+<h2>What doesn't change</h2>
+<p>The hard work is still in getting the axes right. That's the craft.
+The mechanism is simple; the curation of what each dimension <em>means</em> is
+where taste lives.</p>
+<p><em>[mechanism detail withheld pending open-source release]</em></p>
+<h2>What you can see in production</h2>
+<ul>
+<li><strong>ERP</strong> — 13 ERPNext modules (scorecards, reorder, pricing, workflow,
+lead scoring, etc.) rebuilt without if/elif. Same inputs, same outputs,
+continuous decision surface underneath.</li>
+<li><strong>Language</strong> — runtime vocabulary acquisition. Words attach to the
+axis at the position their usage implies.</li>
+<li><strong>Perception</strong> — brightness, warmth, complexity, contrast — each a
+continuous reading, not a bucket.</li>
+<li><strong>Navigation</strong> — the library's 404 page is itself an example: unknown
+paths settle to the nearest known page by name proximity, not by a
+redirect table.</li>
+</ul>
+<p>The software didn't get rewritten. It got smarter.</p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

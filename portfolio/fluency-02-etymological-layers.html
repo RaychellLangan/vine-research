@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Etymological Layering in English Lemmatisation — VINE Research</title>
+  <meta name="description" content="English is three morphological systems pretending to be one — Germanic inflection, partly-productive Latin derivation, Greek compound roots, French borrowings. A vocabulary-gated collapse rule per layer handles all four correctly; a single uniform rule cannot. The layer distribution of a text also turns out to be a cheap stylometric feature.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/mechanism/">Mechanism</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Mechanism</p>
+    <h1>Etymological Layering in English Lemmatisation</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-20">2026-04-20</time>
+      
+        · <a class="tag" href="/research/tags/fluency.html">fluency</a> <a class="tag" href="/research/tags/linguistics.html">linguistics</a> <a class="tag" href="/research/tags/lemmatisation.html">lemmatisation</a> <a class="tag" href="/research/tags/language.html">language</a>
+      
+    </p>
+    <p class="entry-summary">English is three morphological systems pretending to be one — Germanic inflection, partly-productive Latin derivation, Greek compound roots, French borrowings. A vocabulary-gated collapse rule per layer handles all four correctly; a single uniform rule cannot. The layer distribution of a text also turns out to be a cheap stylometric feature.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Etymological layering in English lemmatisation</h1>
+<h2>A vocabulary-gated collapse rule for Latin-layer morphology</h2>
+<hr />
+<h3>Problem</h3>
+<p>A rule-based lemmatiser that handles all English suffixes with uniform rules produces two classes of errors on Latin-layer vocabulary:</p>
+<ol>
+<li>
+<p><strong>False positives.</strong> <em>Mission</em> is stripped to a nonexistent <em>miss-</em> stem, or to the unrelated English verb <em>miss</em> (meaning &quot;fail to hit&quot;, from Germanic <em>missan</em>). <em>Vision</em>, <em>station</em>, <em>question</em> behave similarly.</p>
+</li>
+<li>
+<p><strong>False negatives.</strong> The lemmatiser refuses to collapse <em>decision, movement, expression</em> out of caution about the first class, producing three distinct basins where English users recognise one concept with multiple roles.</p>
+</li>
+</ol>
+<p>Both errors are the consequence of treating English as morphologically uniform. English is not. It is three well-documented morphological systems stacked: an inherited Germanic/Old English layer that provides the inflectional machinery and most common function words, a Latin layer introduced largely through ecclesiastical and scholarly borrowing, and a Greek layer of compound roots used in scientific and philosophical vocabulary. A French/Norman layer adds further borrowings with their own smaller inventory of suffixes.</p>
+<p>The layers coexist in modern English but have different productivity profiles.</p>
+<hr />
+<h3>Observation</h3>
+<p>Germanic-layer derivational suffixes (<em>-ly, -ness, -ful, -less, -hood, -ship, -dom, -th</em>) are productive and regular. <em>Softly</em> is always related to <em>soft</em>, <em>stillness</em> to <em>still</em>. Collapsing these is safe even when the underlying root happens not to be present in a working vocabulary.</p>
+<p>Latin-layer derivational suffixes (<em>-tion, -sion, -ment, -ity, -ance, -ence, -ive, -ous, -al, -able, -ible</em>) are conditionally productive. Some Latin-derived words have a corresponding living English verb — <em>decide / decision, move / movement, express / expression, resist / resistance</em>. Others do not — <em>mission, vision, station, nation, question, intelligence, patience</em>. For the second group, English has effectively frozen the Latin noun as a standalone concept; the underlying Latin verb either never entered English as a productive root, entered and then died, or survives only in other derivatives.</p>
+<p>Greek-layer suffixes (<em>-logy, -graphy, -meter, -scope, -phone, -cracy</em>) are different again. They are compound roots rather than derivational suffixes. <em>Biology</em> is not the nominalisation of a verb; it is <em>bios</em> + <em>logos</em>. Stripping is inappropriate; tagging the constituent roots is.</p>
+<p>French-layer suffixes (<em>-age, -ette, -esque</em>) follow roughly the same pattern as Latin, with a higher proportion of frozen borrowings.</p>
+<p>The correct behaviour therefore depends on which layer a word belongs to and, within the Latin and French layers, on whether the candidate root exists as a live English word.</p>
+<hr />
+<h3>Implementation</h3>
+<p>Suffixes are tagged with their layer at the specification level:</p>
+<pre><code class="language-python">LAYERS = {
+    'ly':    'germanic',   'ness':  'germanic',   'ful':  'germanic',
+    'less':  'germanic',   'hood':  'germanic',   'ship': 'germanic',
+    'tion':  'latin',      'sion':  'latin',      'ment': 'latin',
+    'ity':   'latin',      'ance':  'latin',      'ence': 'latin',
+    'ive':   'latin',      'ous':   'latin',      'al':   'latin',
+    'logy':  'greek',      'graphy':'greek',      'meter':'greek',
+    'age':   'french',     'ette':  'french',
+    # ...
+}
+</code></pre>
+<p>The lemmatisation procedure dispatches on layer:</p>
+<ul>
+<li>
+<p><strong>Germanic layer</strong>: unconditional collapse. Candidate stems are computed by suffix-specific rules; the first plausible candidate is accepted whether or not it is present in the vocabulary. Rationale: Germanic derivational morphology is productive enough that unseen roots are highly likely to be real.</p>
+</li>
+<li>
+<p><strong>Latin layer</strong>: vocabulary-gated collapse. Candidate stems are computed using suffix-specific rules that account for Latin morphophonological patterns (<em>decision → decide</em> via <em>-sion → -de</em>; <em>expression → express</em> via <em>-sion → -ss</em>; <em>exhaustion → exhaust</em> via <em>-tion → ∅</em>). If any candidate is present in the provided vocabulary, the collapse is committed. If none are, the surface form is tagged <code>base_latin_frozen</code> and retained as its own lemma.</p>
+</li>
+<li>
+<p><strong>Greek layer</strong>: no collapse. The word is tagged with its Greek root and kept as a standalone lemma.</p>
+</li>
+<li>
+<p><strong>French layer</strong>: vocabulary-gated, as for Latin.</p>
+</li>
+</ul>
+<p>The vocabulary argument to the lemmatiser is the set of known base forms — in a concept-graph system, this is the set of existing concept-node keys. The vocabulary-gated rule is then semantically meaningful: a Latin-layer collapse is committed exactly when the target concept already exists, in which case the collapse represents a grammatical role edge to that concept; it is refused when the target does not exist, in which case forcing a collapse would either create a bogus new concept or erroneously redirect to a homonym.</p>
+<hr />
+<h3>Correctness</h3>
+<p>The procedure returns <code>(lemma, edge_tag, layer)</code>. The disambiguation behaviour on representative cases:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>softly</code></td>
+<td><code>(soft, adverb_ly, germanic)</code></td>
+</tr>
+<tr>
+<td><code>stillness</code></td>
+<td><code>(still, nom_ness, germanic)</code></td>
+</tr>
+<tr>
+<td><code>decision</code></td>
+<td><code>(decide, nom_sion, latin)</code></td>
+</tr>
+<tr>
+<td><code>expression</code></td>
+<td><code>(express, nom_sion, latin)</code></td>
+</tr>
+<tr>
+<td><code>movement</code></td>
+<td><code>(move, nom_ment, latin)</code></td>
+</tr>
+<tr>
+<td><code>silence</code></td>
+<td><code>(silent, nom_ence, latin)</code></td>
+</tr>
+<tr>
+<td><code>resistance</code></td>
+<td><code>(resistant, nom_ance, latin)</code></td>
+</tr>
+<tr>
+<td><code>mission</code></td>
+<td><code>(mission, base_latin_frozen, latin)</code></td>
+</tr>
+<tr>
+<td><code>vision</code></td>
+<td><code>(vision, base_latin_frozen, latin)</code></td>
+</tr>
+<tr>
+<td><code>question</code></td>
+<td><code>(question, base_latin_frozen, latin)</code></td>
+</tr>
+<tr>
+<td><code>biology</code></td>
+<td><code>(biology, greek_compound[bio+logos:word/reason], greek)</code></td>
+</tr>
+<tr>
+<td><code>cottage</code></td>
+<td><code>(cottage, base_french_frozen, french)</code></td>
+</tr>
+</tbody>
+</table>
+<p>All twenty-one regression cases for the layer-aware lemmatiser pass. The vocabulary used in evaluation includes the living English verb and adjective roots one would expect to find in any general-purpose English concept graph.</p>
+<hr />
+<h3>A stylometric consequence</h3>
+<p>The layer distribution of a text is a measurable property. Running the lemmatiser over a 5,290-word prose chapter and partitioning by narrative scene produced the following Germanic-to-Latin token ratios:</p>
+<table>
+<thead>
+<tr>
+<th>Scene type (summary)</th>
+<th>Germanic %</th>
+<th>Latin %</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Interior consciousness, narration</td>
+<td>11–15</td>
+<td>2–4</td>
+</tr>
+<tr>
+<td>Institutional report prose</td>
+<td>7</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Dialogue (bureaucratic characters)</td>
+<td>9</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>The difference between narrative interiority (low Latin) and institutional reportage (high Latin) is large enough to distinguish the two by shallow morphological features alone. This was not a designed feature of the lemmatiser; it fell out of the layer-tagging. The practical implication is that the layer distribution can be used as a cheap, interpretable feature for stylometric analysis, authorship detection, or genre classification, in settings where a deep neural approach would be overkill.</p>
+<hr />
+<h3>Limitations</h3>
+<p>The vocabulary-gated procedure is only as good as the vocabulary. A vocabulary that is missing common verb roots will produce excess false-frozen tags. In a concept-graph setting this is self-correcting, because the gradual accretion of concepts into the graph progressively reduces the set of apparent frozen borrowings. In a static evaluation setting it requires a reasonably complete seed vocabulary to avoid misleading results.</p>
+<p>Some Latin-derived words are in a genuinely ambiguous state — <em>marriage</em> has a living root <em>marry</em> but behaves as if frozen in most contexts; <em>survival</em> is clearly derived from <em>survive</em> but shades into frozen use in expressions like <em>survival instinct</em>. The current procedure commits to collapse if the root is present in the vocabulary, which is the correct default in most applications, but may over-collapse for applications that need to distinguish the compound-as-concept from the verbal-process sense.</p>
+<p>The Greek-layer handling is coarse. The current implementation recognises ten common compound suffixes; English scientific vocabulary has a longer tail of less frequent roots (<em>-pathy, -trophy, -genesis, -plasm</em>) that would be straightforward to add but have not been exhaustively catalogued.</p>
+<hr />
+<h3>Related work</h3>
+<p>The three-layer decomposition of English morphology is standard in historical linguistics (Baugh &amp; Cable, <em>A History of the English Language</em>; Algeo, <em>The Origins and Development of the English Language</em>). The Latinate layer's partial productivity is discussed in Aronoff's work on English word-formation rules. The application of this decomposition as a runtime gate for lemmatisation appears to be novel, though it is a small enough insight that parallel discovery is likely. The implementation here is intended as a reference and a reproducibility target, not as a claim of priority.</p>
+<hr />
+<p><em>Raychell Langan · NEXICOG Ltd · Hampshire, UK</em></p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

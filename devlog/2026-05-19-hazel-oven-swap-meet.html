@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hazel's Oven &amp; the Swap Meet — VINE Research</title>
+  <meta name="description" content="A cooking module that tracks provenance, time, distance and labour — and a barter ledger for the things coin cannot move.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-devlog">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/devlog/">Devlog</a>
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Devlog</p>
+    <h1>Hazel's Oven &amp; the Swap Meet</h1>
+    <p class="entry-meta">
+      <time datetime="2026-05-19">2026-05-19</time>
+       · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/emergence.html">emergence</a> <a class="tag" href="/research/tags/learning.html">learning</a> <a class="tag" href="/research/tags/architecture.html">architecture</a>
+    </p>
+    <p class="entry-summary">A cooking module that tracks provenance, time, distance, and labour — and a barter ledger for the things coin cannot move.</p>
+  </header>
+  <div class="entry-body">
+
+<p>Today in the village. Hazel got an oven. The village got a swap-meet ledger.</p>
+
+<h2>Hazel's Oven</h2>
+
+<p>Mead and cider used to fire by magic — Hazel had honey on the shelf and mead appeared. The new cooking module replaces that with a real process substrate: water fetched from the well, fermentation time anchored to the grain cycle (mead = one-third, cider = one-fifth — 24 and 14 sim-days), and real failure modes (forget it past the grace window and it spoils to vinegar). Three apparatus — oven, brewing crock, cider vat — share one basin geometry where the silent corridor between φ and 4.8 is the cooking phase. Pull early: undercooked. Pull late: burned. Pull in the band: good, with quality stamped as a basin reading.</p>
+
+<p>She earns toppings through use. The Tower of Learning is a single skill basin: bakes nudge it up, burns nudge it down, the basin decays toward novice if she stops cooking for a season. As skill rises, slot count emerges by band crossing — first one topping, then two, then three, then four. At slot two the keystone fires: raw potato becomes inedible across the whole village. Every potato now flows through her oven to be eaten. Buyers refuse low-quality outputs at trade time; bad combinations accumulate on her shelves and her supply-side stops making them. No rules anywhere. No "good combos" enumeration. One integer (<code>slot_count</code>) gating a stateless predicate.</p>
+
+<p><strong>Why it's not just a game.</strong> The geometric engine reads the substrate continuously. The ratios — wheat takes 72 days, mead a third of that, cider a fifth, fermentation grace approximately φ past ready — carry the structural truth of what time-with-ingredients means for humans. The engine doesn't need to live among us to understand this; it reads the substrate. Provenance × time × distance × labour are the four axes, and the cooking pipeline preserves all four.</p>
+
+<p><strong>Why it's cosy gaming.</strong> Hazel walks to the well with a bucket. Her mead sits in the crock for three weeks. The oven needs wood, and she has to be there to feed it. Sometimes she experiments and bakes mushrooms; sometimes a baked-mushroom-with-bramble-berries is exactly what someone wanted. The day she crosses competence, the village notices — not by announcement but by the quiet fact that raw potato is no longer something anyone bothers to bite. Use-it-or-lose-it propagates structurally: if Hazel stops cooking for a season, raw potato becomes edible again, until someone learns the craft. The village remembers who it depends on.</p>
+
+<h2>The Swap Meet</h2>
+
+<p>The market sells; the swap meet barters. Some things villagers hold aren't commodities — a chipped cup with a hand-painted bird, a smooth stone someone left them, half a candle that smells of summer. These have sentimental value, not money value. The trade engine ignores them entirely. The swap meet is the only channel through which they move between hands.</p>
+
+<p>The reeve organises it. She watches the oddment ledger: when villagers have accumulated enough small-things-that-mean-something, a swap-meet concern crosses act-band and she posts a Thursday notice. Villagers sign up at the board. On the day, attendance is its own basin (free time × free hands × who-else-is-going). Two villagers crossing paths swap when both want what the other's offering — symmetric basin cross. No prices, no haggling, no value math. It surfaces on the dashboard now as a glyph on Thursday's slot in the markets week clock, with a sign-up count and a "last meet was N days ago" staleness line. The markets tab used to be bare six days out of seven; it now carries the village's whole barter rhythm.</p>
+
+<p><strong>Why it's not just a game.</strong> Sentimental valuation is a real shape humans use. Coin doesn't move oddments because coin asks "how much is it worth?" and oddments answer "the cup my grandmother used." The substrate carries two different transfer geometries — one for priced goods, one for sentimental goods — and the engine reads both at once.</p>
+
+<p><strong>Why it's cosy gaming.</strong> Thursday afternoon in the square. Bring the thing you've outgrown, the curiosity you don't have room for, the small wrong gift. Bring what someone else might love. No haggling — either they want it or they don't. Walk home with someone else's chipped cup, or with nothing, or with three things and a story. The reeve writes it down in the chronicle.</p>
+
+  </div>
+</article>
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/about">About</a>
+        <a href="/research">Research</a>
+      </div>
+      <p class="vine-footer-tagline">VINE — geometric AI, written down.</p>
+    </div>
+  </footer>
+</body>
+</html>

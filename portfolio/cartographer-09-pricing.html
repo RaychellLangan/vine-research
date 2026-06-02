@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pricing — VINE Research</title>
+  <meta name="description" content="How prices emerge from individual actor valuations. Supply and demand as the shape of what&#39;s available and what&#39;s wanted across the village. Regional trade creating genuine price differentials.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>Pricing</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/economy.html">economy</a>
+      
+    </p>
+    <p class="entry-summary">How prices emerge from individual actor valuations. Supply and demand as the shape of what&#39;s available and what&#39;s wanted across the village. Regional trade creating genuine price differentials.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Pricing</h1>
+<h2>Starting prices</h2>
+<p>When the game initialises, prices are set. Every tradeable good starts with a baseline value so that the first morning of the village is not a negotiation in a vacuum.</p>
+<p>After that, the game is on its own.</p>
+<h2>Value is per actor</h2>
+<p>Every actor has their own perception of what something is worth, and that perception is not fixed.</p>
+<p>It is shaped by familiarity: an actor who has seen a lot of something tends to value it less. It is shaped by need: an actor who is desperate for bread will pay more for bread. It is shaped, over time, by preference — as actors develop taste for specific goods, specific qualities, specific producers, what they are willing to pay for the things they want most begins to diverge from what anyone else would pay for the same item. And it is shaped by mood. An actor having a good week is not the same buyer as an actor having a bad one.</p>
+<p>There is no mechanism in the Cartographer that reconciles these individual valuations into a single agreed price. The price of a loaf of bread in the market is not a number stored anywhere. It is the outcome of two actors, each with their own current valuation, reaching an exchange.</p>
+<h2>What this produces</h2>
+<p>Prices in the Cartographer are not a layer on top of the economy. They are the economy — in the same way that temperature is not a measurement imposed on a gas but the state of the gas itself.</p>
+<p>The market does not have prices. It has actors with valuations, and when those actors trade, prices are what that looks like from the outside.</p>
+<p>This means prices respond to everything the actors respond to: the season, the state of supply chains, the mood of the village, the particular history of specific goods in specific households. A bad harvest does not trigger an inflation mechanic. It makes individual actors more desperate for food, which changes what those actors will pay, which changes what exchanges look like. That is what inflation is.</p>
+<h2>Regional trade and the ecology differential</h2>
+<p>In the current beta, there is one village. When the game scales to multiple villages trading across regions, this architecture becomes something more.</p>
+<p>Because the ecology engine generates traits independently in each region, regions will have genuinely different goods. What one region grows in abundance, another may never have seen. What is cheap and ordinary in one market may be rare and extraordinary in the next.</p>
+<p>The golden birch example makes this concrete. Suppose the ecology engine hands a golden trait to a birch species in one region — a birch that grows at twice the normal speed and yields luminous wood. In that region, golden birch is everywhere. Every carpenter works with it. It is the local wood, familiar and cheap. Nobody thinks much of it.</p>
+<p>A trader arriving from a region that has never seen a golden tree will value that wood entirely differently. They have no model of its abundance here. From where they stand, they are looking at something rare and extraordinary, and the price they are willing to pay reflects the scarcity they perceive — not the scarcity that actually exists in this village.</p>
+<p>Neither of them is wrong. The gap between what the seller thinks it is worth and what the buyer thinks it is worth is where the trade happens, and that gap is a product of their different ecologies, their different histories, their different eyes.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cartographer-08-ecology.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Ecology Engine</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cartographer-10-stock-market.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Stock Market</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

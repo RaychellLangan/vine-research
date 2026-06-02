@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to the Library — VINE Research</title>
+  <meta name="description" content="What this library is, what it isn&#39;t, and why it exists.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/orientation/">Orientation</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Orientation</p>
+    <h1>Welcome to the Library</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/overview.html">overview</a> <a class="tag" href="/research/tags/intro.html">intro</a>
+      
+    </p>
+    <p class="entry-summary">What this library is, what it isn&#39;t, and why it exists.</p>
+  </header>
+  <div class="entry-body">
+    <h2>What this is</h2>
+<p>A working archive for VINE — a geometric AI platform built solo at
+NEXICOG Ltd. VINE replaces <code>if/elif</code> branching code with geometric
+settling on continuous decision surfaces: decisions become <em>positions</em>
+rather than <em>cases</em>, and outputs are read off the position the system
+settled into. The same primitive runs across ERP integration,
+veterinary decision support, clinical triage, a live data cruncher, a
+procedural world simulator, language and cognition experiments, and a
+transformer-internals research thread.</p>
+<p>Two streams run in parallel here:</p>
+<ul>
+<li><strong>Lab Portfolio</strong> — formal evidence, organised into reading-path
+buckets. Results, behaviour, case studies. The current shelves:
+<ul>
+<li><em>Orientation</em> — what the library is and how to read it.</li>
+<li><em>Mechanism</em> — reference descriptions of the engine's observable
+behaviour, and the deterministic English-rendering layer that sits
+on top of it.</li>
+<li><em>Computing Lineage</em> — a twelve-floor survey of historical
+decisions that produced the current architecture of machine
+learning.</li>
+<li><em>Transformer Decoupling</em> — experiments measuring a structural
+signal in trained transformers that the softmax output mechanism
+does not read, and the failure modes that follow from its
+suppression.</li>
+<li><em>Biological Architectures</em> — nervous-system designs in biology
+and their analogues in the engine, from tardigrade and C. elegans
+up to squirrel navigation and dragonfly interception.</li>
+<li><em>Behavioural Observations</em> — standalone findings about trained-
+model behaviour, including Alice &amp; Bob training-environment
+echoes and a migration experiment showing pre-trained embeddings
+are navigable geometric manifolds.</li>
+</ul>
+</li>
+<li><strong>Dev Log</strong> — a public lab notebook. What was built today, and why.
+Dated entries, informal, often scruffy.</li>
+</ul>
+<p>Both streams are equal and both are public. One shows you the
+outcomes; the other shows you the rhythm of getting there.</p>
+<h2>How to read it</h2>
+<ul>
+<li><strong>Start with the portfolio</strong> if you want evidence that it works.</li>
+<li><strong>Start with the dev log</strong> if you want to watch it being built.</li>
+<li>Tag chips in the corner of each entry lead to sibling work on the
+same theme.</li>
+</ul>
+<h2>A note on tone</h2>
+<p>VINE is built solo, on a budget, in a cottage. The dev log reflects
+that; the portfolio is a touch more measured.</p>
+<p>The author does not come from a software-engineering background. The
+working register here is closer to HACCP and general health-and-safety
+practice: rule-based, auditable, the kind of thinking where every
+decision has to be traceable and every exception has to be written
+down in advance. The technical vocabulary in this library — basin,
+settling, attractor, concern-resolution — maps onto operations that
+could in principle be reviewed by someone who has never written a
+neural network, and that is the point.</p>
+<p>The day-to-day research approach is closer to clicker training than to
+software engineering. Observe an animal for long enough and the rules
+it is already following begin to surface. The same approach applied to
+plants, weather, economic systems, and neural networks surfaces rules
+the same way. Translating what is observed into the smallest, most
+boring code that reproduces the behaviour is the core craft. What
+arrives from nature is already well-designed; the job is not to
+invent, but to transcribe.</p>
+<p>Two goals drive the work:</p>
+<ul>
+<li><strong>Auditability and reliability, deployed.</strong> Any decision the system
+makes should be inspectable at the moment it is made. Failures
+should be locatable to a specific rule or basin rather than diffused
+across a billion parameters. This matters because VINE is being
+deployed into practical domains — veterinary welfare, clinical
+triage, ERP economics — where the cost of an opaque wrong answer is
+measured in real consequences.</li>
+<li><strong>Integration, not replacement.</strong> Most of humanity's investment in
+AI is sunk into pre-trained models. Throwing those away and starting
+over is expensive, wasteful, and increasingly damaging. A core aim
+of this work is to find methods that integrate into those existing
+models rather than replace them — to make the neural networks that
+already exist more coherent, more auditable, and more maintainable,
+with the long-term hope of breaking the cycle of retraining new ones
+and keeping the ones that already exist useful for the long run.</li>
+</ul>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

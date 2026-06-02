@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gait Emergence — VINE Research</title>
+  <meta name="description" content="A walking rhythm appears from field dynamics alone — no central pattern generator, no walk command. The oscillation of a shared field settling toward its attractor is the gait. Opposite-sign output legs turn the oscillation into paired alternation.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/cognitive/">Biological Architectures</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Biological Architectures</p>
+    <h1>Gait Emergence</h1>
+    <p class="entry-meta">
+      <time datetime="2025-12-07">2025-12-07</time>
+      
+        · <a class="tag" href="/research/tags/cognitive.html">cognitive</a> <a class="tag" href="/research/tags/biology.html">biology</a> <a class="tag" href="/research/tags/tardigrade.html">tardigrade</a> <a class="tag" href="/research/tags/gait.html">gait</a>
+      
+    </p>
+    <p class="entry-summary">A walking rhythm appears from field dynamics alone — no central pattern generator, no walk command. The oscillation of a shared field settling toward its attractor is the gait. Opposite-sign output legs turn the oscillation into paired alternation.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Gait Emergence</h1>
+<p><em>A walking rhythm appears from field dynamics alone — no central
+pattern generator, no walk command, no rhythm code anywhere.</em></p>
+<hr />
+<h2>The Question</h2>
+<p>Where does rhythm come from, if no part of the nervous system is a
+rhythm generator?</p>
+<h2>The Answer, Short Version</h2>
+<p>The field. A shared neuropeptide-bath medium couples the body's four
+ganglia, and when excited by stimulus it oscillates as it settles
+toward its attractor. Give each ganglion opposite-sign output legs,
+and the oscillation <em>is</em> a gait. The walking rhythm is what the field
+does naturally when pushed away from rest.</p>
+<h2>The Setup</h2>
+<p>The tardigrade has four ganglia — G1 anterior, G4 posterior — each
+driving one pair of legs (La, Lb) with opposite-sign outputs. A
+shared <code>shared field</code> carries drift across all four ganglia. There
+is no central pattern generator, no oscillator module, no timing
+signal, and no &quot;walk&quot; command anywhere in the code.</p>
+<p>The test: feed a constant bilateral stimulus, log the leg activations
+at each timestep, and look at what the legs do. If the field alone
+cannot produce a gait, leg outputs will drift to some static
+equilibrium or to uncoordinated noise. If the field <em>can</em> produce a
+gait, we should see paired alternation (La and Lb opposite signs) and
+a biologically plausible anterior-to-posterior amplitude wave (G1
+loudest, G4 quietest).</p>
+<h2>What Emerged</h2>
+<p>Within fifteen timesteps the system resolved to a clean walking
+pattern:</p>
+<pre><code>Step | Field  | G1 → G2 → G3 → G4             | Leg pairs (head → tail)
+-----|--------|-------------------------------|-----------------------------
+  0  | +0.161 | -0.00 → +0.00 → -0.00 → +0.00 | near-zero
+  4  | +0.686 | +0.22 → +0.21 → +0.21 → +0.20 | [+0.22,-0.22] ... [+0.19,-0.19]
+  8  | +1.047 | +0.31 → +0.26 → +0.27 → +0.24 | [+0.30,-0.30] ... [+0.24,-0.24]
+ 12  | +1.285 | +0.31 → +0.25 → +0.26 → +0.22 | [+0.30,-0.30] ... [+0.22,-0.22]
+ 16  | +1.435 | +0.27 → +0.20 → +0.22 → +0.17 | [+0.26,-0.26] ... [+0.17,-0.17]
+</code></pre>
+<blockquote>
+<p>Leg pair alternation: <strong>100%</strong>
+Anterior → Posterior wave: <strong>YES</strong></p>
+</blockquote>
+<p>Two features, neither programmed:</p>
+<ol>
+<li><strong>Paired alternation.</strong> Every leg pair (La, Lb) has opposite signs
+at every timestep. This one is the output structure of each
+ganglion — one leg pushes, one pulls — but the <em>synchronisation</em> of
+this alternation across all four pairs is a field-coupling effect.
+Without the shared field, the four ganglia could phase-drift
+independently. They do not.</li>
+<li><strong>Anterior-to-posterior amplitude wave.</strong> G1's output is
+consistently larger than G4's — the excitation attenuates as it
+travels through the shared field. By step 16 the amplitude ratio is
+roughly 1.5:1 from head to tail. This matches the walking gait of
+real tardigrades, where front legs do more of the work.</li>
+</ol>
+<p>Baseline is also worth noting. With no stimulus at all, the system
+left to drift already shows the same alternation: <code>[+0.21, -0.21, +0.21, -0.21, +0.22, -0.22, +0.20, -0.20]</code>. The field's resting
+dynamics already carry the seed of the rhythm. Stimulus doesn't
+<em>cause</em> the gait; it amplifies and organises something the geometry
+was already doing.</p>
+<h2>What This Proves</h2>
+<p>A single dynamical system — a shared field coupled to four
+opposite-sign output pairs — produces a walking rhythm without any
+rhythm-generating component. No central pattern generator. No timing
+circuit. No oscillator. No walk command. No training loop.</p>
+<p>The implication for the VINE paradigm is direct: if you have a field
+and a body plan with opposite-sign outputs, you do not need to build
+a rhythm module. Rhythm is what the field does. You get coordinated
+locomotion for free from the same geometry that handles phototaxis,
+concept formation, and every level of the tower above.</p>
+<h2>What This Does Not Prove</h2>
+<p>This is not a biological claim about how real tardigrade nervous
+systems generate gait. Real animals have central pattern generators,
+proprioception, and mechanical feedback that this model does not
+include. The claim is narrowly architectural: <em>in a system built on
+shared-field coupling and opposite-sign ganglionic outputs, gait
+emerges as a natural consequence of the geometry.</em> Whether biology
+arrived at the same solution is a separate question this experiment
+cannot answer.</p>
+<p>Nor does it claim the gait is optimal, stable under perturbation, or
+robust to damage. Those are later tests. What it shows is the minimal
+case: geometry under excitation, walking falls out.</p>
+<hr />
+<p><em>Raychell Langan · NEXICOG Ltd · Hampshire, UK</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cognitive-04-navigation-energy.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Navigation Energy</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cognitive-06-phototaxis.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Phototaxis Without Rules</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

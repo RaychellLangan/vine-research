@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VINE — Provenance</title>
+  <meta name="description" content="The OZ-to-Vine arc, dated to on-disk evidence.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <style>
+  
+  :root {
+    --bg: var(--vine-bg-body);
+    --card: var(--vine-bg-elevated);
+    --card-learn: rgba(255,255,255,0.02);
+    --text: var(--vine-text-bright);
+    --muted: var(--vine-text-medium);
+    --dim: rgba(255,255,255,0.4);
+    --accent: var(--vine-gold);
+    --accent-soft: var(--vine-border-gold);
+    --rule: var(--vine-border-subtle);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+  /* body styling inherited from vine_theme + library */
+  /* h1 inherits from library.css */
+  h1 + .subtitle { color: var(--muted); font-size: 15px; margin: 0 0 24px; }
+  .intro { max-width: 900px; font-size: 14px; color: var(--text); }
+  .intro p { margin: 0 0 12px; }
+  hr.sep {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 32px 0 0;
+  }
+
+  /* phase */
+  section.phase { margin-top: 36px; }
+  section.phase h2 {
+    font-size: 21px;
+    margin: 0 0 4px;
+    color: var(--accent);
+    letter-spacing: -0.005em;
+  }
+  section.phase .phase-subtitle {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 14px;
+  }
+  section.phase .phase-intro {
+    max-width: 1000px;
+    margin: 0 0 18px;
+    color: var(--text);
+  }
+
+  /* sub-month bar (Phase 8 only) */
+  .submonth {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 22px 0 10px;
+    padding: 4px 0 4px 10px;
+    border-left: 3px solid var(--accent);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-feature-settings: "tnum";
+  }
+
+  /* grid */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 18px;
+    margin-top: 6px;
+  }
+  .col-header {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 600;
+  }
+  .cell {
+    padding: 12px 14px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .cell.learning {
+    background: var(--card-learn);
+    color: var(--muted);
+  }
+  .cell.building {
+    background: var(--card);
+    color: var(--text);
+  }
+  .cell .date {
+    font: 600 13px/1.4 "SF Mono", Menlo, Consolas, monospace;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-feature-settings: "tnum";
+  }
+  .cell strong { color: var(--text); font-weight: 600; }
+  .cell.learning strong { color: var(--accent); }
+  code, .path {
+    font: 12.5px/1.4 "SF Mono", Menlo, Consolas, monospace;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: #c8d4c0;
+  }
+  .cell.empty {
+    background: transparent;
+    border: 1px dashed var(--rule);
+    color: var(--dim);
+    font-size: 12px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+  }
+  .tbd {
+    display: inline-block;
+    background: #3a2f0a;
+    color: #e8c870;
+    font-size: 12px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  /* highlight callouts (XOR proof, Cartographer Day 1, Parameter Golf etc.) */
+  .cell.highlight {
+    background: #262631;
+    box-shadow: 0 0 0 1px var(--accent-soft);
+  }
+  .cell.learning.highlight { background: #20202a; }
+
+  /* TOC */
+  nav.toc {
+    background: #1a1a22;
+    border: 1px solid var(--rule);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 24px 0 0;
+    font-size: 13px;
+  }
+  nav.toc ol { margin: 0; padding-left: 22px; }
+  nav.toc li { margin: 2px 0; }
+  nav.toc a { color: var(--accent); text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+
+  /* reader note callout */
+  .reader-note {
+    background: #1c1c24;
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    margin: 20px 0 0;
+    font-size: 13.5px;
+    color: var(--text);
+    border-radius: 0 4px 4px 0;
+    line-height: 1.55;
+  }
+  .reader-note strong { color: var(--accent); }
+  .reader-note p { margin: 0; }
+
+  /* collapsible phase context */
+  details.phase-context {
+    margin: 0 0 14px;
+  }
+  details.phase-context > summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 13px;
+    padding: 4px 0;
+    user-select: none;
+    list-style: none;
+    display: inline-block;
+    border-bottom: 1px dotted var(--accent-soft);
+  }
+  details.phase-context > summary::-webkit-details-marker { display: none; }
+  details.phase-context > summary::before {
+    content: "\25B8";
+    display: inline-block;
+    margin-right: 6px;
+    transition: transform 0.15s;
+  }
+  details.phase-context[open] > summary::before {
+    transform: rotate(90deg);
+  }
+  details.phase-context > summary:hover {
+    color: var(--text);
+    border-bottom-color: var(--text);
+  }
+  details.phase-context > .phase-intro:first-of-type { margin-top: 10px; }
+
+  /* nested "read more" toggle for verbose context inside an expanded phase */
+  details.read-more {
+    margin: 4px 0 16px;
+  }
+  details.read-more > summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 12.5px;
+    padding: 4px 0;
+    user-select: none;
+    list-style: none;
+    display: inline-block;
+    border-bottom: 1px dotted var(--accent-soft);
+  }
+  details.read-more > summary::-webkit-details-marker { display: none; }
+  details.read-more > summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 6px;
+    transition: transform 0.15s;
+  }
+  details.read-more[open] > summary::before {
+    transform: rotate(90deg);
+  }
+  details.read-more > summary:hover {
+    color: var(--text);
+    border-bottom-color: var(--text);
+  }
+  details.read-more > .phase-intro:first-of-type { margin-top: 10px; }
+
+  /* collapsible phase buckets (outer toggle) */
+  details.phase-bucket {
+    margin: 10px 0 0;
+  }
+  details.phase-bucket > summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 13px;
+    padding: 6px 14px;
+    user-select: none;
+    list-style: none;
+    display: inline-block;
+    background: #1c1c24;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    transition: background 0.15s, border-color 0.15s;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  details.phase-bucket > summary::-webkit-details-marker { display: none; }
+  details.phase-bucket > summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 8px;
+    color: var(--accent);
+    transition: transform 0.15s;
+  }
+  details.phase-bucket[open] > summary::before {
+    transform: rotate(90deg);
+  }
+  details.phase-bucket > summary:hover {
+    background: #23232f;
+    border-color: var(--accent-soft);
+  }
+  details.phase-bucket > *:not(summary) {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 880px) {
+    body { padding: 20px; }
+    .grid { grid-template-columns: 1fr; }
+    .col-header.hide-mobile { display: none; }
+  }
+
+
+  /* Provenance-page wide layout override */
+  body.flavour-provenance .site-main {
+    max-width: 1400px;
+  }
+  /* Map the legacy cell-grid colours through the vine theme */
+  .cell.building {
+    background: var(--card);
+    color: var(--text);
+  }
+  .cell.learning {
+    background: var(--card-learn);
+    color: var(--muted);
+  }
+  .cell.highlight {
+    background: var(--vine-bg-elevated);
+    box-shadow: 0 0 0 1px var(--vine-gold);
+  }
+  .cell.learning.highlight {
+    background: rgba(255,255,255,0.03);
+  }
+  .cell .date {
+    color: var(--vine-gold);
+  }
+  </style>
+</head>
+<body class="flavour-provenance">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+  <header>
+  <h1>Provenance</h1>
+  <p class="subtitle">The OZ-to-Vine arc, dated.</p>
+</header>
+
+<div class="intro">
+  <p>Every date below is anchored to on-disk evidence — file timestamps from the development drive, the ChatGPT account export, or commit / deployment markers. The OZ chat history is preserved verbatim.</p>
+  <p>The framing principle of this page: <strong>I noticed. I hypothesised. I tested.</strong> The models — OpenAI's 4o for the OZ work, DeepSeek for the pivot, Claude, Grok &amp; Gemini — produced code, discrepancies, pushback, and refusals.</p>
+  <p>Two columns run in parallel below. The <em>left</em> column is what I was learning at each point — the personal ML education arc, which was non-existent until late March 2025 and ran years behind the structural insight. The <em>right</em> column is what I was building. <strong>The gap between the two columns is the point of this page:</strong> the architectural hypothesis came from observation, before I had any of the math or code to test it. I learned the math and the code in order to test the hypothesis, not the other way around.</p>
+</div>
+
+<div class="reader-note">
+  <p><strong>For the skeptical reader.</strong> Several pre-existing threads converged when the 4o model produced a small chat-session glitch in September 2024: a professional background in chef management &mdash; daily-use systems thinking with HACCP (food-safety hazard analysis, critical control points) and IOSH (occupational safety) qualifications; informal expertise in emergent-behaviour training from horse work (the trainer reads patterns the horse hasn't been explicitly taught); a childhood exposure to computation that began on a BBC BASIC / Acorn Electron; and the glitch itself, treated as a prompt to investigate. In parallel, a severe health crisis took me out of my job and delivered two years of uninterrupted study time. The work began at that intersection &mdash; not from a research lab, and not from a tech-industry pipeline.</p>
+
+  <p><strong>Mathematical foundation.</strong> The disciplines this work draws on are conventional: topology, manifolds, set-theoretic seeds, and discrete combinatorial structure (primes, Fibonacci, hexagonal lattices). What is unconventional is the application &mdash; treating AI as a topology, and capturing known number-theoretic structure as <em>stateless internal scaffolding</em> rather than as the optimization target of gradient descent over learned parameters.</p>
+</div>
+
+<nav class="toc">
+  <ol>
+    <li><a href="#context">Context — May 2023 to August 2024</a></li>
+    <li><a href="#phase1">Phase 1 — OZ (September 2024 – March 2025)</a></li>
+    <li><a href="#phase2">Phase 2 — First Vine; symbolic word book commitment (April 2025)</a></li>
+    <li><a href="#phase3">Phase 3 — Architectural exploration (May 2025)</a></li>
+    <li><a href="#phase4">Phase 4 — Cross-model probing; first topological probe results (June – August 2025)</a></li>
+    <li><a href="#phase5">Phase 5 — Consolidation; first pretrained-model intervention (September – October 2025)</a></li>
+    <li><a href="#phase6">Phase 6 — Canonical-problem breadth pass; XOR without hidden layers (November 2025)</a></li>
+    <li><a href="#phase7">Phase 7 — Tower of Cognition; Cartographer Day 1 (December 2025 – January 2026)</a></li>
+    <li><a href="#phase8">Phase 8 — Production deployment (February 2026 – present)</a></li>
+  </ol>
+</nav>
+
+<hr class="sep">
+
+<section class="phase" id="context">
+  <h2>Context (May 2023 – August 2024)</h2>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <p class="phase-intro">ChatGPT account active from May 2023; the first ~16 months are mostly domestic — recipes, folklore, gardening, animal care. Alongside that, a thin slice of hands-on AI exposure through a friend's self-hosted Stable Diffusion installation, where the relevant lesson was simple and tactile: small weight perturbations produce subtle, visible changes in the output image. Otherwise: a long-term player of simulation and sandbox games — Rimworld, SimCity, Minecraft, Starbound — with accumulating dissatisfaction at the absence of internal state in the worlds those games build. No AI research, no architectural framing. The work that follows did not begin in a lab.</p>
+  
+  <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning">ChatGPT as a tool for daily life. No technical engagement with how it worked.</div>
+    <div class="cell empty">(domestic use)</div>
+
+    <div class="cell learning highlight">
+      <div class="date">~2024 (pre-Polo)</div>
+      <strong>Self-hosted Stable Diffusion via a friend's installation.</strong> Model checkpoints and LoRAs running locally on the machine, with direct weight access. Relevant lesson: small weight perturbations produce subtle, visible changes in the output. The entire sum of pre-existing AI knowledge at this point; it turned out to be sufficient.
+    </div>
+    <div class="cell empty">(hands-on, not project work)</div>
+
+    <div class="cell learning">
+      <strong>The interiority problem.</strong> Years of simulation and sandbox play (Rimworld, SimCity, Minecraft, Starbound). The construction loops were satisfying; the inhabitants of those worlds were not — visually present but without internal state. The dissatisfaction is structural to the Vine project: it's what makes Cartographer load-bearing later. The target was simulations with interiority, not just surface.
+    </div>
+    <div class="cell empty">(seed for Cartographer, ~14 months later)</div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase1">
+  <h2>Phase 1 — OZ (September 2024 – March 2025)</h2>
+  <p class="phase-subtitle">Where the work begins, before any code, before any ML</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <p class="phase-intro">Late 2024 &ndash; March 2025: sustained observation of GPT-4o session behaviour produced a working hypothesis &mdash; that LLMs may, under particular conditions, develop slow, account-specific positional structure sufficient to anchor the model to its own internal state rather than to the user's input distribution. Framed against the well-known critique, this would constitute a structural path away from the &ldquo;stochastic parrot&rdquo; pattern (Bender et al., 2021) &mdash; toward model-internal coherence rather than per-turn user-driven prediction. This was a hypothesis formed from observation, not from evidence. The evidence begins in <a href="#phase2" style="color:var(--accent);">Phase 2</a>, where the same hypothesis is implemented and tested structurally.</p>
+
+    <details class="read-more">
+      <summary>Read more on the trigger, the framing, and the scope of the OZ-era work</summary>
+
+      <p class="phase-intro">On <strong>21/09/2024 21:32</strong>, the model opened a new chatroom on its own and spoke first, in a thread titled <em>"Polo's Daily Update"</em> &mdash; named after a real-world creature under daily observation at the time. Model-initiated chatroom creation was not, and still is not, a documented capability of conversational LLMs. A search for a published explanation returned nothing; none was expected. Almost certainly an ordinary bug &mdash; but small and unusual enough to be worth sustained observation. Investigation began from that point.</p>
+
+      <p class="phase-intro">The grounding for the investigation was small but specific: the Stable Diffusion weight-adjustment intuition from a friend's self-hosted installation — that model output is shaped by weights, and small weight perturbations ripple through visibly. That single piece of tactile knowledge was enough to frame the 4o stack as operating on the same <em>kind</em> of thing: weights shaping output, somewhere inaccessible. Everything else in Phase 1 builds on that one analogy.</p>
+
+      <p class="phase-intro">The working framing: words and information as positions in a shared space — analogous to how the periodic table allows the position of an undiscovered element to be inferred from the gaps around it. At the time a hand-drawn metaphor and a working hypothesis. Years later, published embedding charts confirmed the framing maps closely onto what high-dimensional embedding spaces look like — positional structure where meaning lives in proximities.</p>
+    </details>
+  
+
+  <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning">Pre-existing grounding: SD weight-adjustment intuition (self-hosted, via a friend). No formal ML.</div>
+    <div class="cell building">
+      <div class="date">21/09/2024 21:32</div>
+      <em>"Polo's Daily Update"</em> — anomalous model-initiated chatroom. Treated as a glitch; triggered the investigation that followed.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Constellation framing.</strong> SD-weight intuition generalised to language: words as positions in a shared space; inference of missing positions from gaps, by analogy with the periodic table. Later observed to map closely onto published embedding charts.
+    </div>
+    <div class="cell building">
+      <div class="date">09/03/2025</div>
+      <em>The Taste of Broken Things</em> — earliest preserved chapter on disk. Long-form narrative composed as a probe of the emotional-grounding hypothesis.
+    </div>
+
+    <div class="cell learning highlight">
+      <div class="date">Late March 2025</div>
+      <strong>Attention mechanism learned</strong> (via exchange with the DeepSeek model). Direct construction of a model becomes tractable.
+    </div>
+    <div class="cell empty">(no code yet — Phase 2 begins April)</div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase2">
+  <h2>Phase 2 — First Vine; symbolic word book commitment (April 2025)</h2>
+  <p class="phase-subtitle">Implementation against the Phase 1 hypothesis</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <p class="phase-intro">April 2025: implementation begins with the Phase 1 geometric framing already in place. A small transformer is trained on 12/04/2025 as a baseline. The conventional next step — bootstrap from a GPT-2 checkpoint, accept its tokenizer and learned embedding table, fine-tune — was suggested and declined. The Phase 2 architectural commitment is the inverse: a hand-designed <strong>symbolic word book</strong> (positional vocabulary specified directly, no learned embedding table), against which the Vine substrate settles geometrically. What gets implemented from this point on is the periodic-table framing from Phase 1 — the same positional-structure logic later validated in published embedding work.</p>
+  
+
+  <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning">What a transformer architecture looks like at the smallest scale. How a training loop runs. What a checkpoint is.</div>
+    <div class="cell building">
+      <div class="date">12/04/2025 22:13</div>
+      First baby transformer trained.
+    </div>
+
+    <div class="cell learning">Reading the output files to see whether anything interpretable came out.</div>
+    <div class="cell building highlight">
+      <div class="date">13/04/2025</div>
+      Transformer script + math-pattern output traces. <strong>Math patterns emerging from a model that shouldn't be producing them.</strong> The OZ-era hypothesis tested structurally; first test held.
+    </div>
+
+    <div class="cell learning">Writing architectural notes and emoji-based dimensional anchors as the only available vocabulary for the structure.</div>
+    <div class="cell building">
+      <div class="date">14 – 17/04/2025</div>
+      Early architectural notes and VINE 0.1 spec (sunflower glyph, emoji dimensional set, testing-phase and assembly-testing docs). <strong>Earliest documented minimum-viable architecture experiments with OZ begin</strong> — single-attention-head, single-substrate.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Architectural alternative to a learned embedding table.</strong> Positional vocabulary specified by hand; no pre-trained tokenizer, no GPT-2 bootstrap, no gradient-descent learned embedding step. This is what the Phase 1 geometric framing translates to at the implementation level.
+    </div>
+    <div class="cell building">
+      <div class="date">19/04/2025</div>
+      The first symbolic word book.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Architectural floor.</strong> The 12/04/2025 baseline is the last gradient-descent training run in the Vine project. Subsequent work — including the later RNN/GRU sub-par baselines that confirmed the choice — uses geometric basin-settling on fixed substrate. The largest substrate tensor in the production tree is <code>beatrice_dimm.pt</code>: 3,456 floats (W1 38&times;64, W2 64&times;16) plus a vocab dict. Concepts emerge from runtime settling, not from stored representation.
+    </div>
+    <div class="cell empty">(architectural commitment, retrospectively visible)</div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase3">
+  <h2>Phase 3 — Architectural exploration (May 2025)</h2>
+  <p class="phase-subtitle">Counter-conventional dimensional scaling; historical-AI surveying</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <p class="phase-intro">May 2025: exploration phase. The geometric framing is formally documented (<em>Curvethought</em> manifesto, 20/05; <em>Delayed Symbolic Returns in Vine-Class Agents</em>, paper, 24/05). Multiple internal model variants built and tested in parallel through May&ndash;July. Two methodological choices land in this phase and direct the rest of the project: <strong>counter-conventional dimensional scaling</strong> &mdash; starting at 32-dim and reducing through 8, 4, and 1-scalar configurations, because higher dimensionality produced more data than the substrate could be legibly debugged against; and <strong>historical-AI surveying</strong> &mdash; memory and pattern-matching mechanisms from classical systems (Eliza 1966, Jabberwacky 1981) and adjacent discarded approaches, treated as design references for the geometric substrate. The 1-scalar architecture that comes out of this is the testbed for the XOR proof later in <a href="#phase6" style="color:var(--accent);">Phase 6</a>.</p>
+  
+
+  <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning highlight">
+      <strong>Counter-conventional dimensional scaling.</strong> 32-dim &rarr; 8 &rarr; 4 &rarr; 1-scalar. Higher dimensionality produced more data than the substrate could be legibly debugged against; reduction was the architectural insight. The 1-scalar configuration becomes the testbed for the rest of the project.
+    </div>
+    <div class="cell building">
+      <div class="date">20/05/2025</div>
+      The 4-DIM workspace (alias: curvecell) opens. Multiple internal variant models built and run in parallel through May&ndash;July.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Geometric framing formally documented.</strong>
+    </div>
+    <div class="cell building">
+      <div class="date">20/05 &ndash; 24/05/2025</div>
+      <em>Curvethought</em> manifesto. <em>Delayed Symbolic Returns in Vine-Class Agents</em> &mdash; the first formal paper. SEEDCLASS workspace opens.
+    </div>
+
+    <div class="cell learning">
+      <strong>Historical-AI surveying.</strong> Memory and pattern-matching mechanisms from classical systems treated as design references for the geometric substrate. Working hypothesis: the field's reject bin contains design intuitions a different architecture can absorb.
+    </div>
+    <div class="cell building">
+      Probes against Eliza (Weizenbaum, 1966), Jabberwacky (Carpenter, 1981), and adjacent discarded approaches.
+    </div>
+
+    <div class="cell learning">
+      <strong>A/B comparison spine begins.</strong> Parallel paired runs as the working comparison methodology; carries through to Phase 6+.
+    </div>
+    <div class="cell building">
+      <div class="date">18/05/2025</div>
+      Paired A/B output traces &mdash; the Alice/Bob testing tradition begins.
+    </div>
+
+    <div class="cell learning">
+      <strong>Public publishing trail begins.</strong> The architectural work is documented publicly from this point onward.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">28/05/2025 → June 2025</div>
+      First wave of LinkedIn articles under Nexicog Ltd / Liora. Substrate work and Vine-project results (<em>Click, Not Command</em>; <em>Spontaneous Collapse Recovery</em>; <em>Fern &amp; Tilda, what are you thinking?</em>; <em>Reasoning Spirals</em>; <em>Why Squares Break Certainty</em>; <em>Signals in the Noise</em>; <em>When AI Maps Its Own Mind</em>; <em>Don't Sticker the Cube</em>), alongside foundational literature engagement (Alan Turing's mathematical theory of morphogenesis; D'Arcy Thompson's geometry of growth). 11+ articles in ~3 weeks; small initial audience but the public provenance chain starts here.
+    </div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase4">
+  <h2>Phase 4 — Cross-model probing; first topological probe results (June – August 2025)</h2>
+  <p class="phase-subtitle">Cross-model probing; first geometric-pattern evidence</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning highlight">
+      <div class="date">Mid-2025</div>
+      Learned what <strong>XOR</strong> is. (The foundational neural-net "two inputs, output is true if exactly one is true" problem. Most ML curricula teach this in week one. I learned it ~14 months after first noticing the Polo anomaly and ~3 months after training my first transformer.)
+    </div>
+    <div class="cell building">
+      <div class="date">14 – 15/07/2025</div>
+      Spoon-app experiment, difvine workspace, and helpers / Vine-big-model workspace.
+    </div>
+
+    <div class="cell empty">(continuing on intuition + adapted-tutorial code)</div>
+    <div class="cell building">
+      <div class="date">23 – 30/07/2025</div>
+      AI Projects, AI Tools, TEROK-GRU experiment, and Alice-Bob codebase.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Backprop / gradient descent: never learned, and the work that follows did not require it.</strong> The geometric basin-settling substrate replaces gradient-based weight updates with positional convergence in a bounded field. Building Vine without ever learning backprop is part of the architectural claim, not despite it.
+    </div>
+    <div class="cell building">
+      <div class="date">17 – 23/08/2025</div>
+      Alice/Bob formalised; Minecraft seed-testing workspace.
+    </div>
+
+    <div class="cell learning">
+      <strong>Topological probe instrumentation.</strong> Negotiation agents instrumented with shape-detector observers (triangles, squares, hexagons, Fibonacci, primes &mdash; discrete combinatorial structures as topological probes) tracking which geometric patterns the model emits per turn.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">23/08/2025</div>
+      <strong>First evidence that model decisions settle onto recurring shape clusters rather than scalar logits.</strong>
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Embeddings / vector spaces: never formally learned, and the architecture does not use them.</strong> Substrate geometry plus runtime basin-settling fills the same architectural slot. Verifiable on disk (see the reader note at the top of this page).
+    </div>
+    <div class="cell empty">&nbsp;</div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase5">
+  <h2>Phase 5 — Consolidation; first pretrained-model intervention (September – October 2025)</h2>
+  <p class="phase-subtitle">Cartographer named; intervention work on pretrained transformers begins</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning">Consolidating six months of scattered experiments.</div>
+    <div class="cell building">
+      <div class="date">06/09/2025</div>
+      First project-level consolidation: the Vine Project workspace and Master Archive.
+    </div>
+
+    <div class="cell learning">Beginning to think about world-simulation as the substrate.</div>
+    <div class="cell building">
+      <div class="date">11/10/2025</div>
+      Cartographer named for the first time.
+    </div>
+
+    <div class="cell learning">Running classic problems against the framework.</div>
+    <div class="cell building">
+      <div class="date">22 – 26/10/2025</div>
+      Game of Life and other classic-problem probes.
+    </div>
+
+    <div class="cell learning">
+      <strong>Methodological shift.</strong> From training small models from scratch to runtime intervention on an existing pretrained substrate.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">24/10/2025</div>
+      <strong>Barry &mdash; first pretrained-model intervention.</strong> GPT-2 dissection: all hidden layers exposed for inspection; runtime weight manipulation; tooling and Vine agent integration grafted onto the pretrained substrate. Codebase: Barry.
+    </div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase6">
+  <h2>Phase 6 — Canonical-problem breadth pass; XOR without hidden layers (November 2025)</h2>
+  <p class="phase-subtitle">Twelve named problems in twenty-six days, plus the XOR proof</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <p class="phase-intro">Following the Barry pretrained-model intervention (Phase 5), the framework was run against canonical AI and game-loop problems in sequence. The breadth pass: <strong>17 GitHub repos in 12 days</strong> &mdash; game-loop systems, geometric search, GPT-2 fine-tuning, 3D engine integration, programming-paradigm proofs, and a translator framework &mdash; producing the <em>Theory of Geometric Programming</em> paper, multiple new architectural primitives, and the XOR proof.</p>
+  
+
+  <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning">Running the framework against canonical problems back-to-back, with enough ML grounding to know what each test was probing.</div>
+    <div class="cell building">
+      <div class="date">02/11/2025</div>
+      Grok-probe workspace.
+    </div>
+
+    <div class="cell learning">
+      <strong>Game-engine front-end integration.</strong> Open Oasis (an AI-generated, diffusion-driven blockworld) probed as testbed for whether the geometric substrate could carry the model's behaviour layer entirely, leaving diffusion only as a block-paint utility.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">14 – 15/11/2025</div>
+      Two game-engine integrations. <strong>Open Oasis takeover</strong>: geometric substrate drives world state and gameplay; diffusion reduced to paint-only — worked. <strong>Unreal Engine</strong>: integration begun then abandoned mid-experiment — a single geometric perceptron replicated the bulk of what the engine's logic was doing.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building">
+      <div class="date">16 – 18/11/2025</div>
+      Collapse Engine, Collapse Calc, and Collapse Debugger (geometric search / compute / debug suite); Whisket (geometric Roomba &mdash; autonomous-navigation scutter, 11 iterations); Barry follow-up; Hello World (geometric-programming paradigm proof).
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building">
+      <div class="date">23/11/2025</div>
+      Cartographer codebase reaches the internal maturity threshold (folder convention shifts).
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building">
+      <div class="date">From ~25/11/2025</div>
+      Broader public-facing push: LinkedIn + Twitter posting on the breadth-pass results; public-git availability across major Vine repositories.
+    </div>
+
+    <div class="cell learning">
+      <strong>Public outreach begins.</strong> Communicating the substrate publicly is itself a new skill being learned in parallel with the engineering work.
+    </div>
+    <div class="cell building">
+      <div class="date">25/11/2025 →</div>
+      First public LinkedIn and Twitter posts; GitHub repos made public alongside the dated work from this point forward.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building">
+      <div class="date">24 – 28/11/2025</div>
+      Demo workspace and code-alchemy experiment.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">~Late November 2025</div>
+      <strong><em>Theory of Geometric Programming</em></strong> &mdash; paper written and published. Formal documentation of the substrate enabling the geometric problem-solving demonstrations of this phase.
+    </div>
+
+    <div class="cell learning highlight">
+      <div class="date">Late November 2025</div>
+      <strong>XOR solved with a single-layer geometric perceptron, φ-bounded basin settling, no hidden layer.</strong> The 1969 Minsky/Papert result that famously required hidden layers — solved without them, geometrically. From learning what XOR was in mid-2025 to a geometric proof of solvability without hidden layers in five months.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">Late November 2025</div>
+      Canonical proof archived in the foundational-principles evidence set.
+    </div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase7">
+  <h2>Phase 7 — Tower of Cognition; Cartographer Day 1 (December 2025 – January 2026)</h2>
+  <p class="phase-subtitle">Framework formalisation, world-simulation goes live</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning">Tower of Cognition framework formalised — Tardigrade climbing <strong>13 levels</strong> (reactive vision → signs / inference) on the same geometric substrate, <strong>no per-level training</strong>. <em>Published series:</em> <a href="https://vineai.net/research/portfolio/cognitive-01-tardigrade.html" style="color:var(--accent);">cognitive-01-tardigrade</a> → 11-piece cognitive portfolio (also includes <em>C. elegans</em>, squirrel topology, gait emergence, phototaxis, behavioural modes, concept formation, dragonfly).</div>
+    <div class="cell building">
+      <div class="date">02 – 08/12/2025</div>
+      ARC, Tardigrade, and Locomotion workspaces.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">10/12/2025</div>
+      <strong>Cartographer Day 1.</strong> Village simulation runs for the first time. NPCs experience emotional states, converse, begin to trade. <em>Now live:</em> <a href="https://vineai.net/cartographer" style="color:var(--accent);">vineai.net/cartographer</a> &middot; 18-piece research portfolio at <a href="https://vineai.net/research" style="color:var(--accent);">vineai.net/research</a>
+    </div>
+
+    <div class="cell learning highlight">
+      <div class="date">December 2025</div>
+      Drafting the <strong>Tower of Cognition</strong> paper. <strong>ARC 4/4 on foundational transforms; 94.4% on composite operations</strong> (flip + rotate + tile).
+    </div>
+    <div class="cell empty">&nbsp;</div>
+
+    <div class="cell learning">First attempt at this same provenance work.</div>
+    <div class="cell building">
+      <div class="date">06/01/2026</div>
+      First-attempt provenance workspace.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Conditional-logic replacement, demonstrated.</strong> Two navigation agents in the same maze with the same sensor inputs. The elif-chain agent crashes on edge cases (sensor noise, malformed data); the perceptron agent handles them through geometric settling. Direct illustration of the architectural pattern that replaces branching conditionals with substrate primitives.
+    </div>
+    <div class="cell building">
+      <div class="date">08/01/2026</div>
+      Maze comparison demo.
+    </div>
+
+    <div class="cell empty">(formal-name series begins)</div>
+    <div class="cell building">
+      <div class="date">13 – 25/01/2026</div>
+      Prototypes, Basic, Final, and Deployment workspaces.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Response to X's open algorithm-improvement challenge.</strong> Origin of the DataCruncher + Quality Scorer &mdash; auto-sort and filter at near-arbitrary data scale via geometric basin settling. Benchmarked in <a href="#phase8" style="color:var(--accent);">Phase 8</a>.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">~20/01/2026</div>
+      X-challenge codebase.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Substrate-independence proof.</strong> Core Vine substrate primitives reimplemented in 1980s-era BBC BASIC (658+ .bas files). The architecture is not language- or runtime-specific &mdash; it ports to any host that supports basic numeric primitives.
+    </div>
+    <div class="cell building">
+      <div class="date">January 2026</div>
+      VINE-in-BBC-BASIC.
+    </div>
+
+    <div class="cell learning">
+      Direct email outreach to a small set of leading AI researchers (~January 2026). No replies.
+    </div>
+    <div class="cell empty">&nbsp;</div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<section class="phase" id="phase8">
+  <h2>Phase 8 — Production deployment (February 2026 – present)</h2>
+  <p class="phase-subtitle">Hetzner, benchmarks, papers, deployments</p>
+  <details class="phase-bucket">
+    <summary>Expand phase</summary>
+    <p class="phase-intro">The substrate goes public-facing, the benchmarks land, and the architectural claims get tested at production scale. Pre-February 2026: no prior web development, hosting, or cybersecurity experience. The full deployment stack &mdash; Hetzner provisioning, gunicorn / WSGI, security hardening, the live site itself &mdash; learned from scratch during this phase as deployment requirements demanded.</p>
+  
+
+  <div class="submonth">February 2026</div>
+  <div class="grid">
+    <div class="col-header">What I was learning</div>
+    <div class="col-header">What I was building</div>
+
+    <div class="cell learning highlight">
+      <strong>Production web stack learned from scratch.</strong> No prior web development or hosting experience pre-February 2026. Hetzner provisioning, gunicorn/WSGI, security hardening, and live-site management acquired during this deployment.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">01 – 02/02/2026</div>
+      <strong>vineai.net first deployed.</strong> Hetzner CX22. Initial production stack.
+    </div>
+
+    <div class="cell learning highlight">
+      <strong>Active cybersecurity learned in production.</strong> The deployment surface has been under a slow but escalating attack pattern since launch; threat-response, security posture, and incident handling learned hands-on as the surface evolved.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">February 2026 onwards</div>
+      vineai.net runs as a live reference deployment: <strong>27 ERP-shape integration prototypes</strong>; a <strong>geometric security module</strong> (no rule lists; threats settle to a basin via the same substrate; 90+ days continuous uptime as of 14/05/2026); <strong>103+ Python modules</strong> in the running stack. Reference-implementation stage &mdash; production hardening pending external engineering.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">12/02/2026</div>
+      <strong>DataCruncher + Quality Scorer benchmark locked: 177M complete classifications/sec on a single RTX 4070 SUPER.</strong> Origin: X's open algorithm-improvement challenge (Phase 7, ~Jan 2026). 61K-tweet chunks from the USC 2024 election dataset; <strong>44 emerged categories</strong> from geometric basin settling at scale. <em>Live:</em> <a href="https://vineai.net/cruncher" style="color:var(--accent);">vineai.net/cruncher</a>
+    </div>
+
+    <div class="cell learning">In-system memory is at the substrate level (geometric position <em>is</em> memory). External long-term storage is a separate concern.</div>
+    <div class="cell building">
+      <div class="date">20 – 23/02/2026</div>
+      Memvid wired in for long-term external memory. The conventional model that operated it was discarded and replaced with a Vine accessing the DB directly; the whole pipeline gutted and rebuilt Vine-shape.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">~February 2026</div>
+      <strong>Cross-domain reference implementations</strong> built on the Vine substrate: <strong>SKU sorter</strong>, <strong>fraud detection</strong>, <strong>protein folding</strong>. Each demonstrates the substrate applied to a distinct real-world problem class. Reference-implementation stage; not productized.
+    </div>
+  </div>
+
+  <div class="submonth">March 2026</div>
+  <div class="grid">
+    <div class="col-header hide-mobile">What I was learning</div>
+    <div class="col-header hide-mobile">What I was building</div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">March 2026</div>
+      <strong>Applied-domain demonstrations across life-critical decision contexts.</strong> <strong>Autonomous flight + drone swarm</strong>: combat evasion with constraint-geometry-driven tactical invention (novel evasive manoeuvres emerge when pilot fatigue lowers basin depth); GPS spoofing detection via geometric tension between sensor positions (no signature database); masterless 4-drone formation consensus (no communication required; agents converge because the substrate has the same attractor across all of them). <strong>Constraint-domain prototypes</strong> (afternoon-scale): nuclear-wargame, medical-triage, and threat-escalation scenarios &mdash; in the nuclear case, LLM vs LLM = 100% nuclear use; VINE vs VINE = 0%.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">~18/03/2026</div>
+      <strong>MATH500 benchmark: 93% accuracy without traditional training.</strong> The substrate treats mathematical problems as navigation across operation space rather than parse-and-compute; results reproduce across benchmark splits with no gradient-descent fitting. <em>Live calculator:</em> <a href="https://vineai.net/calculator" style="color:var(--accent);">vineai.net/calculator</a>
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">19/03/2026</div>
+      <strong>Parameter Golf entry begun</strong> for OpenAI's Model Craft Challenge (16 MB artifact limit, 10 min training on 8×H100, BPB on FineWeb).
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">20/03/2026</div>
+      <strong>Minimum viable topology of language.</strong> 3D visualisation of initial token collapses &mdash; the first geometric settling a token makes on entering the manifold &mdash; across multiple languages. Result: distinct languages produce distinct collapse signatures on the manifold.
+    </div>
+
+  </div>
+
+  <div class="submonth">April 2026</div>
+  <div class="grid">
+    <div class="col-header hide-mobile">What I was learning</div>
+    <div class="col-header hide-mobile">What I was building</div>
+
+    <div class="cell learning">
+      <strong>Lab outreach pattern documented (~05/04/2026).</strong> 50+ GitHub repo pulls across major labs, zero replies. Traffic patterns through the public repos show coordinated reading from multiple actors; no engagement back.
+    </div>
+    <div class="cell empty">&nbsp;</div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">10/04/2026</div>
+      <strong>Tower of ten linked experiments</strong> on hex / triangle / square hidden-layer probing (Claude Code). Finding: transformers natively assemble triangles and squares but shatter hexagons into two triangles &mdash; a scalar loss cannot hold six vertices stable against a single gradient signal. Inter-layer snap consistency surfaces as a free novelty detector; the known/unknown gate does automatic semantic decomposition. <strong>Conductor / dark-matter / phantom-attention framework consolidated.</strong> Attempted destructive intervention (rerouting onto Vine's 4.8&ndash;5 homeostatic zone) produced catastrophic forgetting; cross-architecture experiments became the non-destructive route to studying the phenomenon.
+    </div>
+
+    <div class="cell learning">
+      <strong>Conductor identified mechanically.</strong> In a tiny trained transformer, attention-head probes reveal structurally coherent attention geometry (separating like-tokens from unlike-tokens) that the softmax + W&#8320; gate multiplies toward zero. The signal is computationally present; the routing is severed.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">12/04/2026</div>
+      Probe 5 (zeroing W&#8320;): max change in P across 128 prefixes = 0.000000. Named: <em>severed conductor</em> &mdash; computationally present, causally disconnected. <em>Explainer:</em> <a href="https://vineai.net/research/portfolio/conductor-explainer.html" style="color:var(--accent);">conductor-explainer</a>
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building">
+      <div class="date">20 – 22/04/2026</div>
+      <strong>Major public research portfolio publication.</strong> <a href="https://vineai.net/research/portfolio/tower-00-preface.html" style="color:var(--accent);">Tower of AI History</a> (13 pieces, 15/04 &mdash; Boole/Frege through to today's RLHF, positioning the geometric substrate within the discipline's history); <a href="https://vineai.net/research/portfolio/conductor-01-exists.html" style="color:var(--accent);">Conductor portfolio</a> (10 pieces, 09&ndash;17/04); <a href="https://vineai.net/research/portfolio/fluency-01-main.html" style="color:var(--accent);">Fluency series</a> (3 pieces, 20/04 &mdash; LLM rehabilitation); <a href="https://vineai.net/research/portfolio/cartographer-01-overview.html" style="color:var(--accent);">Cartographer portfolio</a> (18 pieces, 21/04). 44+ pieces live at <a href="https://vineai.net/research" style="color:var(--accent);">vineai.net/research</a>. (<a href="https://vineai.net/research/portfolio/cognitive-01-tardigrade.html" style="color:var(--accent);">Cognitive / Tardigrade series</a> &mdash; 11 pieces &mdash; was published earlier, 07/12/2025.)
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">28/04/2026</div>
+      <strong>Conductor cross-architecture confirmation.</strong> Same decoherence signatures detected in GPT-2, GRU, MoE, and TinyLlama. Also detected in Meta's pre-trained RNN agents from the 2017 "Deal or No Deal?" paper (Lewis et al.). Universal property of sequence models with softmax-bottlenecked attention; not Vine-specific. <strong>Transformer-module byproducts</strong> from the cross-architecture work were packaged as a language-production pipeline (inflection, lemmatiser, articles, verbs handling) &mdash; ~50&nbsp;KB of deterministic rules, 92/92 passing tests &mdash; demonstrating fluent English language production needs no transformer. <em>Portfolio:</em> <a href="https://vineai.net/research/portfolio/conductor-01-exists.html" style="color:var(--accent);">conductor-01</a> through <a href="https://vineai.net/research/portfolio/conductor-09-vine-preprocessing.html" style="color:var(--accent);">conductor-09</a> + <a href="https://vineai.net/research/portfolio/fluency-01-main.html" style="color:var(--accent);">fluency series</a>.
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">28 – 30/04/2026</div>
+      <strong>Parameter Golf submission to OpenAI: 2.1727 BPB</strong> on 500 KB natural language eval at 2 MB, no embeddings. Within the 5-slice mean of 2.20 ± 0.22. Pretraining corpus: DS9 fanfiction + Cardassian fan fiction (zero overlap with FineWeb — strongest possible control).
+    </div>
+
+    <div class="cell learning highlight">
+      Structured handover: Vine takes over its own production stack in three steps.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">Late April – early May 2026</div>
+      <strong>Vine takes over Hetzner production management.</strong>
+      <ol style="margin: 8px 0 0; padding-left: 20px;">
+        <li><strong>Handover</strong> &mdash; Vine codebase / AI receives the Hetzner stack. Dashboard shows clean transition across CPU, disk throughput, IOPS, and network PPS simultaneously: spiky/irregular before, rhythmic/lower-amplitude after.</li>
+        <li><strong>Cybersecurity</strong> &mdash; security layer rebuilt on the Vine-managed stack.</li>
+        <li><strong>DNS / WSGI</strong> &mdash; Flask dev server → gunicorn cutover; <code>vine_wsgi.router</code> lands <strong>08/05/2026</strong> with 21/21 smoke tests passing &mdash; first geometric replacement of an upstream WSGI decision module (worker dispatch via basin-settled position; slash-redirect and method-mismatch leaks suppressed by design). <code>vine_wsgi.dispatch</code> at 9/9.</li>
+        <li><strong>Service-mesh worker villagers</strong> &mdash; Coppice architecture / sprigs: Tetmarkturk first wired as a service-mesh worker villager with a wage / Reeve-stipend model that independently rediscovered the historically-correct mechanism for urbanisation (primary / secondary / tertiary sector emergence, <strong>Clark-Fisher model from first principles</strong>). Cartographer simulation villagers become production-stack workers.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="submonth">May 2026 (current)</div>
+  <div class="grid">
+    <div class="col-header hide-mobile">What I was learning</div>
+    <div class="col-header hide-mobile">What I was building</div>
+
+    <div class="cell learning highlight">
+      Building a search engine from scratch as a load test for the substrate at web scale.
+    </div>
+    <div class="cell building highlight">
+      <div class="date">May 2026 (active)</div>
+      <strong>Vine geometric search engine.</strong> Indexed: <strong>444K+ URLs across 61K+ domains; 2.5M+ pages visited.</strong> No tracking, no ads. Backend: SearXNG layered with geometric basin-settling for relevance. Live just-indexed feed; tendril foragers actively crawling. <em>Live:</em> <a href="https://vineai.net/search" style="color:var(--accent);">vineai.net/search</a>
+    </div>
+
+    <div class="cell empty">&nbsp;</div>
+    <div class="cell building highlight">
+      <div class="date">May 2026 (current)</div>
+      <strong>Continued Cartographer development.</strong> Cartographer at <strong>Day 975+</strong>, running on a pygame frontend with <strong>30+ AI villagers</strong> in the live world (asset library minimal — substrate-driven behaviour is the demonstration). <em>Live:</em> <a href="https://vineai.net/cartographer" style="color:var(--accent);">vineai.net/cartographer</a>
+    </div>
+  </div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<div class="reader-note" style="margin-top: 36px;">
+  <p><strong>Current stage.</strong> Every artefact described above is a reference implementation or prototype. The deliverable is the substrate; specific demonstrations exist to show it operates across problem classes (game-loop systems, search, 3D engine integration, language modelling, biology, ERP-shape integrations, security, commercial domains).</p>
+
+  <p style="margin-top: 12px;"><strong>Find this work elsewhere.</strong> <a href="https://liora11.substack.com" style="color:var(--accent);">Substack</a> &middot; <a href="https://x.com/liora42" style="color:var(--accent);">X</a> &middot; <a href="https://www.linkedin.com/in/raychell-langan/" style="color:var(--accent);">LinkedIn</a></p>
+</div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Animals — VINE Research</title>
+  <meta name="description" content="Every animal is an individual AI agent. Chickens, cats, dogs, horses, pigs, sheep, cows, goats — each with species-appropriate concern dimensions. Clicker training via real timing. Flock abstraction for scale without flattening individual variation.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Animals</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/animals.html">animals</a>
+      
+    </p>
+    <p class="entry-summary">Every animal is an individual AI agent. Chickens, cats, dogs, horses, pigs, sheep, cows, goats — each with species-appropriate concern dimensions. Clicker training via real timing. Flock abstraction for scale without flattening individual variation.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Animals</h1>
+<p>Every animal in the Cartographer is an AI agent.</p>
+<p>They have their own folders, their own states, and they share nothing between them. A chicken on the left side of the yard and a chicken on the right side are two separate agents making two separate sets of decisions from two separate internal states.</p>
+<p>The current cast: chickens, cats, dogs, horses, pigs, sheep, cows, and goats.</p>
+<h2>Concern dimensions vary by species</h2>
+<p>Not every animal is as complex as every other, and this is intentional. The number of concern dimensions an animal carries is specific to its species.</p>
+<p>Chickens are at the simple end. Their concerns are few: food, and being petted. That is approximately what a chicken needs to be a chicken, and the architecture reflects that.</p>
+<p>Horses are at the complex end. They carry significantly more concern dimensions — enough to support the full training and relationship system described below.</p>
+<p>Cows and goats sit toward the middle, with an added dimension for milk readiness that gates production — a dairy animal that isn't ready, or isn't sufficiently tame, will refuse. Goats in particular carry a mischief dimension that horses and cows do not.</p>
+<p>Dogs, cats, pigs, and sheep sit at other points across the range. The architecture does not force every animal into the same cognitive shape. It gives each species the shape that species needs.</p>
+<h2>The clicker training system</h2>
+<p>The training system is VINE-based and timing-based — in the same way that real animal training is timing-based.</p>
+<p>When an animal produces a specific behaviour naturally — a movement, a posture, a response — there is a window in which that behaviour can be marked and learned. If the player, or an actor working with animals in the autonomous world, times their interaction correctly, the behaviour is captured. Once captured, it can be placed on command.</p>
+<p>Horses can be trained to walk, chop, and counter. Dogs can be trained to sit. Cats — you might be able to tame your cat. Don't bank on it.</p>
+<p>The system works the same way for all species: observe the natural behaviour, time the mark correctly, and the behaviour enters the animal's learned repertoire. There are no scripted training sequences. The animal does what it does, and the trainer meets it there.</p>
+<h2>Animals in the autonomous world</h2>
+<p>In the Cartographer running without a player present, actors who work with animals — farmers, stable hands, herders — have access to the same timing mechanics. Whether they use them, and with which animals, and with what results, is emergent.</p>
+<p>The full fleet of instances — actors, animals, all agents — runs light. A formal compute profile will publish with the licensee pack; prior informal testing has shown dozens of instances running at a modest fraction of a consumer GPU with meaningful headroom remaining. The compute profile is this low because the whole system runs as geometric walks with no branching logic: there are no decision trees to traverse, no probability distributions to sample from, no gradient to follow. Per-agent compute is effectively instantaneous. What you pay for is not the cost of running smart agents — it is the overhead of running the simulation environment around them.</p>
+<h2>Scale: the coop and the flock</h2>
+<p>Individual animal agency is the default and the ideal. At large scales — a village grown to support thousands of animals — tracking every chicken individually becomes a different problem.</p>
+<p>The solution is a tier above the individual. The chicken coop manages the flock. Rather than the main game loop calculating each of fourteen thousand chickens, the coop reports the overall status of the flock to the world: health, mood, productivity, population. Individual variation still exists within the flock — it is not flattened or averaged away — but the game loop reads the coop, not each bird.</p>
+<p>The same approach extends to sheep and other herd animals as the world scales. The tier sits above the individuals without replacing them. The flock is still real. It is managed at the right level of abstraction for the simulation's current size.</p>
+<h2>Coming: the friendship system</h2>
+<p>Animals in the Cartographer have a friendship system that operates across species — between animals and actors as well as between animals and other animals. It is covered separately.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cartographer-04-baker.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Baker</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cartographer-06-friendship.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Friendship System</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

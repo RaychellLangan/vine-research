@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Floor 2 — Turing: The Tape That Forgot It Was Continuous — VINE Research</title>
+  <meta name="description" content="Turing&#39;s machine is the most influential thought experiment of the 20th century. Its discrete tape was a modelling convenience that became a metaphysical commitment.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/tower/">Computing Lineage</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Computing Lineage</p>
+    <h1>Floor 2 — Turing: The Tape That Forgot It Was Continuous</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/tower.html">tower</a> <a class="tag" href="/research/tags/state.html">state</a> <a class="tag" href="/research/tags/continuity.html">continuity</a>
+      
+    </p>
+    <p class="entry-summary">Turing&#39;s machine is the most influential thought experiment of the 20th century. Its discrete tape was a modelling convenience that became a metaphysical commitment.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The floor</h2>
+<p>In 1936, Alan Turing wrote <em>On Computable Numbers, with an Application
+to the Entscheidungsproblem</em>. To solve a problem about which numbers
+could and couldn't be computed in principle, he invented a fictional
+device: an infinite tape of discrete cells, a head that reads and
+writes one symbol at a time, a finite table of rules.</p>
+<p>The Turing machine was never meant to be a real computer. It was a
+piece of mathematical minimalism, stripped down to the barest parts a
+&quot;computation&quot; could be said to have. The power of the argument came
+from the fact that it was <em>so</em> minimal. Anything a richer machine could
+compute, this little thing could compute too, given enough tape.</p>
+<p>And then the world built the rest of itself inside this metaphor.</p>
+<h2>What was picked</h2>
+<p><strong>State as a discrete cell.</strong> The machine is <em>in</em> state q₃ or it is
+<em>not</em>. The tape cell contains a 0 or a 1. The head is at position 47.
+There is never a moment where the head is &quot;mostly at 47 but drifting
+toward 48&quot;, or the state is &quot;between q₃ and q₄ while the input settles&quot;.</p>
+<p>The metaphor became concrete. Registers. Program counters. Flags.
+Finite state machines. Every computer built since is, at the logical
+level, one of these tapes.</p>
+<h2>What could have been picked</h2>
+<p>The continuous version was on the table before the ink was dry.</p>
+<p>In the same decade, cyberneticians like Norbert Wiener and Ross Ashby
+were writing about systems whose <strong>state was a point in a continuous
+phase space</strong>, drifting under the pull of attractors, settling into
+basins. The differential equation was the native language of biology,
+of physics, of feedback. The tape was the odd cousin.</p>
+<p>Analog computers existed and, for some problems, outperformed their
+digital descendants for decades. The Norden bombsight, the mechanical
+integrator, the differential analyser at MIT — these were not toys.
+They were solving real problems by letting state <em>flow</em> rather than
+step.</p>
+<p>The tape won because it was cheap to reproduce, cheap to reason about,
+and cheap to debug. The flow lost because analog noise was hard to
+manufacture out of, and a generation of engineers found digital error
+correction easier than analog precision.</p>
+<h2>What we missed</h2>
+<p>A machine whose state is a position, and whose computation is a drift,
+does not need an if/else to respond to <em>almost</em>. It is already
+<em>almost</em>. The whole pathology of &quot;handle the edge cases&quot; is a symptom
+of state-as-cell: a cell is either one thing or another, and the
+boundary between them has to be legislated.</p>
+<p>In the alternate timeline, computation is <strong>settling</strong>. The question
+&quot;what does the program do in this case?&quot; becomes meaningless, because
+there are no cases. There is only where the system is, and where the
+inputs are pulling it.</p>
+<p>The Turing tape was a modelling choice. It became a prison.</p>
+<h2>What the next floor will ask</h2>
+<p>If the state is a cell, how do we model a neuron?</p>
+<p>That's Floor 3, and it's where the prison got built in biology.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/tower-01-boole-frege.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Floor 1 — Boole &amp; Frege: When Truth Became Binary</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/tower-03-mcculloch-pitts.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Floor 3 — McCulloch &amp; Pitts: The Neuron Made Into a Gate</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

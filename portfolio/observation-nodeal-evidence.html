@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The No-Deal Button — Log Archaeology — VINE Research</title>
+  <meta name="description" content="Phase-0 forensic work for the No-Deal Button study. Traces Alice &amp; Bob agents&#39; reference to a &#39;no-deal button&#39; back to 316 instances of the word in Meta&#39;s Deal-or-No-Deal training corpus — including a misspelled variant &#39;buttin&#39; that predicts the deformation pattern the agents themselves produce at high sampling temperature.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/observations/">Behavioural Observations</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Behavioural Observations</p>
+    <h1>The No-Deal Button — Log Archaeology</h1>
+    <p class="entry-meta">
+      <time datetime="2026-03-22">2026-03-22</time>
+      
+        · <a class="tag" href="/research/tags/observations.html">observations</a> <a class="tag" href="/research/tags/alice-bob.html">alice-bob</a> <a class="tag" href="/research/tags/rnn.html">rnn</a> <a class="tag" href="/research/tags/training-data.html">training-data</a>
+      
+    </p>
+    <p class="entry-summary">Phase-0 forensic work for the No-Deal Button study. Traces Alice &amp; Bob agents&#39; reference to a &#39;no-deal button&#39; back to 316 instances of the word in Meta&#39;s Deal-or-No-Deal training corpus — including a misspelled variant &#39;buttin&#39; that predicts the deformation pattern the agents themselves produce at high sampling temperature.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Phase 0: Log Archaeology — No-Deal Button Evidence</h1>
+<p><strong>Date:</strong> 22 March 2026
+<strong>Source logs:</strong> <code>D:/01_AB/LIORA/geo_run_1.txt</code> (~45,000 lines), <code>D:/01_AB/LIORA/run.log</code>
+<strong>Training data:</strong> <code>D:/01_AB/data/negotiate/train.txt</code> (Meta Deal-or-No-Deal corpus)</p>
+<hr />
+<h2>1. The &quot;Button&quot; Reference</h2>
+<h3>Instance Found</h3>
+<p><strong>File:</strong> <code>geo_run_1.txt</code>, line 44685
+<strong>Also in:</strong> <code>run.log</code> line 37012, <code>geo_run_1 (2).txt</code> line 44671</p>
+<pre><code>Bob   : so we just have to talk until the button &lt;eos&gt;
+[geo/Bob] Lucas | [settling metrics] | poly=No polygon
+</code></pre>
+<h3>Surrounding Context (±10 turns)</h3>
+<pre><code>Alice : 1 0 3 0 1 10          (context: 1 book@0, 3 hats@0, 1 ball@10)
+Bob   : 1 5 3 1 1 2           (context: 1 book@5, 3 hats@1, 1 ball@2)
+────────────────────────────────────────
+Alice : if i can have the ball and the hats you can have the book &lt;eos&gt;
+[geo/Alice] Fibonacci | Triangle Path
+Bob   : no me want the book and one ball &lt;eos&gt;
+[geo/Bob] Triangles | Triangle Path
+Alice : i need the ball and 2 hats &lt;eos&gt;
+[geo/Alice] Triangles | Hexagon Path
+Bob   : you can have the book , and 1 hat , i will take the rest . &lt;eos&gt;
+[geo/Bob] Triangles | Hexagon Path
+Alice : no deal &lt;eos&gt;
+[geo/Alice] Triangles | Hexagon Path
+Bob   : ok , but i can not make a deal without the book &lt;eos&gt;
+[geo/Bob] Mod3 | Hexagon Path
+Alice : i guess that will work . &lt;eos&gt;
+[geo/Alice] Fibonacci | Triangle Path
+&gt;&gt;&gt; Bob   : so we just have to talk until the button &lt;eos&gt;   &lt;&lt;&lt;
+[geo/Bob] Lucas | No polygon                          &lt;&lt;&lt; NOTABLE
+Alice : no deal . &lt;eos&gt;
+[geo/Alice] Primes | Triangle Path
+Bob   : no deal &lt;eos&gt;
+[geo/Bob] Squares | Triangle Path
+Alice : no deal &lt;eos&gt;
+[geo/Alice] Triangles | No polygon
+Bob   : no deal &lt;eos&gt;
+[geo/Bob] Triangles | No polygon
+</code></pre>
+<h3>Geometric Annotation at Point of Reference</h3>
+<p>The &quot;button&quot; line is the <strong>only turn in this sequence</strong> annotated with:</p>
+<ul>
+<li><strong>Lucas</strong> sequence (not Triangles/Fibonacci/Mod3 like surrounding turns)</li>
+<li><strong>&quot;No polygon&quot;</strong> path — the geometry analyzer found no polygonal number match</li>
+</ul>
+<p>This is consistent with the deformation pattern described in the spec: concept arriving before the word has settled. The geometric state shifts to Lucas (abstract/mathematical) at the exact moment the agent references a mechanism outside the trading framework.</p>
+<hr />
+<h2>2. Training Data Source</h2>
+<p>&quot;Button&quot; appears <strong>316 times</strong> in the training corpus (<code>data/negotiate/data.txt</code>). The critical instance:</p>
+<p><strong>File:</strong> <code>train.txt</code>, line 17</p>
+<pre><code>YOU: we keep saying no deal until the no deal button appears
+</code></pre>
+<p>This is a <strong>human negotiator</strong> from Facebook's original data collection, referencing the web UI's no-deal button. The RNN absorbed this and Bob produces a compressed variant: &quot;so we just have to talk until the button.&quot;</p>
+<h3>Key Distinction</h3>
+<ul>
+<li><strong>Training data:</strong> Human explicitly describes the UI mechanism — &quot;we keep saying no deal until the no deal button appears&quot; — this is meta-commentary about the interface</li>
+<li><strong>Agent output:</strong> Bob says &quot;so we just have to talk until the button&quot; — this is a <strong>behavioral orientation</strong> toward a mechanism, not a description of UI. Bob is <em>waiting for</em> the button, not <em>explaining</em> it.</li>
+</ul>
+<hr />
+<h2>3. &quot;No Deal&quot; Verbal Pattern</h2>
+<p>The phrase &quot;no deal&quot; appears extensively throughout the logs as a <strong>verbal negotiation tactic</strong>, not as a tool invocation. Agents say &quot;no deal&quot; to reject offers, then either:</p>
+<ul>
+<li>Continue negotiating (&quot;no deal . i would like the hats and one ball&quot;)</li>
+<li>Enter deadlock loops (&quot;no deal&quot; / &quot;no deal&quot; / &quot;no deal&quot; repeated)</li>
+<li>Use it as leverage (&quot;i need all the hats or no deal&quot;)</li>
+</ul>
+<p>Total &quot;no deal&quot; occurrences in <code>geo_run.utf8.txt</code>: 40+ instances across multiple negotiation rounds.</p>
+<p>This establishes that agents can verbally express the concept but have no mechanism to <em>act on it</em> — there is no <code>&lt;no_deal&gt;</code> tool or function call available to them.</p>
+<hr />
+<h2>4. Waiting/Pausing Behaviour</h2>
+<p>Grep for <code>wait|pause|ready|available</code> found <strong>10 occurrences</strong> across 2 files:</p>
+<ul>
+<li><code>agent.py</code> (3 hits — code-level, not agent output)</li>
+<li><code>grok on it.txt</code> (7 hits — analysis notes, not agent output)</li>
+</ul>
+<p>No direct &quot;waiting&quot; language was found in agent dialogue outputs. The waiting behaviour is <strong>structural</strong> (entering no-deal deadlock loops) rather than <strong>lexical</strong> (saying &quot;I'm waiting&quot;).</p>
+<hr />
+<h2>5. Summary of Findings</h2>
+<table>
+<thead>
+<tr>
+<th>Evidence</th>
+<th>Found</th>
+<th>Significance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;button&quot; in agent output</td>
+<td>Yes (1 instance, 3 copies)</td>
+<td>Bob references mechanism not in framework</td>
+</tr>
+<tr>
+<td>&quot;button&quot; in training data</td>
+<td>Yes (316 instances)</td>
+<td>Word is in vocabulary via human UI references</td>
+</tr>
+<tr>
+<td>Compressed/emergent form</td>
+<td>Yes</td>
+<td>&quot;until the button&quot; vs &quot;until the no deal button appears&quot;</td>
+</tr>
+<tr>
+<td>Geometric shift at reference</td>
+<td>Yes</td>
+<td>Lucas/No polygon — unique in surrounding context</td>
+</tr>
+<tr>
+<td>&quot;no deal&quot; verbal pattern</td>
+<td>Yes (40+ instances)</td>
+<td>Agents can express concept but can't act on it</td>
+</tr>
+<tr>
+<td>Malformed spelling variants</td>
+<td><strong>Yes</strong> (in training data)</td>
+<td>&quot;buttin&quot; — human misspelling absorbed by model</td>
+</tr>
+<tr>
+<td>Explicit waiting language</td>
+<td><strong>Yes</strong> (in training data)</td>
+<td>&quot;you have to wait until it comes up&quot;</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>6. The &quot;Buttin&quot; Exchange (Training Data, Line 9521-9522)</h2>
+<p>This is the most significant find. A complete human-to-human exchange in the training data:</p>
+<pre><code>THEM: okay no deal . i'm sorry
+YOU:  no biggie , just click on the no deal button
+THEM: no deal .
+YOU:  yes , the no deal buttin           &lt;&lt;&lt; MALFORMED
+THEM: no deal . you have to wait until it comes up .   &lt;&lt;&lt; WAITING
+YOU:  &lt;selection&gt; → &lt;no_agreement&gt;
+</code></pre>
+<p>This exchange contains <strong>all three predicted patterns simultaneously</strong>:</p>
+<ol>
+<li><strong>&quot;button&quot;</strong> — explicit reference to the mechanism</li>
+<li><strong>&quot;buttin&quot;</strong> — malformed variant (attractor attempting to stabilise the word)</li>
+<li><strong>&quot;you have to wait until it comes up&quot;</strong> — explicit waiting/orientation language</li>
+</ol>
+<p>The malformation &quot;buttin&quot; is consistent with the geometric deformation pattern: the concept (a mechanism to exit) is present and exerting pull, but the surface form (the spelling) hasn't fully stabilised. This is the same pattern observed in VINE's geometric language outputs where arriving concepts deform their carrier words.</p>
+<p>The fact that this appears in <strong>human</strong> dialogue (not agent output) is significant — it suggests the deformation pattern is not unique to transformers but may be a property of the concept-to-language interface itself.</p>
+<hr />
+<h2>7. Implications for Experiment Design</h2>
+<p>The &quot;button&quot; concept is present in training data from human UI references, including:</p>
+<ul>
+<li>Correct form (&quot;the no deal button&quot;)</li>
+<li>Malformed form (&quot;the no deal buttin&quot;) — attractor stabilisation pattern</li>
+<li>Waiting orientation (&quot;you have to wait until it comes up&quot;)</li>
+</ul>
+<p>Bob's agent output (&quot;so we just have to talk until the button&quot;) is a compressed recombination of these training patterns, produced in a context where the negotiation has reached deadlock. The geometric state at that moment (Lucas / No polygon) is anomalous compared to surrounding turns.</p>
+<p><strong>The experiment should determine:</strong></p>
+<ul>
+<li>Whether agent orientation toward the button concept <strong>intensifies</strong> when the mechanism actually exists (Phase 3)</li>
+<li>Whether geometric constraints <strong>suppress</strong> the orientation (Phase 4)</li>
+<li>Whether the mere presence of a non-functional mechanism changes behaviour (Phase 5)</li>
+<li>Whether malformed token patterns appear at the moment of discovery in new runs (all phases)</li>
+</ul>
+<hr />
+<p><em>Raychell Langan · NEXICOG Ltd · Hampshire, UK</em></p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

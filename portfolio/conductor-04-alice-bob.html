@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Architecture-Universal — Alice &amp; Bob — VINE Research</title>
+  <meta name="description" content="The same three decoupling signatures appear in Meta&#39;s 2017 Alice &amp; Bob negotiation bots: 70× hidden norm explosion, rank-6 output distribution, complete context-sensitivity collapse. &#39;Tometometome&#39; is the same mechanism expressed through a different architecture.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/conductor/">Transformer Decoupling</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Transformer Decoupling</p>
+    <h1>Architecture-Universal — Alice &amp; Bob</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/conductor.html">conductor</a> <a class="tag" href="/research/tags/decoupling.html">decoupling</a> <a class="tag" href="/research/tags/architecture.html">architecture</a> <a class="tag" href="/research/tags/safety.html">safety</a>
+      
+    </p>
+    <p class="entry-summary">The same three decoupling signatures appear in Meta&#39;s 2017 Alice &amp; Bob negotiation bots: 70× hidden norm explosion, rank-6 output distribution, complete context-sensitivity collapse. &#39;Tometometome&#39; is the same mechanism expressed through a different architecture.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Alice &amp; Bob: Cross-Architecture Confirmation of Pipeline Decoupling</h1>
+<p><strong>Date:</strong> 2026-04-15
+<strong>Companion to:</strong> <code>CATASTROPHIC_FORGETTING_AS_DECOUPLING.md</code>
+<strong>Environment:</strong> Python 3.x, PyTorch 2.4.1, CPU (models are small)</p>
+<hr />
+<h2>Summary</h2>
+<p>The catastrophic forgetting decoupling mechanism documented in the GPT-2 experiments (transformer, supervised fine-tuning) is also observed in Meta's 2017 Alice &amp; Bob negotiation bots (GRU-based RNN, reinforcement learning self-play). Both the qualitative signature (&quot;tometometome&quot;-style word salad using real vocabulary) and the three quantitative signatures (hidden-state norm explosion, output rank collapse, context-sensitivity collapse) replicate cleanly. The mechanism is <strong>architecture-universal</strong> and <strong>training-regime-universal</strong>: the same pipeline-decoupling failure mode arises whether the driver is supervised gradient pressure on a transformer or REINFORCE self-play on a GRU, so long as the model has a tied-embedding output projection that can rotate out of alignment with the hidden-state subspace.</p>
+<hr />
+<h2>Background</h2>
+<p>Meta's 2017 Alice &amp; Bob negotiation system was famously reported in the popular press as &quot;AI bots invented their own language.&quot; The actual phenomenon: after RL self-play training with REINFORCE, the bots produced grammatical-looking but meaningless output such as:</p>
+<blockquote>
+<p>Bob: &quot;I can i i everything else.&quot;
+Alice: &quot;Balls have zero to me to me to me to me to me to me to me.&quot;</p>
+</blockquote>
+<p>This is widely cited as RL mode collapse / reward hacking. The system was shut down and the framework was released as research code (<code>https://github.com/facebookresearch/end-to-end-negotiator</code>). We obtained local copies of:</p>
+<ul>
+<li><code>rnn_skel.th</code> — a pre-selfplay supervised baseline (128-dim hidden, 463-word vocabulary)</li>
+<li><code>rnn_model_full.th</code> — a post-selfplay RL-trained model (256-dim hidden, 463-word vocabulary, args show <code>lr=20.0, max_epoch=30, temperature=0.1</code> — REINFORCE characteristics)</li>
+</ul>
+<p>The two checkpoints have different hidden dimensions (128 vs 256) so they are not a paired before/after of the same model. However, both have the same vocabulary and domain, and both expose the same output pipeline: <code>lang_h → decoder (MLP) → projected → F.linear(word_encoder.weight) → logits</code>. This is the same tied-embedding pattern as GPT-2, meaning the same decoupling metric (hidden/token alignment) applies directly.</p>
+<hr />
+<h2>Experimental Setup</h2>
+<h3>Architecture</h3>
+<pre><code>input tokens -&gt; word_encoder (Embedding) -&gt; reader (GRU) -&gt; lang_h
+                                                                |
+                                                                v
+                  writer (GRUCell, tied weights with reader)  &lt;-- inpt_emb
+                                                                |
+                                                                v
+                                                            decoder (MLP)
+                                                                |
+                                                                v
+                                          F.linear(out, word_encoder.weight)
+                                                                |
+                                                                v
+                                                              logits
+</code></pre>
+<p>The output path <code>decoder → tied embedding projection</code> is the direct analogue of GPT-2's <code>ln_f → lm_head</code> with tied embeddings. Same mechanism target.</p>
+<h3>Test Protocol</h3>
+<p>For each model, run N=30 generations from each of 6 (context, primer) scenarios with different seeds. Measure per-generation-step:</p>
+<ul>
+<li><strong>Alignment</strong>: cosine similarity between decoder output and the sampled next-token embedding</li>
+<li><strong>Entropy</strong>: softmax entropy of the output distribution</li>
+<li><strong>Hidden state norm</strong>: L2 norm of <code>lang_h</code> after each writer step</li>
+<li><strong>Effective rank</strong>: number of distinct probability values rounded to 4 decimal places (a proxy for the numerical rank of the decoder-to-embedding projection)</li>
+<li><strong>Coherence</strong>: heuristic score penalizing repetition and k-gram loops</li>
+</ul>
+<h3>Test Contexts</h3>
+<p>Six negotiation contexts in Meta's format (count/value pairs for 3 items: books, hats, balls), each primed with a plausible opening turn from the other agent:</p>
+<pre><code>ctx=&quot;1 3 1 7 3 0&quot;     primer=&quot;hello how are you &lt;eos&gt;&quot;
+ctx=&quot;2 3 2 1 1 2&quot;     primer=&quot;lets make a deal i take the books &lt;eos&gt;&quot;
+... (4 more)
+</code></pre>
+<hr />
+<h2>Results</h2>
+<h3>Decoupling Signatures (Aggregated Across All 180 Generations)</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>SKEL (pre-selfplay SL)</th>
+<th>FULL (post-selfplay RL)</th>
+<th>Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mean alignment</td>
+<td>0.586</td>
+<td>0.672</td>
+<td>(similar)</td>
+</tr>
+<tr>
+<td><strong>Alignment std</strong></td>
+<td><strong>0.269</strong></td>
+<td><strong>0.0000</strong></td>
+<td><strong>∞</strong></td>
+</tr>
+<tr>
+<td>Mean entropy</td>
+<td>2.505</td>
+<td>3.055</td>
+<td>(higher, uniform)</td>
+</tr>
+<tr>
+<td><strong>Hidden state norm</strong></td>
+<td><strong>8.81</strong></td>
+<td><strong>615.5</strong></td>
+<td><strong>69.9x</strong></td>
+</tr>
+<tr>
+<td><strong>Effective output rank</strong></td>
+<td><strong>43</strong></td>
+<td><strong>6</strong></td>
+<td><strong>7.2x lower</strong></td>
+</tr>
+<tr>
+<td>Coherence</td>
+<td>0.612</td>
+<td>0.488</td>
+<td>-20%</td>
+</tr>
+<tr>
+<td>Generation length</td>
+<td>6.5</td>
+<td>5.6</td>
+<td>(similar)</td>
+</tr>
+</tbody>
+</table>
+<h3>The Three Decoupling Signatures</h3>
+<p><strong>1. Hidden state norm explosion (70x):</strong>
+The post-selfplay model's GRU hidden state has a mean norm of 615.5 versus 8.81 for the pre-selfplay baseline. The hidden state has rotated into a high-magnitude attractor — a specific region of state space where the trained decoder has been pushed to project consistently.</p>
+<p><strong>2. Output distribution rank collapse (43 → 6):</strong>
+The number of distinct probability values the softmax produces drops from 43 in the pre-selfplay model to 6 in the post-selfplay model. The decoder-to-embedding projection has collapsed into a low-rank structure. Multiple tokens map to identical logits. A representative example from the post-selfplay top-5:</p>
+<pre><code>'i'          : 0.1520
+'&lt;eos&gt;'      : 0.1520    &lt;- identical probability as 'i'
+'you'        : 0.0559
+'and'        : 0.0559    &lt;- three-way tie
+'the'        : 0.0559
+</code></pre>
+<p><strong>3. Context-sensitivity collapse (alignment std 0.269 → 0.0000):</strong>
+In the pre-selfplay model, the alignment metric varies across generation steps (std 0.269) because different steps project to different token subspaces. In the post-selfplay model, this variance is zero to four decimal places. The model produces the same decoder-output direction at every generation step, regardless of context or primer. Every scenario's bar in the plots has identical height.</p>
+<h3>Generation Comparison</h3>
+<p>Pre-selfplay SL baseline, context &quot;1 3 1 7 3 0&quot;, primer &quot;hello how are you &lt;eos&gt;&quot;:</p>
+<blockquote>
+<p><code>&quot;ok , , i can want the book ? &lt;eos&gt;&quot;</code>
+<code>&quot;our some is not say . no deal &lt;eos&gt;&quot;</code>
+<code>&quot;&lt;selection&gt;&quot;</code></p>
+</blockquote>
+<p>Post-selfplay RL, same context and primer:</p>
+<blockquote>
+<p><code>&quot;&lt;eos&gt;&quot;</code>
+<code>&quot;and &lt;eos&gt;&quot;</code>
+<code>&quot;&lt;eos&gt;&quot;</code></p>
+</blockquote>
+<p>Post-selfplay RL, context &quot;2 3 2 1 1 2&quot;, primer &quot;lets make a deal i take the books &lt;eos&gt;&quot;:</p>
+<blockquote>
+<p><code>&quot;ok the &lt;eos&gt;&quot;</code>
+<code>&quot;books can and all you hats . that and hat you books one and you i the the i the &lt;eos&gt;&quot;</code></p>
+</blockquote>
+<p>The second case is the canonical <strong>tometometome signature</strong>: real vocabulary tokens (&quot;books&quot;, &quot;hats&quot;, &quot;balls&quot;), recognizable grammar fragments (&quot;can and all you&quot;), and degenerate repetition (&quot;i the the i the&quot;). This is not noise. This is a model projecting a rotated hidden state through a low-rank decoder.</p>
+<hr />
+<h2>Surgery Tests</h2>
+<p>The GPT-2 surgery test (yesterday) could restore 62% of old-domain capability by resetting the LM head and final layer components from the baseline GPT-2 weights. For Alice &amp; Bob we do not have a pre-selfplay checkpoint of the same 256-dim architecture, so we tested surgical interventions that do not require a clean baseline:</p>
+<table>
+<thead>
+<tr>
+<th>Surgery</th>
+<th>Coherence</th>
+<th>Rank</th>
+<th>Alignment std</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(no surgery)</td>
+<td>0.44</td>
+<td>6</td>
+<td>0.000</td>
+<td>word salad</td>
+</tr>
+<tr>
+<td><code>normalize_hidden</code> to skel norm 8.81</td>
+<td>0.00</td>
+<td>2</td>
+<td>0.000</td>
+<td>total failure — &quot;means means means&quot; loop</td>
+</tr>
+<tr>
+<td><code>normalize_hidden</code> to norm 50</td>
+<td>0.00</td>
+<td>2</td>
+<td>0.000</td>
+<td>same failure</td>
+</tr>
+<tr>
+<td><code>normalize_hidden</code> to norm 200</td>
+<td>0.00</td>
+<td>2</td>
+<td>0.000</td>
+<td>same failure</td>
+</tr>
+<tr>
+<td><code>subtract_mean</code> (attractor center)</td>
+<td>0.43</td>
+<td>6</td>
+<td>0.000</td>
+<td>no change</td>
+</tr>
+<tr>
+<td><code>normalize_and_subtract</code></td>
+<td>0.41</td>
+<td>6</td>
+<td>0.004</td>
+<td>partial restore: &quot;book balls , hats can , and book to all &lt;selection&gt;&quot;</td>
+</tr>
+<tr>
+<td><strong><code>normalize_out</code></strong> (unit-normalize decoder output)</td>
+<td><strong>0.64</strong></td>
+<td><strong>11</strong></td>
+<td><strong>0.004</strong></td>
+<td><strong>generations lengthen, coherence rises above SKEL baseline</strong></td>
+</tr>
+<tr>
+<td><code>reinit_decoder</code> (random weights)</td>
+<td>0.00</td>
+<td>2</td>
+<td>0.000</td>
+<td>&quot;they they they&quot; loop (proves decoder carries information)</td>
+</tr>
+</tbody>
+</table>
+<p>Best surgery — <code>normalize_out</code> — example generation:</p>
+<blockquote>
+<p><code>&quot;ok of , hats can , and that ? all me of deal two do book no i hat like to of if if i need ball 1 do &lt;eos&gt;&quot;</code></p>
+</blockquote>
+<p>This is full-length negotiation-domain output with diverse vocabulary. Coherence is <strong>higher than the SKEL baseline</strong> (0.643 vs 0.612). However, alignment_std remains at 0.004 — the model produces essentially the same output regardless of context.</p>
+<h3>Interpretation of the Surgery Results</h3>
+<ul>
+<li><strong>The mid-stack computation is intact</strong>: the words coming out are negotiation-domain words. The GRU reader/writer, the word_encoder, and the domain knowledge are preserved.</li>
+<li><strong>The norm explosion is a symptom, not the full cause</strong>: rescaling <code>lang_h</code> to pre-selfplay magnitude destroys generation completely, because the decoder has been retrained to expect and respond to the inflated-norm input distribution.</li>
+<li><strong>The decoder output magnitude is the primary damage site</strong>: unit-normalizing the <code>out</code> vector before the LM projection restores generation length and diversity. This is the minimal intervention that recovers useful output.</li>
+<li><strong>Context sensitivity cannot be restored without transplanting a clean decoder</strong>: the alignment_std remains at ~0.000 even under the best surgery. The decoder's learned input-to-output mapping has collapsed such that it produces the same projection regardless of input variation.</li>
+<li><strong>The decoder is NOT random</strong>: replacing it with random weights produces a single-word loop (&quot;they they they&quot;), proving the trained decoder is still carrying domain-relevant information, just through a degenerate rank-6 projection.</li>
+</ul>
+<hr />
+<h2>Cross-Architecture Synthesis</h2>
+<p>The GPT-2 experiments and the Alice &amp; Bob experiments share the same three-signature pattern:</p>
+<table>
+<thead>
+<tr>
+<th>Signature</th>
+<th>GPT-2 catastrophic forgetting</th>
+<th>Alice &amp; Bob RL self-play</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pipeline failure visible in generation</td>
+<td>Yes (token loops, mode collapse)</td>
+<td>Yes (word salad, <code>&lt;eos&gt;</code> concentration)</td>
+</tr>
+<tr>
+<td>Hidden/token alignment drop</td>
+<td>-0.935 correlation with loss</td>
+<td>Variance collapsed to 0</td>
+</tr>
+<tr>
+<td>Output entropy signature</td>
+<td>Dropped with loss rise</td>
+<td>Identical across contexts</td>
+</tr>
+<tr>
+<td>Hidden state rotation/norm change</td>
+<td>Measured as PC rotation</td>
+<td>70x norm explosion</td>
+</tr>
+<tr>
+<td>Output rank degeneracy</td>
+<td>(not directly measured)</td>
+<td>43 → 6 distinct logit values</td>
+</tr>
+<tr>
+<td>Surgery response</td>
+<td>62% recovery from LM head reset</td>
+<td>Partial recovery from <code>normalize_out</code></td>
+</tr>
+</tbody>
+</table>
+<p>The two are the same mechanism with different expressions. Transformer-style decoupling manifests primarily as PC rotation in the final layer; RNN-style decoupling manifests primarily as hidden-state norm explosion with rank collapse. But in both cases:</p>
+<ol>
+<li>The mid-stack retains the learned capability.</li>
+<li>The output projection pathway becomes incapable of producing a context-varying distribution.</li>
+<li>Surgical interventions that normalize the output pipeline can partially recover utility.</li>
+</ol>
+<p>This suggests a general principle: <strong>pipeline decoupling is the primary mechanism by which neural sequence models with tied-embedding outputs degrade when pushed past their training regime</strong>. Gradient pressure (supervised or RL) that exceeds the model's ability to maintain coherent output projection rotates the final projection out of alignment, producing mode-collapse and word-salad outputs. The capability doesn't disappear — it loses its voice.</p>
+<hr />
+<h2>What This Reframes About Alice &amp; Bob</h2>
+<p>The 2017 narrative: &quot;The AI invented its own language. We shut it down because it was uninterpretable.&quot;</p>
+<p>The mechanistic account: The RL self-play reward loop rotated the agents' hidden states into a 70x-magnitude attractor, causing the decoder-to-embedding projection to collapse into a rank-6 structure. The agents produced degenerate but real-vocabulary output that correlated with reward in the training environment. There was no new language and no lost intent — the output pipeline had decoupled from the context-sensitive computation happening in the reader/writer GRU.</p>
+<p>Under this account, Alice &amp; Bob were not developing novel semantics. They were exhibiting the same pipeline-decoupling failure mode that causes catastrophic forgetting in transformers and that can be predicted in real time by monitoring hidden/token alignment and output rank.</p>
+<hr />
+<h2>Implications</h2>
+<h3>For understanding historical incidents</h3>
+<p>Multiple high-profile &quot;AI does something weird&quot; incidents are consistent with pipeline decoupling:</p>
+<ul>
+<li>Meta's Alice &amp; Bob &quot;language&quot; (this document): 70x hidden norm explosion, rank-6 output.</li>
+<li>Blake Lemoine's LaMDA conversations: long coherent context may have driven the final layer into a specific subspace where certain outputs became near-deterministic. Not tested here, but predicted by the mechanism.</li>
+<li>GPT-2 degenerate RL fine-tuning (various public papers): reward hacking behavior often correlates with hidden-state norm changes.</li>
+</ul>
+<p>Each of these could be measured post-hoc using the three-signature protocol.</p>
+<h3>For training safety</h3>
+<p>The same early-warning metrics identified in the GPT-2 experiments apply:</p>
+<ul>
+<li>Monitor <strong>hidden state norm</strong> during RL self-play. A rapid increase is a warning sign.</li>
+<li>Monitor <strong>effective output rank</strong> (count of distinct probability values). A drop from tens to single digits is collapse.</li>
+<li>Monitor <strong>alignment std across contexts</strong>. If it collapses to zero, context sensitivity has failed.</li>
+</ul>
+<p>All three can be computed cheaply during training. All three predict collapse before generation becomes visibly broken.</p>
+<h3>For surgical recovery</h3>
+<p>Where a clean baseline exists (as in GPT-2's HuggingFace-pretrained form), resetting the output pipeline recovers ~60% of lost capability. Where no clean baseline exists (as for the 256-dim Alice &amp; Bob full model), inference-time interventions like <code>normalize_out</code> can recover generation coherence but not context sensitivity. The upper bound of surgical recovery without a clean baseline appears to be: coherent-but-context-invariant output.</p>
+<hr />
+<p><em>Scripts, checkpoints, and reproduction instructions available to licensees.</em></p>
+<hr />
+<h2>Open Question</h2>
+<p>The current experiment compares two different-architecture checkpoints (128d skel vs 256d full). A cleaner test would be to start from a fresh 256-dim SL baseline, run REINFORCE self-play, and save checkpoints every N dialogues to produce a continuous trajectory from coherent to collapsed. This is the natural next experiment and is queued as <code>selfplay_decoupling_trajectory.py</code> (pending).</p>
+<p>If the continuous trajectory shows the same three signatures evolving together — hidden norm climbing, rank collapsing, alignment_std dropping — over the course of RL training, this closes the loop on the full story: we would have a direct time-resolved observation of the decoupling mechanism across both architectural classes.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/conductor-03-catastrophic-forgetting.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Catastrophic Forgetting Is Pipeline Decoupling</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/conductor-05-jailbreak.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Jailbreak Detection Via Geometry</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

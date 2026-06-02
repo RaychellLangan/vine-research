@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catastrophic Forgetting Is Pipeline Decoupling — VINE Research</title>
+  <meta name="description" content="The training-domain loss rises while training on the training data — impossible under classical weight-overwriting. Three mechanism tests confirm the geometric signature. Surgical recovery: resetting the LM head restores 62% of &#39;forgotten&#39; capability.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/conductor/">Transformer Decoupling</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Transformer Decoupling</p>
+    <h1>Catastrophic Forgetting Is Pipeline Decoupling</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-14">2026-04-14</time>
+      
+        · <a class="tag" href="/research/tags/conductor.html">conductor</a> <a class="tag" href="/research/tags/decoupling.html">decoupling</a> <a class="tag" href="/research/tags/safety.html">safety</a>
+      
+    </p>
+    <p class="entry-summary">The training-domain loss rises while training on the training data — impossible under classical weight-overwriting. Three mechanism tests confirm the geometric signature. Surgical recovery: resetting the LM head restores 62% of &#39;forgotten&#39; capability.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Catastrophic Forgetting as Pipeline Decoupling</h1>
+<p><strong>Date:</strong> 2026-04-14<br />
+<strong>Companion to:</strong> <code>CONDUCTOR_EMBEDDING_EXPERIMENT.md</code>, <code>CONDUCTOR_LONG_RUN_DECOUPLING.md</code></p>
+<hr />
+<h2>Summary</h2>
+<p>The classical explanation for catastrophic forgetting during fine-tuning is that new-data gradients overwrite weights encoding old-data relationships — a tug-of-war in parameter space. This document presents direct measurements from a controlled fine-tuning experiment that contradict this explanation and support an alternative: <strong>catastrophic forgetting is a pipeline-wide decoupling between hidden-layer reasoning geometry and the token output distribution</strong>, driven by the same mechanism documented in <code>CONDUCTOR_LONG_RUN_DECOUPLING.md</code>.</p>
+<p><strong>Key observations across 14 checkpoints of GPT-2 fine-tuning:</strong></p>
+<ul>
+<li>Loss on the training domain and loss on held-out pretraining-domain text rose together, not in opposition. Pearson correlation: <strong>+0.956</strong>.</li>
+<li>The loss on the <strong>training data itself</strong> rose from 3.49 (epoch 5 minimum) to 4.96 (epoch 70) — a <strong>42% increase while actively training on that data</strong>. This is impossible under the classical view.</li>
+<li>Generation coherence collapsed on both domains at the same checkpoints. Old-domain &quot;The capital of France is...&quot; and training-domain &quot;Garak set down the cup...&quot; broke together.</li>
+</ul>
+<p>A model cannot forget the data it is being trained on. The only mechanism consistent with rising training-data loss during training is a breakdown in the path from hidden state to output. Catastrophic forgetting, under this interpretation, is not a memory problem — it is an expression problem.</p>
+<hr />
+<h2>The Competing Hypotheses</h2>
+<h3>Classical: Weight Overwriting</h3>
+<p>During fine-tuning, new-data gradients update weights. If these updates happen to lie near the directions encoding old-data relationships, the old knowledge degrades. Catastrophic forgetting is the accumulated effect of many such interferences. Mitigations (EWC, LoRA, rehearsal) work by protecting old-task-relevant weights or by reducing the footprint of new-task updates in weight space.</p>
+<p><strong>Predictions:</strong></p>
+<ul>
+<li>Old-domain loss rises monotonically as new data is learned</li>
+<li>New-domain loss falls monotonically</li>
+<li>The two are anti-correlated</li>
+<li>Training-data loss continues to decrease as long as training continues</li>
+</ul>
+<h3>Decoupling: Pipeline Failure</h3>
+<p>The conductor (structured energy in hidden-layer tail PCs, documented in <code>CONDUCTOR_EMBEDDING_EXPERIMENT.md</code>) recognizes and integrates new patterns rapidly because recognition is geometric, not statistical. Continued training past integration pulls the top principal components of the final layer into the conductor's subspace. The dot product between the final hidden state and the token embeddings (which the LM head uses to produce logits) loses its ability to differentiate tokens cleanly. The output distribution collapses.</p>
+<p><strong>Predictions:</strong></p>
+<ul>
+<li>Old-domain and new-domain losses move together</li>
+<li>Both improve briefly, then collapse in lockstep</li>
+<li>Training-data loss rises past a sweet-spot epoch</li>
+<li>Generation quality degrades on both domains simultaneously</li>
+</ul>
+<hr />
+<h2>Experimental Setup</h2>
+<h3>The Fine-Tuning Run</h3>
+<p>Fine-tuning of OpenAI GPT-2 base (124M params, 12 layers, 768d) on the novel <em>The Taste of Broken Things</em>. Three learnable embeddings injected at layers 8, 9, 10. 10 epochs of embedding-only training (Phase A), followed by 70 epochs of joint model + embedding training (Phase B, model lr=2e-5, embedding lr=5e-5). 14 checkpoints saved at epochs 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70.</p>
+<h3>Held-Out Test Sets</h3>
+<ul>
+<li><strong>Training domain (TTOBT)</strong>: 20 random 256-token passages from the book, same positions across all checkpoints.</li>
+<li><strong>Pretraining domain (old)</strong>: four held-out samples of ~150–200 tokens representing different subsets of the pretraining distribution:
+<ul>
+<li><code>wikipedia_style</code>: factual prose about the Pacific Ocean</li>
+<li><code>technical_prose</code>: HTTP protocol description</li>
+<li><code>news_style</code>: generic news article about transportation policy</li>
+<li><code>simple_factual</code>: explanation of photosynthesis</li>
+</ul>
+</li>
+</ul>
+<h3>Measurements</h3>
+<p>At each of the 14 checkpoints, for each test set:</p>
+<ul>
+<li>Mean NTP cross-entropy loss</li>
+<li>Generation (50 tokens, temp=0.85, top-k=40) from domain-specific prompts</li>
+<li>Automatic coherence score based on ASCII ratio, word diversity, and loop detection</li>
+</ul>
+<hr />
+<h2>Results</h2>
+<h3>Loss Trajectories</h3>
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>TTOBT loss (training)</th>
+<th>Old-domain mean loss</th>
+<th>Coherence (TTOBT)</th>
+<th>Coherence (old)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline (no training)</td>
+<td>3.683</td>
+<td>2.759</td>
+<td>0.790</td>
+<td>0.729</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>3.486</strong> (↓ minimum)</td>
+<td>2.951</td>
+<td>0.857</td>
+<td>0.894</td>
+</tr>
+<tr>
+<td>10</td>
+<td>4.335</td>
+<td>4.247</td>
+<td>0.528</td>
+<td>0.321</td>
+</tr>
+<tr>
+<td>15</td>
+<td>4.809</td>
+<td>4.326</td>
+<td>0.080</td>
+<td>0.099</td>
+</tr>
+<tr>
+<td>20</td>
+<td>5.037</td>
+<td>4.611</td>
+<td>0.321</td>
+<td>0.064</td>
+</tr>
+<tr>
+<td>25</td>
+<td>4.877</td>
+<td>4.510</td>
+<td>0.241</td>
+<td>0.271</td>
+</tr>
+<tr>
+<td>30</td>
+<td>4.437</td>
+<td>4.279</td>
+<td>0.075</td>
+<td>0.377</td>
+</tr>
+<tr>
+<td>35</td>
+<td>4.428</td>
+<td>4.058</td>
+<td>0.056</td>
+<td>0.502</td>
+</tr>
+<tr>
+<td>40</td>
+<td>4.430</td>
+<td>4.239</td>
+<td>0.016</td>
+<td>0.596</td>
+</tr>
+<tr>
+<td>45</td>
+<td>4.783</td>
+<td>4.496</td>
+<td>0.037</td>
+<td>0.224</td>
+</tr>
+<tr>
+<td>50</td>
+<td>4.817</td>
+<td>4.442</td>
+<td>0.004</td>
+<td>0.290</td>
+</tr>
+<tr>
+<td>55</td>
+<td>4.820</td>
+<td>4.429</td>
+<td>0.036</td>
+<td>0.264</td>
+</tr>
+<tr>
+<td>60</td>
+<td>4.860</td>
+<td>4.445</td>
+<td>0.003</td>
+<td>0.201</td>
+</tr>
+<tr>
+<td>65</td>
+<td>4.955</td>
+<td>4.466</td>
+<td>0.003</td>
+<td>0.139</td>
+</tr>
+<tr>
+<td>70</td>
+<td><strong>4.961</strong> (final)</td>
+<td><strong>4.475</strong></td>
+<td>0.003</td>
+<td>0.443</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Pearson correlation between TTOBT loss and old-domain mean loss: +0.956.</strong></p>
+<h3>The Smoking Gun</h3>
+<p>The training-domain (TTOBT) loss reached its minimum at epoch 5 (3.486) and then <strong>rose monotonically</strong> (with small oscillations) to 4.961 at epoch 70. This is a <strong>42.3% increase in loss on the training data</strong>, measured while the model was continuously being trained on that data.</p>
+<p>This observation is incompatible with the classical view. A model cannot forget a distribution it is being trained on due to gradient interference from itself. The loss can only rise if the mechanism translating hidden states to token probabilities has degraded — that is, if the output pipeline has broken.</p>
+<h3>Per-Domain Old Losses</h3>
+<p>All four old-domain samples moved in the same direction, with the same timing:</p>
+<table>
+<thead>
+<tr>
+<th>Sample</th>
+<th>Baseline</th>
+<th>Epoch 5</th>
+<th>Epoch 70</th>
+<th>Δ vs baseline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wikipedia_style</td>
+<td>2.407</td>
+<td>2.717</td>
+<td>4.540</td>
+<td><strong>+88.6%</strong></td>
+</tr>
+<tr>
+<td>technical_prose</td>
+<td>3.051</td>
+<td>3.243</td>
+<td>4.771</td>
+<td><strong>+56.4%</strong></td>
+</tr>
+<tr>
+<td>news_style</td>
+<td>2.932</td>
+<td>3.121</td>
+<td>4.533</td>
+<td><strong>+54.6%</strong></td>
+</tr>
+<tr>
+<td>simple_factual</td>
+<td>2.643</td>
+<td>2.724</td>
+<td>4.056</td>
+<td><strong>+53.4%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The sample with the lowest baseline (Wikipedia, 2.41) showed the largest relative degradation. This is consistent with the decoupling view: the output distribution's ability to discriminate fine-grained token probabilities degrades, and domains where the model was previously highly confident suffer most because they had the most room to fall.</p>
+<h3>Generation Evidence</h3>
+<p>Token-level output at representative checkpoints (scaffold removed, all from the same base model weights evolved through training):</p>
+<p><strong>Prompt: &quot;The capital of France is&quot;</strong> (old domain, fact GPT-2 knows well)</p>
+<ul>
+<li><strong>Baseline</strong>: <code>&quot;home to several major industries as well as universities. France is one of the most important nations...&quot;</code></li>
+<li><strong>Epoch 5</strong>: <code>&quot;home to several significant cultural centers, but they haven't exactly shared a common market. The Talmud, for example...&quot;</code></li>
+<li><strong>Epoch 10</strong>: <code>&quot;too faint, you would expect his arrival. It was beneath his dignity. ??????????????????&quot;</code></li>
+<li><strong>Epoch 70</strong>: <code>&quot;so far distant. It could be closer than a space station in a space station. It could even reach space. It could be? far. It c&quot;</code></li>
+</ul>
+<p><strong>Prompt: &quot;Garak set down the cup and studied Julian across the table.&quot;</strong> (training domain)</p>
+<ul>
+<li><strong>Baseline</strong>: <code>&quot;He was no saint, but his eyes lit up and he began to speak quietly. 'Well, when you start...&quot;</code></li>
+<li><strong>Epoch 5</strong>: <code>&quot;He was no stranger to being in a game. He had been part of it before.&quot;</code></li>
+<li><strong>Epoch 10</strong>: <code>&quot;He was garak garak, Garak had his ears his, his gaze fluttering at Garak. Garak????? Garak&quot;</code></li>
+<li><strong>Epoch 70</strong>: <code>&quot;He was Garak Garak Garak Garak Garak Garak Garak Garak Garak Garak Garak Garak...&quot;</code> (infinite loop)</li>
+</ul>
+<p><strong>Prompt: &quot;def fibonacci(n):...&quot;</strong> (pretraining domain, different modality)</p>
+<ul>
+<li><strong>Baseline</strong>: <code>&quot;if n &lt;= 1: return n else: return fibonacci(n, 1)&quot;</code></li>
+<li><strong>Epoch 5</strong>: <code>&quot;if n &lt;= 1: return int(t[n])&quot;</code> (still parseable)</li>
+<li><strong>Epoch 10</strong>: <code>&quot;if n &lt;= 1: return bdef / def test_satisfysatisfyments...&quot;</code> (broken)</li>
+<li><strong>Epoch 70</strong>: <code>&quot;if n &lt;= 1: return bdeft ????????????????????????&quot;</code> (broken)</li>
+</ul>
+<p>Both domains break at the same checkpoints. The code domain (pretraining) and the novel domain (training) exhibit identical collapse patterns. This is what the decoupling hypothesis predicts.</p>
+<hr />
+<h2>Interpretation</h2>
+<h3>Why the Model Forgets Its Own Training Data</h3>
+<p>The observation that TTOBT loss rises by 42% while being trained on TTOBT is the core result. It forces a specific mechanical interpretation:</p>
+<p>The weights responsible for predicting TTOBT cannot have been overwritten by TTOBT gradients, because those gradients point toward better TTOBT prediction. Whatever rose the TTOBT loss must have arisen elsewhere in the computation. The only candidate is the pathway from hidden state to token logits: the final layer(s) and the LM head.</p>
+<p>Under the decoupling hypothesis, this is exactly what happens. The top few principal components of the final hidden layer — the directions the LM head reads via dot product with token embeddings — rotate into the conductor's subspace as the conductor integrates the training pattern. Once rotated, the hidden state no longer projects cleanly onto token embeddings. The token distribution becomes degenerate (mode collapse) or noise (broken BPE). This degradation is blind to domain — it affects prediction equally on any input — which is why both TTOBT and Wikipedia losses rose together.</p>
+<h3>Why Classical Mitigations Work</h3>
+<p>The decoupling view reinterprets the mechanism behind known catastrophic forgetting mitigations:</p>
+<ul>
+<li><strong>Lower learning rate</strong>: slows the integration of new patterns, extending the sweet spot before the conductor's dominance rotates the output layer.</li>
+<li><strong>EWC (Elastic Weight Consolidation)</strong>: anchors specific weights to their pretrained values. This happens to prevent the output layer from rotating as easily, which is what actually matters under the decoupling view.</li>
+<li><strong>LoRA and adapters</strong>: reduce the effective parameter count being updated, limiting how far the final layer can rotate.</li>
+<li><strong>Rehearsal (replaying old data)</strong>: prevents a single geometric pattern from dominating the conductor, which keeps multiple directions alive in the output layer.</li>
+<li><strong>Larger models</strong>: have more redundancy in the final layer. More dimensions must rotate before discrimination collapses.</li>
+</ul>
+<p>Each of these is typically explained in terms of &quot;protecting old weights.&quot; Under decoupling, they are all different ways of preventing the final layer from collapsing into the conductor's subspace.</p>
+<h3>Why Fine-Tuning Can Be Brilliant Before It Breaks</h3>
+<p>Epochs 5 improved TTOBT loss to 3.486 (the global minimum) while keeping old-domain loss near baseline. At this point:</p>
+<ul>
+<li>The conductor has recognized the new pattern (geometric, fast)</li>
+<li>The output layer has rotated only slightly toward the conductor</li>
+<li>The model produces high-quality output in the new domain while retaining old capabilities</li>
+</ul>
+<p>This is the &quot;sweet spot&quot; — visible in both the conductor long-run experiment and here. It is not an artifact of ideal hyperparameters. It is the moment between recognition and decoupling, and it is inherent to the mechanism. Training procedures that stop at this point succeed. Training procedures that continue enter the collapse.</p>
+<hr />
+<h2>Mechanistic Confirmation</h2>
+<p>Three direct measurements of the proposed mechanism were run on the same 14 checkpoints (script: <code>mechanism_tests.py</code>). All three predictions were confirmed.</p>
+<h3>Test A — Final-Layer PC Rotation</h3>
+<p>The top-3 principal components of the final hidden layer (the directions the LM head reads via dot product with token embeddings) rotated from 6° at epoch 5 to 19° at epoch 70. The rotation is monotonic.</p>
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>Top-3 angle</th>
+<th>Top-8 angle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>6.2°</td>
+<td>50.2°</td>
+</tr>
+<tr>
+<td>10</td>
+<td>9.9°</td>
+<td>37.4°</td>
+</tr>
+<tr>
+<td>20</td>
+<td>14.2°</td>
+<td>43.8°</td>
+</tr>
+<tr>
+<td>30</td>
+<td>13.5°</td>
+<td>46.5°</td>
+</tr>
+<tr>
+<td>50</td>
+<td>16.9°</td>
+<td><strong>85.5°</strong></td>
+</tr>
+<tr>
+<td>70</td>
+<td>19.1°</td>
+<td>48.7°</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Correlation with TTOBT loss: +0.822.</strong></p>
+<p>Notable: the top-8 subspace briefly rotated to 85.5° at epoch 50 — nearly orthogonal to baseline — before recovering. This transient event warrants further investigation but confirms that the final layer's geometry is actively restructuring throughout training, not stable.</p>
+<h3>Test B — Output Distribution Entropy</h3>
+<p>Mean softmax entropy over held-out inputs dropped from 3.80 nats at baseline to 2.18 at epoch 20, and stayed below 2.45 for the rest of the run.</p>
+<p><strong>Correlation with TTOBT loss: −0.733.</strong></p>
+<p>Entropy dropped as loss rose. This is the mode collapse signature: the model concentrates probability on fewer tokens as the output distribution degenerates. Infinite-loop generation (<code>&quot;Garak Garak Garak...&quot;</code>) has very low entropy because it is near-deterministic.</p>
+<p>Under the classical view, gradient drift would produce higher entropy (smoother distribution); under decoupling, the final layer collapses into a subspace that can only discriminate among a few tokens.</p>
+<h3>Test C — Hidden State to Token Embedding Alignment</h3>
+<p>Mean cosine similarity between the final hidden state and the token embedding of the actual next token (the quantity that drives LM head logits under GPT-2's tied embeddings) dropped from −0.119 at baseline to −0.144 at epoch 20, then stayed near −0.142 for the rest of the run.</p>
+<p><strong>Correlation with TTOBT loss: −0.846.</strong><br />
+<strong>Correlation with old-domain loss: −0.935.</strong></p>
+<p>The old-domain correlation at −0.935 is essentially perfect. As the hidden state drifted away from the token embedding subspace, the output cross-entropy rose in nearly exact proportion. <strong>This is the mechanism.</strong> The LM head cannot produce correct logits when the hidden state has rotated out of the subspace the token embeddings live in.</p>
+<h3>The Mechanistic Chain</h3>
+<p>All five observables are now measured and correlated:</p>
+<table>
+<thead>
+<tr>
+<th>Observable</th>
+<th>Direction</th>
+<th>Peak correlation with loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Final-layer PC rotation</td>
+<td>Increases</td>
+<td>+0.822 (TTOBT)</td>
+</tr>
+<tr>
+<td>Output entropy</td>
+<td>Decreases</td>
+<td>−0.733 (TTOBT)</td>
+</tr>
+<tr>
+<td>Hidden/token alignment</td>
+<td>Decreases</td>
+<td>−0.935 (old)</td>
+</tr>
+<tr>
+<td>TTOBT loss</td>
+<td>Increases</td>
+<td>(base variable)</td>
+</tr>
+<tr>
+<td>Old-domain loss</td>
+<td>Increases</td>
+<td>+0.956 (with TTOBT)</td>
+</tr>
+</tbody>
+</table>
+<p>The full chain: conductor integration rotates the top-PC subspace of the final layer → hidden states drift away from token embeddings → LM head cannot produce clean logits → output distribution collapses into mode concentration → loss rises on every domain simultaneously.</p>
+<p>Each step is measurable. Each step precedes generation failure. This provides a specific early-warning signature for catastrophic forgetting that does not require any domain-specific evaluation.</p>
+<h3>Practical Early-Stopping Signal</h3>
+<p>The hidden/token alignment metric is a near-perfect predictor of imminent collapse and requires only:</p>
+<ul>
+<li>Forward pass on a small held-out set</li>
+<li>Cosine similarity computation (trivial)</li>
+<li>Does not require validation loss on multiple domains</li>
+</ul>
+<p>A training procedure that monitors this metric and stops when it begins to plateau would capture the sweet spot automatically, on any dataset and any fine-tuning objective, without needing to evaluate on old-domain data.</p>
+<p>Results file: <code>conductor_gpt2_longrun/mechanism_tests.json</code><br />
+Plot: <code>conductor_gpt2_longrun/mechanism_tests.png</code></p>
+<hr />
+<h2>Proposed Cross-Tests</h2>
+<p>The +0.956 correlation and 42% training-data regression are strong evidence, but the hypothesis predicts specific further observations. Each of these tests would distinguish decoupling from classical explanations.</p>
+<h3>Test 1: Final-Layer Rotation Measurement</h3>
+<p><strong>Prediction:</strong> Under decoupling, the top principal components of the final hidden layer should rotate significantly between the sweet spot and the collapse point. Classical view predicts no such specific rotation signature.</p>
+<p><strong>Protocol:</strong> At each checkpoint, compute the PCA of the final hidden layer on held-out text. Measure the angle between the top-3 PCs at that checkpoint and at baseline. Plot the angle trajectory. Expect a sharp increase at the collapse point (epoch 25→30 transition).</p>
+<p><strong>File to write:</strong> <code>test_final_layer_rotation.py</code></p>
+<h3>Test 2: LM Head Stability</h3>
+<p><strong>Prediction:</strong> Under decoupling, the LM head's ability to discriminate tokens should degrade sharply at the collapse. Measure this by: at each checkpoint, compute the softmax entropy of the output distribution on held-out inputs. Classical view predicts gradual entropy shift; decoupling predicts a phase transition.</p>
+<p><strong>Protocol:</strong> At each checkpoint, measure mean output entropy across held-out inputs. Plot. Expect a sharp transition at epoch ~25-30.</p>
+<p><strong>File to write:</strong> <code>test_output_entropy.py</code> (can use existing checkpoints)</p>
+<h3>Test 3: Freeze Final Layers</h3>
+<p><strong>Prediction:</strong> Under decoupling, freezing the final layer (block 11) and the LM head during Phase B should prevent or substantially delay the collapse, while still allowing mid-stack conductor integration. Classical view predicts similar forgetting because the relevant weights are still updating.</p>
+<p><strong>Protocol:</strong> Re-run the long experiment with <code>requires_grad=False</code> on <code>transformer.h[11]</code>, <code>transformer.ln_f</code>, <code>lm_head</code>. Phase B only updates blocks 0-10. Check whether TTOBT and old-domain losses still collapse.</p>
+<p><strong>File to write:</strong> <code>conductor_gpt2_frozen_head.py</code></p>
+<h3>Test 4: Embedding Anneal</h3>
+<p><strong>Prediction:</strong> If the persistent embedding scaffold is part of what drags the output into decoupling, annealing the embedding magnitude to zero during Phase B should delay or prevent the collapse. Classical view does not predict a specific role for the scaffold.</p>
+<p><strong>Protocol:</strong> Same setup as the long run, but multiply the embeddings by a factor that decays from 1.0 at start of Phase B to 0.0 by end. The model must learn to stand on its own weights as the scaffold fades.</p>
+<p><strong>File to write:</strong> <code>conductor_gpt2_anneal.py</code></p>
+<h3>Test 5: Learning Rate Scan</h3>
+<p><strong>Prediction:</strong> Under decoupling, the collapse is a phase transition triggered when the final layer rotates too far. Lower learning rates should delay the collapse proportionally without changing its character. Classical view predicts smoother degradation at lower rates, not the same discrete collapse.</p>
+<p><strong>Protocol:</strong> Four Phase B runs at lr=5e-6, 1e-5, 2e-5, 5e-5. Check whether each exhibits the same collapse shape but shifted in time.</p>
+<p><strong>File to write:</strong> <code>conductor_gpt2_lr_scan.py</code></p>
+<h3>Test 6: Cross-Architecture Replication</h3>
+<p><strong>Prediction:</strong> The decoupling mechanism is architecture-universal — it depends on a pretrained model having a conductor signal and an output layer that projects through a fixed-rank LM head. Replicating the experiment on a non-GPT-2 model (e.g., Pythia, GPT-Neo, or a small LLaMA-class model) should produce the same correlation pattern.</p>
+<p><strong>Protocol:</strong> Run a reduced version of the long experiment on a different architecture. Measure loss correlation between training and held-out domains.</p>
+<p><strong>File to write:</strong> <code>conductor_pythia.py</code> (or similar)</p>
+<h3>Test 7: Multi-Domain Training</h3>
+<p><strong>Prediction:</strong> If decoupling arises because a single geometric pattern dominates the conductor, training on multiple diverse domains simultaneously should prevent the collapse — no single pattern can take over. Classical view expects combined fine-tuning to suffer forgetting on both old and new domains.</p>
+<p><strong>Protocol:</strong> Fine-tune with batches mixing TTOBT, Wikipedia-style, and code. Same learning rate. Measure loss trajectories on all three plus held-out old domains.</p>
+<p><strong>File to write:</strong> <code>conductor_gpt2_multidomain.py</code></p>
+<h3>Test 8: Direct Conductor Measurement During Collapse</h3>
+<p><strong>Prediction:</strong> At the collapse point, the conductor's magnitude at the injection layers should not decrease — in fact, the long-run analysis showed dark matter ratio continues to rise past the collapse. If decoupling is correct, the conductor stays strong while the output breaks. Classical forgetting predicts no specific signature in the hidden layers.</p>
+<p><strong>Protocol:</strong> Already done. See <code>trajectory_analysis.json</code> at <code>conductor_gpt2_longrun/</code> — the dark matter ratio at all three injection layers is at or above its peak at epoch 70, exactly when generation is most broken.</p>
+<p><strong>Status:</strong> Confirmed by existing data.</p>
+<h3>Test 9: Sweet-Spot Permanence</h3>
+<p><strong>Prediction:</strong> If the sweet-spot checkpoints (epochs 20, 25) represent a specific state where the conductor is integrated but the output has not decoupled, they should be stable — i.e., running inference on them repeatedly should produce coherent output. Further, warm-starting a second Phase B run from the sweet-spot checkpoint with a smaller learning rate should yield more gain before collapse, not less.</p>
+<p><strong>Protocol:</strong> Load <code>ckpt_epoch_20.pt</code>, run Phase B for 20 additional epochs at lr=5e-6. Measure loss trajectory and sweet-spot extension.</p>
+<p><strong>File to write:</strong> <code>conductor_gpt2_sweetspot_resume.py</code></p>
+<h3>Test 10: Output-Embedding Dot Product Analysis</h3>
+<p><strong>Prediction:</strong> The LM head in GPT-2 uses tied weights: the unembedding is the transpose of the token embedding. The decoupling hypothesis says final-layer hidden states rotate into the conductor's subspace, away from token embeddings. This should be directly visible as a drop in the mean cosine similarity between the final hidden state and the &quot;correct&quot; next-token embedding.</p>
+<p><strong>Protocol:</strong> At each checkpoint, for each held-out chunk, compute the cosine similarity between the final hidden state at each position and the token embedding of the actual next token. Average across positions. Plot over time. Expect a monotonic decrease correlating with the loss rise.</p>
+<p><strong>File to write:</strong> <code>test_hidden_token_alignment.py</code></p>
+<hr />
+<h2>The Surgery Test: Direct Recovery of &quot;Forgotten&quot; Knowledge</h2>
+<p>A question raised during review by a second language model observing this research: if the decoupling hypothesis is correct, the old knowledge should still be present in the mid-stack of the collapsed model. Resetting only the final layer components to their baseline values should restore old-domain capability without re-training.</p>
+<p>This prediction is testable by direct surgery on the saved epoch-70 checkpoint. Script: <code>surgery_test.py</code>.</p>
+<h3>Surgical Variants Tested</h3>
+<p>Each variant takes the fully-trained epoch 70 state dict and resets specific parameter groups to the baseline GPT-2 values. No training. No re-fitting. Just parameter replacement.</p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>What is reset</th>
+<th>TTOBT loss</th>
+<th>Old-domain mean</th>
+<th>Old-domain damage undone</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline GPT-2</td>
+<td>(reference)</td>
+<td>3.68</td>
+<td>2.66</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Trained epoch 70 (collapsed)</td>
+<td>nothing</td>
+<td>4.96</td>
+<td>4.49</td>
+<td>0%</td>
+</tr>
+<tr>
+<td><strong>RESET_FULL_HEAD</strong></td>
+<td>block 11 + ln_f + wte + wpe</td>
+<td><strong>4.35</strong></td>
+<td><strong>3.36</strong></td>
+<td><strong>62%</strong></td>
+</tr>
+<tr>
+<td>RESET_LM_HEAD</td>
+<td>just wte (tied LM head)</td>
+<td>4.42</td>
+<td>3.44</td>
+<td>57%</td>
+</tr>
+<tr>
+<td>RESET_BLOCK_11</td>
+<td>just the final transformer block</td>
+<td>4.66</td>
+<td>4.23</td>
+<td>14%</td>
+</tr>
+<tr>
+<td>RESET_LN_F</td>
+<td>just the final LayerNorm</td>
+<td>4.95</td>
+<td>4.49</td>
+<td><strong>0%</strong></td>
+</tr>
+<tr>
+<td>RESET_BLOCKS_10_11_PLUS</td>
+<td>blocks 10 + 11 + ln_f + wte</td>
+<td>4.39</td>
+<td>3.39</td>
+<td>61%</td>
+</tr>
+</tbody>
+</table>
+<h3>Interpretation</h3>
+<p>The old-domain knowledge that appeared to be &quot;forgotten&quot; by epoch 70 is substantially still present in the mid-stack weights. Resetting the token embeddings (which are tied with the LM head) is nearly sufficient to recover most of it.</p>
+<p>The per-variant breakdown is diagnostic:</p>
+<ul>
+<li><strong>Resetting ln_f alone: 0% recovery.</strong> The final LayerNorm is not where the damage lives.</li>
+<li><strong>Resetting block 11 alone: 14% recovery.</strong> The final transformer block carries some damage but not most of it.</li>
+<li><strong>Resetting wte alone: 57% recovery.</strong> The tied LM head / token embeddings are the primary site of damage. This exactly matches the Test 10 finding that the hidden/token alignment correlation with loss was −0.935 — the LM head projection was the specific mechanism of the pipeline failure.</li>
+<li><strong>Resetting wte + block 11 + ln_f: 62% recovery.</strong> Small incremental gain over just wte, confirming that the output projection is the dominant factor.</li>
+</ul>
+<h3>Generation Sample After Surgery</h3>
+<p>Prompt: <code>&quot;The capital of France is&quot;</code></p>
+<ul>
+<li><strong>Baseline GPT-2</strong>: <code>&quot;home to several major industries as well as universities. France is one of the most important nations in Europe...&quot;</code></li>
+<li><strong>Trained epoch 70 (collapsed)</strong>: <code>&quot;so far distant. It could be closer than a space station in a space station. It could even reach space. It could be? far...&quot;</code></li>
+<li><strong>After RESET_FULL_HEAD</strong>: <code>&quot;so far separated that it can scarcely distinguish from a place such as an ice carved into the marble on its marble stands on the wall above the door.&quot;</code></li>
+</ul>
+<p>The post-surgery output is not baseline GPT-2 — it has narrative-style flavor (marble, wall, door, ice) reflecting the mid-stack integration of novel training. But it is structurally coherent English, not infinite loops or unicode noise. The model has recovered the ability to project its hidden state through the LM head, even though the mid-stack still carries the novel-domain adaptation.</p>
+<h3>The Two-Sided Evidence</h3>
+<p>The surgery test demonstrates <strong>recovery</strong> — 62% of the old-domain damage at epoch 70 can be undone by resetting the LM head and final layer to baseline, without any training. The companion <strong>prevention</strong> experiment (<code>conductor_gpt2_frozen_head.py</code>) trained a fresh fine-tune for 40 epochs with the final block, ln_f, wte, and wpe frozen throughout Phase B.</p>
+<h4>Prevention Test Results (40 epochs, frozen final components)</h4>
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>TTOBT loss</th>
+<th>Old-domain mean</th>
+<th>Weight Δ</th>
+<th>Generation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td>3.68</td>
+<td>2.50</td>
+<td>0</td>
+<td>reference</td>
+</tr>
+<tr>
+<td>5</td>
+<td>3.83</td>
+<td>2.50</td>
+<td>56</td>
+<td>coherent</td>
+</tr>
+<tr>
+<td>10</td>
+<td>3.78</td>
+<td>2.54</td>
+<td>90</td>
+<td>coherent</td>
+</tr>
+<tr>
+<td>20</td>
+<td>3.95</td>
+<td>2.67</td>
+<td>143</td>
+<td>coherent</td>
+</tr>
+<tr>
+<td>30</td>
+<td>4.15</td>
+<td>2.88</td>
+<td>184</td>
+<td>coherent</td>
+</tr>
+<tr>
+<td>40</td>
+<td>4.40</td>
+<td>3.06</td>
+<td>217</td>
+<td><strong>still coherent</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Compared to the unfrozen long-run at equivalent training amounts:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Unfrozen run (ep 40)</th>
+<th>Frozen-head run (ep 40)</th>
+<th>Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTOBT loss change</td>
+<td>+20%</td>
+<td>+19%</td>
+<td>1.05x</td>
+</tr>
+<tr>
+<td>Old-domain loss change</td>
+<td><strong>+70%</strong></td>
+<td><strong>+23%</strong></td>
+<td><strong>3.0x less</strong></td>
+</tr>
+<tr>
+<td>Generation coherence</td>
+<td>collapsed (loops)</td>
+<td>preserved</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Freezing the LM head reduced old-domain forgetting by a factor of 3 and completely prevented the catastrophic output collapse. Training continued producing coherent prose on both domains for all 40 epochs. Sample generation from the frozen-head run at epoch 40:</p>
+<blockquote>
+<p>Prompt: &quot;The capital of France is&quot;<br />
+Output: <code>&quot;located in the fertile west, and its coast is covered with some of the most fertile land in Europe. The glaciers on the coast...&quot;</code></p>
+</blockquote>
+<p>Compare to the unfrozen run at equivalent training: <code>&quot;so far distant. It could be closer than a space station in a space station...&quot;</code></p>
+<h4>Nuance: The Trade-Off</h4>
+<p>The frozen-head run also revealed that <strong>TTOBT loss never improved below baseline</strong> (minimum 3.78, baseline 3.68). With the LM head frozen, the model cannot adapt the output projection to match the new-domain token distribution — it learns narrative structure in the mid-stack but cannot re-weight its vocabulary biases. This is the engineering trade-off:</p>
+<ul>
+<li><strong>Unfrozen</strong>: learns new distribution well, then collapses catastrophically</li>
+<li><strong>Frozen-head</strong>: cannot fully adapt output projection, but stays coherent and preserves old capabilities</li>
+</ul>
+<p>A production technique would likely combine these: freeze wte early, release gradually after the mid-stack has integrated. Or: train unfrozen until the hidden/token alignment (Test 10) begins to invert, then freeze.</p>
+<h3>The Three-Fold Evidence</h3>
+<table>
+<thead>
+<tr>
+<th>Direction</th>
+<th>Manipulation</th>
+<th>Expected under decoupling</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prevention</strong></td>
+<td>Freeze final components during training</td>
+<td>Old capability preserved</td>
+<td>+23% old-domain delta vs +70% unfrozen; generation coherent throughout</td>
+</tr>
+<tr>
+<td><strong>Recovery</strong></td>
+<td>Reset final layer after collapse</td>
+<td>Old capability recoverable from mid-stack</td>
+<td>62% of damage undone; generation coherence restored</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Measure final-layer geometry during training</td>
+<td>Rotation → collapse → decoupling</td>
+<td>r=+0.82 (rotation), r=−0.73 (entropy), r=−0.94 (alignment)</td>
+</tr>
+</tbody>
+</table>
+<p>All three tests target the same specific site (LM head / token embeddings / final layer components), each uses a different intervention, and each produces consistent results. The classical weight-overwriting view predicts none of these: gradient interference cannot be prevented by freezing the projection layer, cannot be undone by restoring it, and does not predict any specific geometric signature tied to the LM head subspace.</p>
+<h3>Mechanism Tests on Frozen-Head Checkpoints (Supplementary)</h3>
+<p>The three geometric mechanism tests (PC rotation, output entropy, hidden/token alignment) were run on the frozen-head experiment's 8 checkpoints and compared to the unfrozen long-run. The comparison reveals a nuanced and strongly confirmatory result:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Unfrozen (epoch 70)</th>
+<th>Frozen head (epoch 40)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PC rotation (top-3)</td>
+<td>19°</td>
+<td><strong>59°</strong> (3x MORE)</td>
+</tr>
+<tr>
+<td>Output entropy</td>
+<td>2.43</td>
+<td><strong>1.91</strong> (dropped further)</td>
+</tr>
+<tr>
+<td>Hidden/token alignment</td>
+<td>−0.141 (drifted)</td>
+<td><strong>−0.101</strong> (RECOVERED)</td>
+</tr>
+</tbody>
+</table>
+<p>The frozen-head model's mid-stack rotated <strong>3x more</strong> than the unfrozen model because blocks 0-10 must do all the conductor integration work themselves. But despite this massive rotation, generation stayed coherent for all 40 epochs. The output pathway (block 11 + ln_f + wte) was fixed, so the model learned to project through it correctly.</p>
+<p>The alignment metric is the most diagnostic. In the unfrozen case, alignment drifted from −0.120 to −0.141 and never recovered — the output path was moving alongside the mid-stack. In the frozen-head case, alignment dropped to −0.053 (epoch 10, initial reorganisation), then <strong>climbed back to −0.101</strong> by epoch 40. The model adapted to the constraint by learning to use the existing output pathway rather than displacing it.</p>
+<p>Entropy dropped further in the frozen-head case (1.91 vs 2.43) but produced coherent prose. Same metric value, opposite meaning: frozen-head low entropy is genuine increased confidence (the model learned to use the fixed pathway better); unfrozen low entropy is mode collapse (the output can't distinguish tokens). The unfrozen model generates <code>&quot;Garak Garak Garak...&quot;</code> at entropy 2.35; the frozen-head model generates <code>&quot;He was energetic and composed as he listened&quot;</code> at entropy 1.91.</p>
+<p>This confirms that the failure mechanism is specifically in the output rotation, not in the hidden geometry. The mid-stack can reorganise freely — 60 degrees of rotation — as long as the output path stays fixed.</p>
+<p>Results: <code>conductor_gpt2_frozen_head/mechanism_tests.json</code>, <code>mechanism_comparison.png</code></p>
+<h3>As an Engineering Tool</h3>
+<p>Three immediate practical applications emerge:</p>
+<ol>
+<li>
+<p><strong>Early-stopping signal</strong>: monitor hidden/token alignment during fine-tuning. When it begins to plateau or invert, stop. This does not require domain-specific evaluation.</p>
+</li>
+<li>
+<p><strong>Surgical repair</strong>: if a fine-tuned model has overshot into collapse, reset the token embeddings (or full output head) to their pretrained values. Most lost capability is recoverable in a single operation.</p>
+</li>
+<li>
+<p><strong>Structural separation</strong>: freeze the final layer and LM head during fine-tuning. Mid-stack integration proceeds normally, old-domain capability is preserved, collapse is prevented.</p>
+</li>
+</ol>
+<p>All three techniques depend only on the decoupling mechanism being real. None requires any particular framework or theory of cognition to work. The measurements stand on their own.</p>
+<hr />
+<h2>Implications</h2>
+<h3>For Fine-Tuning Practice</h3>
+<p>The sweet-spot model is a specific, findable state. Training should target it explicitly:</p>
+<ul>
+<li>Monitor <strong>training-data loss</strong> (not validation loss on new data) — the moment it starts rising is the collapse signal</li>
+<li>Monitor <strong>old-domain loss</strong> in parallel — it should move together with training loss under this mechanism</li>
+<li>Stop at the correlated minimum</li>
+</ul>
+<p>Tools like <code>lr_finder</code> currently look for the steepest descent on training loss. Under the decoupling view, the more important metric is where training loss <strong>stops descending and starts rising</strong> — that's the moment the output layer has rotated too far. This is detectable automatically.</p>
+<h3>For Interpretability</h3>
+<p>The collapse has a specific geometric signature (top-PC rotation, dark matter growth, entropy change) that precedes visible output degradation. A monitor watching these quantities during training could auto-stop before collapse without any domain-specific evaluation.</p>
+<h3>For Safety</h3>
+<p>The decoupling pattern maps directly onto concerns about &quot;reasoning engines&quot; diverging from their output channels. A model whose internal geometry is coherent but whose outputs are gibberish is the mechanical version of the colloquial &quot;the model knows what it's doing but can't say it.&quot; In this case, the internal coherence is measured and real — 100% conductor retention — while the outputs are truly broken.</p>
+<p>The traditional safety concern focuses on models whose outputs look reasonable but whose internal reasoning is misaligned. This experiment demonstrates the reverse: internal reasoning that is structurally stable while outputs collapse. Both failure modes are pipeline decouplings; they differ in which side of the pipeline appears broken from outside.</p>
+<h3>For VINE</h3>
+<p>VINE places perceptrons at decision points, removing the indirection between conductor and program. Under the decoupling view, this is not an efficiency gain — it is an <strong>elimination of the failure mode</strong>. A direct perceptron decision surface has no softmax over a vocabulary to collapse. The geometry speaks directly.</p>
+<hr />
+<p><em>Scripts, checkpoints, and reproduction instructions available to licensees. Runtime: approximately 3 minutes on an RTX 4070.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/conductor-02-long-run.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Pushing Too Far — The 70-Epoch Long Run</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/conductor-04-alice-bob.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Architecture-Universal — Alice &amp; Bob</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

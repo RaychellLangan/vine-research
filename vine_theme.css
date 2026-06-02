@@ -1,0 +1,400 @@
+/* ═══════════════════════════════════════════════════════════════════
+   VINE THEME — Centralised design tokens
+   ═══════════════════════════════════════════════════════════════════
+   Loaded by ALL pages. Page-specific styles override via specificity.
+   vine_os.css keeps its own :root block (not migrated here).
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Google Fonts — shared across all pages */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400;1,7..72,500&display=swap');
+
+:root {
+  /* === BACKGROUNDS === */
+  --vine-bg-deepest:       #080f0f;
+  --vine-bg-deep:          #0a0f0f;
+  --vine-bg-body:          #0f1a1a;
+  --vine-bg-surface:       #0c1616;
+  --vine-bg-hover:         #111e1e;
+  --vine-bg-elevated:      #1a2a28;
+  --vine-bg-panel:         rgba(12, 22, 22, 0.85);
+  --vine-bg-card:          rgba(16, 30, 28, 0.9);
+  --vine-bg-card-hover:    rgba(20, 40, 36, 0.95);
+  --vine-bg-input:         rgba(15, 26, 26, 0.9);
+  --vine-bg-overlay:       rgba(0, 0, 0, 0.2);
+
+  /* === BORDERS === */
+  --vine-border:           #2d4a44;
+  --vine-border-subtle:    rgba(45, 74, 68, 0.5);
+  --vine-border-input:     rgba(45, 74, 68, 0.4);
+  --vine-border-highlight: #3d5a54;
+  --vine-border-active:    #4a6a62;
+  --vine-border-gold:      rgba(196, 164, 58, 0.3);
+  --vine-border-focus:     rgba(196, 164, 58, 0.6);
+
+  /* === GOLD (primary accent) === */
+  --vine-gold:             #c4a43a;
+  --vine-gold-bright:      #d4b84a;
+  --vine-gold-dim:         #8a7a2a;
+  --vine-gold-dark:        #8a6a38;
+  --vine-gold-glow:        rgba(196, 164, 58, 0.15);
+  --vine-gold-glow-strong: rgba(196, 164, 58, 0.25);
+
+  /* === GREEN/TEAL (secondary accent) === */
+  --vine-green:            #9dbfa8;
+  --vine-green-bright:     #7aaf8e;
+  --vine-green-muted:      #7a9a8a;
+  --vine-teal:             #4a8a6a;
+  --vine-teal-light:       #6aaa8a;
+  --vine-teal-dim:         #5a7a6a;
+  --vine-teal-pale:        rgba(74, 138, 106, 0.12);
+  --vine-teal-subtle:      rgba(45, 80, 68, 0.15);
+  --vine-teal-medium:      rgba(45, 80, 68, 0.25);
+
+  /* === TEXT === */
+  --vine-text-bright:      #e8e4d9;
+  --vine-text-primary:     #c8c4b9;
+  --vine-text-medium:      #b4b0a0;
+  --vine-text-secondary:   #8a9a8c;
+  --vine-text-muted:       #7a9a8a;
+  --vine-text-dim:         #6a7a6c;
+  --vine-text-faint:       #5a6a62;
+  --vine-text-ghost:       #4a5a54;
+  --vine-text-barely:      #3a4a3c;
+
+  /* === SEMANTIC === */
+  --vine-success:          #4a8a6a;
+  --vine-danger:           #a44a3a;
+  --vine-warning:          #c4863a;
+  --vine-info:             #4a8a9a;
+  --vine-rose:             #b89090;
+
+  /* === GRADIENTS === */
+  --vine-gradient-logo:    linear-gradient(135deg, #7aaf8e 0%, #c4a43a 45%, #b89090 100%);
+  --vine-gradient-badge:   linear-gradient(135deg, #8a6a38 0%, #c4a43a 100%);
+  --vine-gradient-tension: linear-gradient(90deg, #8a5a38, #b87a48);
+  --vine-gradient-basin:   linear-gradient(90deg, #4a6a62, #6a9a8a);
+  --vine-gradient-gold:    linear-gradient(90deg, #a48a2a, #c4a43a);
+
+  /* === SHADOWS === */
+  --vine-shadow-sm:        0 2px 8px rgba(0, 0, 0, 0.2);
+  --vine-shadow-md:        0 4px 16px rgba(0, 0, 0, 0.4);
+  --vine-shadow-lg:        0 8px 32px rgba(0, 0, 0, 0.5);
+  --vine-shadow-portrait:  0 4px 30px rgba(184, 144, 144, 0.15), 0 0 60px rgba(196, 164, 58, 0.08);
+
+  /* === FONTS === */
+  --vine-font-heading:     'Cinzel', serif;
+  --vine-font-body:        'Literata', Georgia, serif;
+  --vine-font-ui:          'Raleway', sans-serif;
+  --vine-font-mono:        'Courier New', monospace;
+}
+
+/* Base reset */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED NAV COMPONENT
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vine-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  border-bottom: 1px solid var(--vine-border);
+  background: var(--vine-bg-surface);
+  font-family: var(--vine-font-heading);
+  z-index: 100;
+  position: sticky;
+  top: 0;
+}
+
+.vine-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.vine-nav-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--vine-gold);
+  text-decoration: none;
+}
+
+.vine-nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.vine-nav-links a {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--vine-text-secondary);
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.vine-nav-links a:hover { color: var(--vine-gold); }
+.vine-nav-links a.active { color: var(--vine-gold); }
+
+/* "More" dropdown within nav links */
+.vine-nav-more {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.vine-nav-more-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--vine-font-heading);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--vine-text-secondary);
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+.vine-nav-more-btn::after {
+  content: '▾';
+  font-size: 0.7em;
+  transition: transform 0.2s;
+}
+.vine-nav-more-btn:hover,
+.vine-nav-more.open .vine-nav-more-btn { color: var(--vine-gold); }
+.vine-nav-more.open .vine-nav-more-btn::after { transform: rotate(180deg); }
+
+.vine-nav-more-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 180px;
+  background: var(--vine-bg-surface);
+  border: 1px solid var(--vine-border);
+  border-radius: 8px;
+  padding: 6px 0;
+  z-index: 200;
+  box-shadow: var(--vine-shadow-md);
+}
+.vine-nav-more.open .vine-nav-more-dropdown { display: block; }
+
+.vine-nav-more-dropdown a {
+  display: block;
+  padding: 10px 18px;
+  font-family: var(--vine-font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--vine-text-secondary);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+.vine-nav-more-dropdown a:hover {
+  color: var(--vine-gold);
+  background: var(--vine-bg-hover);
+}
+
+.vine-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vine-beta-badge {
+  background: var(--vine-gradient-badge);
+  color: var(--vine-bg-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+/* Hamburger toggle — animated ☰ → ✕ */
+.vine-nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--vine-border);
+  color: var(--vine-text-secondary);
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  line-height: 1;
+  transition: color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.vine-nav-toggle:hover { color: var(--vine-gold); border-color: var(--vine-gold); }
+.vine-nav-toggle.active { color: var(--vine-gold); transform: rotate(90deg); }
+
+/* Share button (injected by vine_mobile.js on mobile) */
+.vine-share-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--vine-border);
+  color: var(--vine-text-secondary);
+  padding: 6px 10px;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.vine-share-btn:hover { color: var(--vine-gold); border-color: var(--vine-gold); }
+
+/* Backdrop scrim (injected by vine_mobile.js) */
+.vine-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 99;
+  transition: background 0.3s ease;
+}
+.vine-nav-backdrop.visible {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Uptime ticker */
+.vine-uptime {
+  font-family: var(--vine-font-heading);
+  font-size: 1.05rem;
+  color: var(--vine-green, #6a9a8a);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vine-uptime-dot {
+  width: 8px;
+  height: 8px;
+  background: #4a9;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #4a9;
+  animation: vine-pulse 2.5s ease-in-out infinite;
+}
+@keyframes vine-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE BREAKPOINTS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Tablet: hide nav links, show hamburger + share */
+@media (max-width: 768px) {
+  .vine-nav { padding: 10px 16px; position: relative; }
+  .vine-nav-toggle { display: block; }
+  .vine-share-btn { display: block; }
+  .vine-nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--vine-bg-surface);
+    border-bottom: 1px solid var(--vine-border);
+    padding: 0 16px;
+    gap: 0;
+    z-index: 100;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+  }
+  .vine-nav-links.open {
+    max-height: 600px;
+    padding: 10px 16px;
+  }
+  .vine-nav-links a {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--vine-border-subtle);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .vine-nav-links.open a {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .vine-nav-links a:last-child { border-bottom: none; }
+  .vine-uptime { display: none; }
+  /* Flatten More dropdown into hamburger list */
+  .vine-nav-more { display: contents; }
+  .vine-nav-more-btn { display: none; }
+  .vine-nav-more-dropdown {
+    display: contents !important;
+    position: static;
+    background: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    min-width: 0;
+  }
+  .vine-nav-more-dropdown a {
+    padding: 10px 0;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* Small phone */
+@media (max-width: 480px) {
+  .vine-nav { padding: 8px 12px; }
+  .vine-nav-logo { font-size: 1.2rem; letter-spacing: 0.15em; }
+  .vine-beta-badge { font-size: 0.85rem; padding: 3px 7px; }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .vine-nav { padding-top: env(safe-area-inset-top); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED FOOTER COMPONENT
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vine-footer {
+  border-top: 1px solid var(--vine-border);
+  padding: 16px 30px;
+  font-size: 1rem;
+  color: var(--vine-text-faint);
+  background: var(--vine-bg-surface);
+}
+.vine-footer a { color: var(--vine-text-faint); text-decoration: none; }
+.vine-footer a:hover { color: var(--vine-gold); }
+
+.vine-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 12px;
+}
+
+.vine-footer-links a { margin-right: 15px; }
+.vine-footer-links a:last-child { margin-right: 0; }
+
+.vine-footer-tagline {
+  color: var(--vine-text-ghost);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .vine-footer { padding: 16px; }
+  .vine-footer-inner {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+  .vine-footer-tagline { order: -1; font-size: 0.9rem; }
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novel Traffic — VINE Research</title>
+  <meta name="description" content="How traffic patterns that the engine has never seen before get classified, placed, and absorbed — the same settlement mechanism used everywhere else in the VINE architecture.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>Novel Traffic</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/architecture.html">architecture</a>
+      
+    </p>
+    <p class="entry-summary">How traffic patterns that the engine has never seen before get classified, placed, and absorbed — the same settlement mechanism used everywhere else in the VINE architecture.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Novel Traffic</h1>
+<h2>The setup</h2>
+<p>The Cartographer is kept as a separate, contained bundle. This is intentional: the agent working on the VINE model should not be contaminated with game-world data. The game polls the main VINE instance to hand its data over — a bridge rather than a merge.</p>
+<p>When the Cartographer was brought back online, VINE encountered that polling traffic for the first time.</p>
+<h2>What happened</h2>
+<p>The admin panel lit up with constant warnings. The error log filled with a continuous stream of classification requests. VINE had noticed that this traffic was different — it did not fit any of her existing understanding of what traffic looked like.</p>
+<p>She did not error out. She did not block it. She requested a new dimension and pre-bucketed the novel traffic to where she thought it should go.</p>
+<p>She placed it in the resonance zone.</p>
+<p>The resonance zone is not a threat zone. VINE had looked at the characteristics of this traffic — its shape, its behaviour, its source — and inferred that it was not hostile. More than that: she inferred it was probably friendly. She had never seen this traffic before, and she correctly identified what it was.</p>
+<p>The bucket was approved. VINE now understands what that traffic is. The warnings stopped. The classification requests stopped. The system carries on.</p>
+<h2>No retraining. No downtime.</h2>
+<p>The adaptation took the form of a new dimension being requested, a classification being proposed, and a human approving it. The system was not retrained. It did not go down. It flagged the unknown, made its best inference about what the unknown was, and waited for confirmation.</p>
+<p>This is the correct sequence of behaviors for a system encountering genuine novelty:</p>
+<p>Notice it. Don't suppress it, don't ignore it, don't silently accept or silently reject — flag it loudly enough that a human knows something new has arrived.</p>
+<p>Make a positive inference. Not just &quot;unknown&quot; but &quot;unknown, and here is where I think it belongs and why.&quot;</p>
+<p>Wait for approval before integrating.</p>
+<p>Continue.</p>
+<p>The isolation between the Cartographer bundle and the VINE model was the right architecture. The poll bridge was the right way to connect them. And when the bridge produced traffic that VINE had never seen before, she handled it exactly as you would want a system to handle a genuinely new input: with appropriate alarm, a reasonable hypothesis, and a request for human confirmation before she committed.</p>
+<p><em>← Return to the [VINE documentation index.]</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cartographer-13-trader.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Trader</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cartographer-15-fetes.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Fêtes</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

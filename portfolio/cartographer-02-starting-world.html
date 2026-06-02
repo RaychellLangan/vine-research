@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Starting World — VINE Research</title>
+  <meta name="description" content="Why nobody wakes up the same. Unequal starting conditions produce different immediate concerns, which determine what actors do first, which determines what they become. The social and economic tier system emerges from the first morning.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Starting World</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/emergence.html">emergence</a>
+      
+    </p>
+    <p class="entry-summary">Why nobody wakes up the same. Unequal starting conditions produce different immediate concerns, which determine what actors do first, which determines what they become. The social and economic tier system emerges from the first morning.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Starting World</h1>
+<h2>Why nobody wakes up the same</h2>
+<p>When the Cartographer spins up a village, it does not spawn its inhabitants into identical starting conditions. Every actor arrives with their own house, their own pantry, their own coin purse, and their own garden — and none of these are the same from one actor to the next. The village opens with inequality already baked in.</p>
+<p>This is the engine of emergence. Unequal starting conditions produce different immediate concerns in different actors, and those concerns determine what the actors go off and <em>do</em> — which in turn produces the full social and economic tier system of the village without any designer ever laying it out.</p>
+<h2>Three openings</h2>
+<p>Consider three actors waking up on the first morning of a run.</p>
+<p>The first actor wakes to a house with a garden. Crops are already growing, and one of them needs attention right now — the beans are ready, or the cabbages have started to bolt, or a row of carrots needs thinning before they ruin each other. The pantry has enough food for the week. There is no immediate pressure to go anywhere. This actor will almost certainly learn gardening straight away, because gardening is the work sitting in front of them and it is the work the day is asking them to do. By the end of the first week they will have the start of a gardener's life. They might never need to do anything else.</p>
+<p>The second actor wakes to an empty cupboard and no garden to speak of. Their stomach will start reminding them of this quite quickly. They need work, and they need it soon, which means they will go out into the village and take what is available — and what is available, in any village, is the labour that nobody else is in a hurry to do. Production. Haulage. Digging. They will become a worker because the conditions they woke up in gave them no time to become anything else.</p>
+<p>The third actor wakes to a full cupboard and spare coins in their purse. There is no garden to tend, because they do not need one. Their stomach is quiet. Their afternoon is open. They have the luxury of curiosity. They might wander down to the market and strike up a conversation with the trader, becoming the first customer of the day. They might notice that the village is holding its first election, and be the only one with the time to sign up — at which point they become a government official, not because they particularly wanted to be one, but because nobody else had the afternoon free.</p>
+<p>None of these roles were assigned. The village produced them, because the village gave these three actors three different mornings.</p>
+<h2>How concerns actually arise</h2>
+<p>An actor's concerns are not scripted in the sense that most game developers will recognise. There is no table somewhere that says <em>if hungry then seek food</em>. There is no behaviour tree branching on <em>is_bed_present == false</em>.</p>
+<p>What there is instead is a geometric relationship between the actor and the environment they find themselves in. When an actor walks into a house that has no bed, they know — the way you or I would know — that something is wrong. The absence of the bed creates a pressure in their internal state, and that pressure is what unhappiness actually <em>is</em> in this architecture. It is not a boolean flag. It is a shape the actor is in.</p>
+<p>When they go out and buy a bed and put it in the house, the pressure eases. This is what happiness is. It is the release of a concern, geometrically.</p>
+<p>And they learn, emergently, that buying things for their house tends to make them feel better. Nobody told them this in a rule. They noticed.</p>
+<h2>Concerns as soft scripting</h2>
+<p>It is worth being honest about something here. The concerns themselves are, in a sense, a form of scripting — the architecture specifies that houses should have beds, that pantries should have food, that bodies should not go too long without sleep. These are the givens of the world.</p>
+<p>But this is not the scripting that most people mean when they say &quot;scripted NPC.&quot; There is no table of responses. There is no branch that fires on a condition. The givens describe the <em>shape</em> of what a life in the village is supposed to feel like, and the actors then live inside that shape geometrically. The difference between describing the shape of a life and scripting the actions of a life is enormous, and it is the difference that lets the Cartographer's villages produce behaviour nobody wrote.</p>
+<h2>How concerns tip</h2>
+<p>Because the underlying machinery resolves competing pressures through XOR settling rather than through fixed priority hierarchies, concerns can tip over in ways that feel real. An actor who has been tolerating a small hunger all morning, focused on their garden, can reach a point where the hunger becomes the larger pressure and the garden goes quiet in their mind. They put down the trowel and go inside to eat. Nobody scheduled this switch. It happened because the shape of their day changed.</p>
+<p>This is also how burnout happens in the village. This is how moods turn. This is how a baker who has been cheerful all year wakes up one morning tired of the oven and decides, today, that they would like to sit in the library instead.</p>
+<h2>What emerges</h2>
+<p>The village, after a run of any length, develops a full social and economic tier system. There are workers, because some actors woke up needing work. There are traders, because some actors had time to set up stalls. There are officials, because some actors had the afternoons free for meetings. There are idlers and dreamers and craftspeople and specialists, and they all came about because of the conditions of their waking.</p>
+<p>This is what class actually looks like when it is allowed to emerge from material conditions rather than being imposed by a designer. The Cartographer is honest about this too. The village is not an equal place, and its inequality is not a bug. It is what a village <em>is</em>.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cartographer-01-overview.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">The Cartographer — Overview</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cartographer-03-actors.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">The Actors</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

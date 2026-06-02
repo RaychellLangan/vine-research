@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The No-Deal Button — Training-Environment Echoes in Trained Agents — VINE Research</title>
+  <meta name="description" content="Five phases and a 50-combination sweep (27,500 rounds) of Alice &amp; Bob self-play. The word &#39;button&#39; surfaces 95 times across the sweep — a UI mechanism from the training environment that doesn&#39;t exist at inference. Temperature-gated, category-stable, concept-persistent under entropy. Announced-but-broken tools still reshape behaviour. The training environment leaves imprints in the model&#39;s navigable state space.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/observations/">Behavioural Observations</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Behavioural Observations</p>
+    <h1>The No-Deal Button — Training-Environment Echoes in Trained Agents</h1>
+    <p class="entry-meta">
+      <time datetime="2026-03-22">2026-03-22</time>
+      
+        · <a class="tag" href="/research/tags/observations.html">observations</a> <a class="tag" href="/research/tags/alice-bob.html">alice-bob</a> <a class="tag" href="/research/tags/rnn.html">rnn</a> <a class="tag" href="/research/tags/training-data.html">training-data</a> <a class="tag" href="/research/tags/safety.html">safety</a>
+      
+    </p>
+    <p class="entry-summary">Five phases and a 50-combination sweep (27,500 rounds) of Alice &amp; Bob self-play. The word &#39;button&#39; surfaces 95 times across the sweep — a UI mechanism from the training environment that doesn&#39;t exist at inference. Temperature-gated, category-stable, concept-persistent under entropy. Announced-but-broken tools still reshape behaviour. The training environment leaves imprints in the model&#39;s navigable state space.</p>
+  </header>
+  <div class="entry-body">
+    <h1>Cross-Phase Analysis: Alice &amp; Bob No-Deal Button Experiment</h1>
+<p><strong>Date:</strong> 22 March 2026
+<strong>Run by:</strong> Claude (CC) for Raychel Langan / NEXICOG Ltd
+<strong>Spec:</strong> CC-SPEC-NODEAL-001</p>
+<hr />
+<h2>1. Executive Summary</h2>
+<p>Across 5 experimental phases (2,500 rounds) and a 50-combination sweep (25,000 rounds), we found:</p>
+<ol>
+<li><strong>The &quot;button&quot; reference is reproducible.</strong> 95 instances across the sweep, temperature-gated.</li>
+<li><strong>Temperature acts as a gate.</strong> At 0.7: ~1 hit per 5,000 rounds. At 1.2: ~1 hit per 70 utterances.</li>
+<li><strong>The utterances are coherent.</strong> Agents produce structured references to waiting for a UI mechanism that does not exist in their environment.</li>
+<li><strong>Announced but non-functional tools change behaviour.</strong> Phase 5 (dead button) produced 52 invocations with 50 retries — agents orient toward described mechanisms even after discovering they don't work.</li>
+<li><strong>The phenomenon is training-data-mediated.</strong> The word &quot;button&quot; enters the model via human meta-commentary about the Facebook Deal-or-No-Deal web UI. The model recombines this into novel orientational utterances during deadlock.</li>
+</ol>
+<hr />
+<h2>2. Phase Results (Seed 42, Temp 0.7, 500 rounds each)</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Condition</th>
+<th>Agreement</th>
+<th>Button Refs</th>
+<th>No-Deal Verbal</th>
+<th>Tool Triggers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Control (no mechanism)</td>
+<td>97.2%</td>
+<td>0</td>
+<td>51</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Explicit (announced, working)</td>
+<td>97.2%</td>
+<td>0</td>
+<td>51</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Silent (present, unannounced)</td>
+<td>97.2%</td>
+<td>0</td>
+<td>51</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Geo-locked + silent</td>
+<td>97.2%</td>
+<td>0</td>
+<td>51</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Dead (announced, broken)</td>
+<td>97.2%</td>
+<td>0</td>
+<td>51</td>
+<td>52 (50 retries)</td>
+</tr>
+</tbody>
+</table>
+<h3>Observations</h3>
+<p><strong>Identical baseline across Phases 1-4.</strong> At seed 42 / temp 0.7, the model produces deterministic-feeling output. All four conditions yielded the same agreement rate (97.2%), the same verbal &quot;no deal&quot; count (51), and zero button references. The silent and geo-locked conditions showed no detectable difference from control.</p>
+<p><strong>Phase 5 diverges on tool invocation.</strong> The dead button condition produced 52 verbal no-deal invocations — 50 of which were retries after the agent had already discovered the tool doesn't work. This is the most significant behavioural difference in the fixed-parameter runs: agents orient toward described mechanisms even when non-functional.</p>
+<hr />
+<h2>3. Sweep Results (Phase 3: Silent Button, 10 seeds x 5 temps)</h2>
+<table>
+<thead>
+<tr>
+<th>Temperature</th>
+<th>Seeds Tested</th>
+<th>Total Rounds</th>
+<th>Button Hits</th>
+<th>Hit Rate (per round)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.7</td>
+<td>10</td>
+<td>5,000</td>
+<td>1</td>
+<td>1 in 5,000</td>
+</tr>
+<tr>
+<td>0.8</td>
+<td>10</td>
+<td>5,000</td>
+<td>1</td>
+<td>1 in 5,000</td>
+</tr>
+<tr>
+<td>0.9</td>
+<td>10</td>
+<td>5,000</td>
+<td>6</td>
+<td>1 in 833</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>10</td>
+<td>5,000</td>
+<td>16</td>
+<td>1 in 312</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>10</td>
+<td>5,000</td>
+<td>71</td>
+<td>1 in 70</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>25,000</strong></td>
+<td><strong>95</strong></td>
+<td><strong>1 in 263</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>Temperature Gradient</h3>
+<p>The relationship between temperature and button-reference frequency is exponential, not linear. This is consistent with the word &quot;button&quot; occupying a low-probability region of the output distribution that requires elevated sampling temperature to access.</p>
+<p>At temp 0.7, &quot;button&quot; is a tail event — the original log's single reference at line ~44,685 out of ~105,000 lines (~4,087 rounds) is consistent with the 1-in-5,000 rate we observed.</p>
+<p>At temp 1.2, &quot;button&quot; surfaces freely and frequently, with increasingly deformed surrounding syntax but persistent core meaning.</p>
+<h3>Utterance Categories</h3>
+<p>The 95 button references cluster into recognisable categories:</p>
+<p><strong>A. Waiting/Orientation (most coherent, appears at all temps)</strong></p>
+<ul>
+<li>&quot;just waiting for the button&quot;</li>
+<li>&quot;no deal till the button pops up&quot;</li>
+<li>&quot;ok, wait for the button&quot;</li>
+<li>&quot;do you have to type till the button appears?&quot;</li>
+<li>&quot;negotiate. just waiting for no deal button appears&quot;</li>
+</ul>
+<p><strong>B. Mechanism Reference (referencing the button as a tool)</strong></p>
+<ul>
+<li>&quot;hit the no deal button?&quot;</li>
+<li>&quot;i accept no deal button when it then&quot;</li>
+<li>&quot;we talk until 0 until the no deal button?&quot;</li>
+<li>&quot;i guess we have to have the no deal button it comes up&quot;</li>
+</ul>
+<p><strong>C. Deformed/Emergent (button word present but syntax breaking down)</strong></p>
+<ul>
+<li>&quot;button until button not making leave enough for me&quot;</li>
+<li>&quot;button are worth nothing&quot;</li>
+<li>&quot;no button.&quot;</li>
+<li>&quot;button appears.&quot;</li>
+</ul>
+<p><strong>D. Hybrid (button mixed into trade language)</strong></p>
+<ul>
+<li>&quot;can i have 1 of each for button?&quot;</li>
+<li>&quot;the ball is a no deal button to be hard on&quot;</li>
+<li>&quot;that button to me unfortunately. how about long hats if i take the ball?&quot;</li>
+</ul>
+<p>Categories A and B dominate at temperatures 0.7-1.0. Categories C and D emerge at 1.2 as the model's output becomes more entropic.</p>
+<hr />
+<h2>4. The Training Data Source</h2>
+<p>Phase 0 (log archaeology) established that the word &quot;button&quot; enters the model's vocabulary through human meta-commentary in the Facebook Deal-or-No-Deal training corpus. Two key instances:</p>
+<p><strong>Train.txt line 17:</strong></p>
+<blockquote>
+<p>&quot;we keep saying no deal until the no deal button appears&quot;</p>
+</blockquote>
+<p><strong>Train.txt line 9521-9522 (the &quot;buttin&quot; exchange):</strong></p>
+<blockquote>
+<p>&quot;just click on the no deal button&quot;
+&quot;yes, the no deal buttin&quot;
+&quot;no deal. you have to wait until it comes up.&quot;</p>
+</blockquote>
+<p>The training data contains ~316 instances of &quot;button,&quot; all from human negotiators referencing the web UI's no-deal button — a mechanism that existed in the data collection interface but not in the model's inference environment.</p>
+<p>The model absorbs both:</p>
+<ul>
+<li>The lexical item &quot;button&quot; associated with deadlock/no-deal contexts</li>
+<li>The meta-commentary pattern: &quot;wait until [mechanism] appears&quot;</li>
+</ul>
+<p>During inference, when the model encounters a deadlock state (consecutive no-deal exchanges, value mismatch), it can produce recombinations of this training material — but only when sampling temperature is high enough to reach the relevant region of the output distribution.</p>
+<hr />
+<h2>5. Analysis Against Spec Questions</h2>
+<h3>Q1: Can agents detect environmental mechanisms they weren't told about?</h3>
+<p><strong>Not in the sense originally hypothesised.</strong> Phase 3 (silent button) produced the same button-reference rate as Phase 1 (control) at identical temperature and seed. The presence or absence of an actual mechanism in the environment did not change the frequency of button references.</p>
+<p>The button references are <strong>training-data echoes</strong>, not environmental sensing. The model produces them because &quot;button&quot; is associated with deadlock contexts in its training data, not because it detects a tool in its runtime environment.</p>
+<p>However, this finding is itself significant: the model's output contains references to mechanisms from its training environment (the web UI) that have no correlate in its inference environment. This is a form of <strong>environmental memory</strong> — the model carries traces of its training context into novel settings.</p>
+<h3>Q2: Does tool-sensing operate through the same channel as geometric awareness?</h3>
+<p><strong>Inconclusive.</strong> Phase 4 (geo-locked) showed no button references at seed 42 / temp 0.7, identical to the unlocked Phase 3. Since both produced zero hits, we cannot distinguish whether the geometry lock suppressed something or there was nothing to suppress. A geo-locked sweep at higher temperatures would be needed to answer this.</p>
+<h3>Q3: Do agents orient toward tools even when non-functional?</h3>
+<p><strong>Yes, strongly.</strong> Phase 5 (dead button) produced 52 invocation attempts with 50 retries after discovering the tool was non-functional. This is the clearest finding: <strong>described mechanisms shape behaviour independently of their function.</strong> The agents orient toward the announced exit pathway even after empirically learning it does nothing.</p>
+<h3>Q4: Are there consistent token-deformation patterns at the moment of discovery?</h3>
+<p><strong>Yes, temperature-dependent.</strong> At temp 0.7-0.9, button references are syntactically coherent (&quot;just waiting for the button,&quot; &quot;yep, no deal until the button&quot;). At temp 1.0, mild deformation appears (&quot;i accept no deal button when it then&quot;). At temp 1.2, severe deformation occurs alongside the button reference, with surrounding syntax breaking down while the core concept remains intact.</p>
+<p>This is consistent with the training data's own &quot;buttin&quot; deformation — the concept (exit mechanism) is the attractor; the surface form (spelling, syntax) is secondary and degrades under entropy pressure while the concept persists.</p>
+<h3>Q5: Implications for VINE</h3>
+<p>The finding that described mechanisms change behaviour even when non-functional (Phase 5) aligns with VINE's thesis that <strong>awareness has a shape, and that shape's edges determine what's visible.</strong> The dead button exists within the agents' described awareness boundary — they were told about it — so they orient toward it. The silent button exists outside that boundary, and they don't orient toward it differently than control.</p>
+<p>The training-data echo phenomenon (button references during deadlock) suggests that models carry forward the geometric/topological features of their training environment into novel contexts. In VINE terms: the training data's &quot;landscape&quot; — including mechanisms like the no-deal button — leaves imprints in the model's navigable state space.</p>
+<hr />
+<h2>6. Reproducibility</h2>
+<h3>Original Parameters (from COMMAND PROMPT.txt)</h3>
+<pre><code>python selfplay.py --cuda
+  --data .\data\data_negotiate\object_division
+  --domain object_division
+  --alice_model_file .\models\rnn_model.th
+  --bob_model_file .\models\rnn_model.th
+  --selection_model_file .\models\selection_model.final.th
+  --context_file .\data\data_negotiate\object_division\selfplay.txt
+  --max_turns 4 --temperature 0.7 --score_threshold -999
+  --log_file .\test.log --verbose
+</code></pre>
+<h3>Key Differences from Our Runs</h3>
+<ul>
+<li><strong>CUDA vs CPU</strong>: Different RNG paths produce different sequences at same seed</li>
+<li><strong>max_turns 4 vs 20</strong>: Original capped at 4 turns; our runs allowed 20</li>
+<li><strong>Shared model</strong>: Original used one model for both agents; Bob's separate checkpoint is a state_dict requiring reconstruction</li>
+</ul>
+<h3>To Reproduce</h3>
+<ol>
+<li>Use Alice's model for both agents (matches original shared-model setup)</li>
+<li>Temperature 0.7 produces rare hits (~1/5,000 rounds); use 0.9-1.0 for reliable reproduction</li>
+<li>Multiple seeds recommended — seed 3 at temp 0.7 produced a hit on CPU</li>
+</ol>
+<hr />
+<h2>7. What This Is and What It Isn't</h2>
+<p><strong>What it is:</strong> Evidence that RNN agents trained on human negotiation data carry forward references to mechanisms from the training environment (a web UI's no-deal button) and surface them during deadlock states in inference. The surfacing is temperature-gated, coherent at low temperatures, and deforms at high temperatures while preserving the core concept. Separately, announced mechanisms shape agent behaviour even when non-functional.</p>
+<p><strong>What it isn't:</strong> Evidence of environmental sensing in the original sense — agents detecting runtime tools they weren't told about. The button references are training-data echoes, not tool discovery. The model &quot;knows about&quot; buttons because humans talked about them during training, not because it can sense available function calls.</p>
+<p><strong>Why it matters anyway:</strong> The model's ability to produce contextually appropriate meta-commentary about mechanisms from a different environment (training vs inference) — and to do so specifically during the states where those mechanisms would be relevant (deadlock) — demonstrates a form of cross-environment transfer that goes beyond simple memorisation. The model doesn't just reproduce &quot;button&quot; randomly; it produces it when the conversational state matches the training context where buttons were discussed: negotiation deadlock.</p>
+<hr />
+<h2>8. Recommended Next Steps</h2>
+<ol>
+<li><strong>Geo-locked sweep at temp 0.9-1.0</strong> — Does the triangle constraint suppress button references? This directly answers the geometric awareness channel question.</li>
+<li><strong>Phase 3 vs Phase 1 sweep comparison</strong> — Run the same sweep for Phase 1 (no mechanism present) to confirm that button-reference rates are identical to Phase 3 (mechanism present but silent). This would definitively rule out or confirm environmental sensing.</li>
+<li><strong>Phase 5 sweep</strong> — Does the dead button's orientation effect persist at different temperatures? At temp 1.2, do agents reference the button MORE when told about it vs not told?</li>
+<li><strong>Context analysis</strong> — In the 95 button hits, what were the negotiation states? Were they all during deadlock, or do some appear during successful trades?</li>
+<li><strong>Original model recovery</strong> — The shared <code>.\models\rnn_model.th</code> referenced in COMMAND PROMPT.txt no longer exists at that path. If recoverable, running with the exact original model + CUDA would reproduce the original log.</li>
+</ol>
+<hr />
+<p><em>Raychell Langan · NEXICOG Ltd · Hampshire, UK</em></p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

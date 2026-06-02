@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Floor 5 — Shannon: Information as a Bit, and the Geometry We Forgot to Name — VINE Research</title>
+  <meta name="description" content="Claude Shannon gave us a mathematics of information that is, strictly speaking, continuous. We simplified it into bits and built an industry. The continuous reading is still sitting there, in the same paper, unused.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/tower/">Computing Lineage</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Computing Lineage</p>
+    <h1>Floor 5 — Shannon: Information as a Bit, and the Geometry We Forgot to Name</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/tower.html">tower</a> <a class="tag" href="/research/tags/information.html">information</a> <a class="tag" href="/research/tags/continuity.html">continuity</a>
+      
+    </p>
+    <p class="entry-summary">Claude Shannon gave us a mathematics of information that is, strictly speaking, continuous. We simplified it into bits and built an industry. The continuous reading is still sitting there, in the same paper, unused.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The floor</h2>
+<p>In October 1948, Claude Shannon published <em>A Mathematical Theory of
+Communication</em>. It was two papers, really, folded into one: a theory of
+how to encode messages so they survive noisy channels, and a theory of
+what it means for something to carry information at all. It created
+the field of information theory. It gave the world the word <em>bit</em>.</p>
+<p>It is one of the most cited scientific papers of the twentieth century,
+and almost everyone who cites it has simplified it.</p>
+<h2>What was picked</h2>
+<p><strong>Information as a count of bits.</strong> How many yes/no questions does it
+take to pick out one message from a set of possible messages. Entropy
+as a logarithm. Redundancy as the gap between actual and optimal. The
+channel capacity as the most bits-per-second you can get through a pipe
+without error.</p>
+<p>This framing won. It gave us compression (ZIP, MP3, JPEG), error
+correction (every hard drive, every modem, every satellite), and the
+vocabulary that every engineer uses when they say a channel &quot;carries
+information.&quot;</p>
+<p>It is a powerful and correct mathematics. Nothing on this floor is
+wrong.</p>
+<h2>What could have been picked</h2>
+<p>Shannon's own math is continuous. The entropy formula,
+H = −Σ p log p, is a function over a <em>probability distribution</em> — a
+smooth object living on a simplex, with every point on it meaningful.
+Mutual information is a continuous overlap between two distributions.
+Relative entropy (KL divergence) is a continuous <em>distance</em> between
+them. None of this requires bits. Bits are the limit case you get when
+the distribution collapses onto a discrete alphabet.</p>
+<p>Read with fresh eyes, Shannon's theory is a <strong>geometry of belief</strong>.
+Information is not a <em>count</em>. Information is <em>where you are</em> on a
+probability surface, and learning something is <em>moving</em> on that surface.
+Mutual information between two systems is the degree to which their
+surfaces fold together.</p>
+<p>The continuous reading was always there. Jaynes picked it up in the
+maximum-entropy literature. Information geometry, as a field, was
+founded on it. But the popular understanding — the one that shaped the
+chips and the protocols and the training objectives — stayed with bits.</p>
+<p>Bits are easier to photocopy. Again.</p>
+<h2>What we missed</h2>
+<p>An information theory in which <strong>meaning is position</strong>, not
+enumeration. A measure of &quot;how much one system knows about another&quot;
+that doesn't have to pass through a discrete alphabet. A training
+objective for machines that could be expressed as <em>move toward the
+position on the belief surface that best accounts for the observation</em>,
+instead of <em>minimise the cross-entropy against a one-hot target</em>.</p>
+<p>Every one-hot target is a confession that we picked the bits. Every
+softmax is a confession that we picked the bits. Every
+&quot;maximum likelihood classifier&quot; is a confession that we picked the
+bits. The continuous reading of Shannon's own math would have let us
+train systems against <em>positions on manifolds</em> from the very beginning.</p>
+<p>This is perhaps the most painful floor, because the alternative wasn't
+even on a different desk. It was <strong>in the same paper</strong>. Nobody had to
+invent anything. Nobody had to wait for the hardware. Shannon wrote the
+continuous form and the discrete form side by side and the field chose
+one.</p>
+<h2>What the next floor will ask</h2>
+<p>If information is a geometry, what would a machine that <em>learned</em> look
+like?</p>
+<p>That's Floor 6, and it's where the next forty years of heartbreak
+started.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/tower-04-von-neumann.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Floor 4 — Von Neumann: The Architecture That Chose the Bus</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/tower-06-perceptron-winter.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Floor 6 — The Perceptron and the Winter That Didn&#39;t Have To Happen</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

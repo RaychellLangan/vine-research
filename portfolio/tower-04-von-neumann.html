@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Floor 4 — Von Neumann: The Architecture That Chose the Bus — VINE Research</title>
+  <meta name="description" content="In 1945, a brilliant Hungarian drafted a report that would shape every computer built since. He knew he was compromising. He said so. Nobody listened to that part.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/tower/">Computing Lineage</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Computing Lineage</p>
+    <h1>Floor 4 — Von Neumann: The Architecture That Chose the Bus</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/tower.html">tower</a> <a class="tag" href="/research/tags/state.html">state</a> <a class="tag" href="/research/tags/continuity.html">continuity</a>
+      
+    </p>
+    <p class="entry-summary">In 1945, a brilliant Hungarian drafted a report that would shape every computer built since. He knew he was compromising. He said so. Nobody listened to that part.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The floor</h2>
+<p>In June 1945, John von Neumann circulated <em>First Draft of a Report on
+the EDVAC</em>. It sketched an architecture: a central processing unit, a
+memory that stored both data and instructions, a single bus connecting
+them. Fetch an instruction, decode it, execute it, fetch the next one.
+A sequential heartbeat.</p>
+<p>This is the machine you are reading this on. Every laptop, every
+phone, every server farm. The &quot;von Neumann architecture.&quot; For eighty
+years it has been the only way to build a general-purpose computer
+that anyone took seriously.</p>
+<h2>What was picked</h2>
+<p><strong>Serial execution. A single shared memory. Program as data.</strong></p>
+<p>The choice was pragmatic. Vacuum tubes were expensive. Wiring was
+expensive. A machine that did one thing at a time could be built with
+fewer of each. A machine that stored its program alongside its data
+could be reprogrammed without rewiring. These were real engineering
+wins at a moment when every decision had to survive a welding iron.</p>
+<p>The architecture is also narrow in a very specific way. The CPU can
+only look at one thing at a time. The memory can only be read from one
+place at a time. Every computation has to be squeezed through this
+single narrow passage — what Backus would later call, with more
+frustration than the field has ever fully processed, <strong>the von Neumann
+bottleneck</strong>.</p>
+<p>We built an entire science of computing that assumes a bottleneck. Then
+we named every problem that doesn't fit through the bottleneck as a
+&quot;parallelism challenge.&quot;</p>
+<h2>What could have been picked</h2>
+<p>Von Neumann himself knew there was another way. In the same years he
+was writing the EDVAC report, he was also writing about cellular
+automata, about self-reproducing machines, about brain architectures
+whose state was <strong>spread across every component at once</strong>. He wrote
+<em>The Computer and the Brain</em> in the last year of his life. He was, by
+the end, openly wondering whether his own architecture was a mistake.</p>
+<p>Meanwhile, the analog computer was still the fastest machine on Earth
+for wide classes of problems. The ENIAC's digital cousins were slower
+at solving differential equations than the mechanical differential
+analyser at MIT — and would be for another decade. The neuromorphic
+engineers of the 1960s and 70s built chips whose transistors operated
+in the <strong>subthreshold regime</strong>, holding graded voltages, computing by
+physics rather than by instruction. Those chips ran on microwatts.</p>
+<p>The fork here is strange, because the alternative was not only
+available — it was sometimes <em>winning</em> — and the field moved away from
+it anyway. The bus-and-register model was easier to <em>program</em>, easier
+to <em>verify</em>, easier to <em>teach</em>. The continuous, parallel, settling
+model was harder to get a PhD with.</p>
+<p>So here we are.</p>
+<h2>What we missed</h2>
+<p>A machine whose state is not a sequence of register values but a <strong>field
+across the substrate</strong> does not have a bottleneck, because it does not
+have a pipe. It has a surface. Its work is not a sequence of
+instructions; it is the physical settling of the whole system toward
+equilibrium. Ask it a question by imposing a boundary condition; read
+the answer by looking at where it settles.</p>
+<p>Imagine the carbon cost of the alternate timeline. The giant warehouses
+of bus-bound silicon, doing one fetch at a time, heating the North
+Atlantic — against a palm-sized chip holding its computation in its
+own physics, answering the same question with a thousandth of the
+energy, because the answer is <em>what the material does naturally</em>.</p>
+<p>That machine exists. Neuromorphic researchers have been building it,
+quietly, at Stanford and Manchester and IBM, for decades. It gets
+covered as a curiosity every few years and then forgotten again.</p>
+<p>The bus won because the bus was legible. Legibility is a real virtue.
+But so is thermodynamics, and thermodynamics is coming for the bill.</p>
+<h2>What the next floor will ask</h2>
+<p>If the machine is a bus, what does <em>information</em> even mean?</p>
+<p>That's Floor 5.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/tower-03-mcculloch-pitts.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Floor 3 — McCulloch &amp; Pitts: The Neuron Made Into a Gate</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/tower-05-shannon.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Floor 5 — Shannon: Information as a Bit, and the Geometry We Forgot to Name</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

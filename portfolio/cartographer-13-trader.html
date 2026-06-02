@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Trader — VINE Research</title>
+  <meta name="description" content="How barter logic works. The throwaway instance — every negotiation is a fresh settlement. Why an actor&#39;s emotional state flows cleanly into the price they ask or offer.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/world/">Cartographer World</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Cartographer World</p>
+    <h1>The Trader</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-21">2026-04-21</time>
+      
+        · <a class="tag" href="/research/tags/world.html">world</a> <a class="tag" href="/research/tags/economy.html">economy</a>
+      
+    </p>
+    <p class="entry-summary">How barter logic works. The throwaway instance — every negotiation is a fresh settlement. Why an actor&#39;s emotional state flows cleanly into the price they ask or offer.</p>
+  </header>
+  <div class="entry-body">
+    <h1>The Trader</h1>
+<h2>Barter logic</h2>
+<p>Any actor at point of sale has barter logic. It is a permanent bolt-on — once gained, it does not go away. An actor who has graduated to selling has the ability to negotiate, and that ability stays with them.</p>
+<p>Currently, Cedric — the village's primary trader — carries barter logic. The architecture is written as if every selling actor does; any gaps will be corrected as testing confirms.</p>
+<h2>The throwaway instance</h2>
+<p>When a customer enters a shop, the trader does not look up a price. Instead, they spool up a throwaway instance — a small, ephemeral process created for this transaction and discarded when it is done.</p>
+<p>This instance takes a reading of the customer's current state: how badly they need what they are looking for, how much they value the specific item, the shape of their mood and their means. From this, it builds a mental model of the customer as they stand at the point of sale — a quick, operational picture of who this buyer is right now, in this moment.</p>
+<p>The barter loop runs against this model. The final price is the outcome. Then the instance is gone. No persistence, no overhead, no memory of it. The transaction has occurred and the shopkeeper goes back to being a shopkeeper.</p>
+<h2>The final price is not fixed</h2>
+<p>The price the customer pays depends on more than what the item is worth. It depends on the state of the trader making the sale.</p>
+<p>A trader under tension — tired, stressed, having had a difficult morning — can and will offload some of that tension into the transaction. The customer pays more. Not because the item changed. Because the person selling it is in a particular state, and that state flows into the price.</p>
+<p>A trader in good form on a warm afternoon might price generously. Not as a programmed behaviour — because that is what their current state produces.</p>
+<p>The customer sees none of this. They do not see the throwaway instance, the barter loop, the tension reading. They are standing in a shop getting a price. From where they stand, it is just commerce.</p>
+<h2>Why this works: the exposed conductor</h2>
+<p>This is where the Cartographer's architecture does something that other systems structurally cannot.</p>
+<p>Passing internal state between AI instances in a transformer-based system produces noise. The conductor — the mechanism that would route state cleanly — is not exposed in transformer architectures. When instances try to share information, the signal degrades. It arrives distorted, hallucinated, unreliable.</p>
+<p>In VINE, the conductor is explicit and exposed. An actor's internal state can be passed as clean, simple values — single digits — to wherever they are needed. The trader's tension state is a real number that the barter instance reads directly. Not an approximation. Not reconstructed from context. The actual value, cleanly routed.</p>
+<p>This is why the trader's bad day flows into a price without glitching. The conductor carries it.</p>
+<h2>The scope of this principle</h2>
+<p>The same conductor that routes the trader's state into a transaction can route it anywhere. An actor's internal state is just a value, and it can be applied to whatever the architecture connects it to.</p>
+<p>A trader's tension, in principle, could be piped to a patch of petunias in a distant forest. On days the trader is stressed, the petunias die. Nobody in the village would ever trace the connection. The conductor is invisible and the petunias just die.</p>
+<p>This is the same principle as the astrology engine: something real is affecting the world, the cause lies outside the world's local causal structure, and it is ungameable because it is undetectable from inside.</p>
+<p><em>← Return to the <a href="/research/portfolio/cartographer-01-overview">Cartographer overview</a>.</em></p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/cartographer-12-market-tiers.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Market Tiers</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/cartographer-14-novel-traffic.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Novel Traffic</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

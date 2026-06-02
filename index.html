@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VINE — Research</title>
+  <meta name="description" content="VINE — a geometric AI platform. Research, evidence, dev log.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-landing">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+
+<section class="landing-hero">
+  <h1>A geometric engine, written down.</h1>
+  <p class="lede">Solo-built AI that settles instead of branching. One core algorithm,
+  proved across many domains. This is the evidence — plus the day-by-day notebook
+  of how it got here.</p>
+</section>
+
+<section class="stats-row">
+  <div class="stat"><div class="stat-number">50+</div><div class="stat-label">projects</div></div>
+  <div class="stat"><div class="stat-number">29</div><div class="stat-label">repositories</div></div>
+  <div class="stat"><div class="stat-number">875+</div><div class="stat-label">merged PRs</div></div>
+  <div class="stat"><div class="stat-number">1</div><div class="stat-label">core algorithm</div></div>
+</section>
+
+<section class="landing-split" style="grid-template-columns: 1fr;">
+  <a class="split-card" href="/research/provenance.html">
+    <h2>Provenance</h2>
+    <p>The OZ-to-Vine arc, dated. From the first observation in September 2024 to today's geometric search engine, drone swarms, and Cartographer Day 975+. Every milestone anchored to on-disk evidence. The personal ML learning curve running parallel to the build — visible as the gap that makes the architectural insight load-bearing.</p>
+  </a>
+</section>
+
+<section class="landing-split">
+  <a class="split-card" href="/research/portfolio/">
+    <h2>Portfolio</h2>
+    <p>Formal evidence. Results, behaviour, case studies. Curated reading path through the Tower series and domain proofs.</p>
+  </a>
+  <a class="split-card" href="/research/devlog/">
+    <h2>Dev Log</h2>
+    <p>What was built today, and why. Hand-written + session notes.</p>
+    <p class="split-aux"><span class="rss-link" data-href="/research/rss.xml">RSS feed</span></p>
+  </a>
+</section>
+
+<h2 class="section-label">In Production</h2>
+<div class="project-grid">
+  <div class="project-card">
+    <h3>VINE Language Platform</h3>
+    <p>Real-time learning from every interaction. Live chat with geometric voice, terrain generation, idle games (chess, Eleusis, Zendo, SET), long-term memory, internet search, visitor awareness. Chat interface is invite-only during beta.</p>
+    <span class="proj-tag live">LIVE — INVITE ONLY</span>
+  </div>
+  <div class="project-card">
+    <h3>Cyber Security</h3>
+    <p>No rule lists, no signature database. Threats settle to basins via the same substrate that runs the production stack. Currently running 35+ days continuous against a slow but escalating attack surface; no breach. The geometry refuses what doesn't fit the manifold.</p>
+    <span class="proj-tag live">LIVE — INVITE ONLY</span>
+  </div>
+  <a href="/cruncher" class="card-link">
+  <div class="project-card">
+    <h3>Data Cruncher</h3>
+    <p>Geometric text classification on a 20GB dataset. No cloud API, no training step. Geometric classification produces category structure from raw text.</p>
+    <span class="proj-tag live">LIVE — TRY DEMO</span>
+  </div>
+  </a>
+  <div class="project-card">
+    <h3>Clinical Triage</h3>
+    <p>Emergency detection via geometric classification. 98.5% accuracy on ESI 1-2 cases. No anchoring bias. Synthetic data validated.</p>
+    <span class="proj-tag live">LIVE</span>
+  </div>
+  <a href="/calculator" class="card-link">
+  <div class="project-card">
+    <h3>Geometric Calculator</h3>
+    <p>Two-stage wave function collapse on a single perceptron. Numbers encoded as polygon vertices on Fibonacci spirals. Arithmetic via geometric drift and resonance bonuses — no hidden arithmetic. 100% accuracy on basic operations, PEMDAS support.</p>
+    <span class="proj-tag live">LIVE — TRY DEMO</span>
+  </div>
+  </a>
+</div>
+
+<h2 class="section-label">Domain Proofs (Tested)</h2>
+<div class="project-grid">
+  <div class="project-card">
+    <h3>Veterinary Decision Support</h3>
+    <p>Non-diagnostic clinical decision support for equine practice — daily readiness banding, session adaptation, progression gating, weekly constraints, rolling alerts. Deterministic and auditable: same inputs always produce the same output, every decision lists its contributing factors (override flags, active concerns, field position, decision tension). No LLM, no training step, no hallucination class. Rule edits take effect the moment they're saved.</p>
+    <p>~47,000 evaluations per second on a consumer CPU, single-threaded Python. A county's worth of veterinary practices runs comfortably on a Raspberry Pi. Fully local — nothing leaves the host. Drop-in OpenAPI contract; 63 automated tests; ~400&nbsp;ms suite. Delivered prototype.</p>
+    <span class="proj-tag tested">DELIVERED</span>
+  </div>
+  <div class="project-card">
+    <h3>Cognitive Tower</h3>
+    <p>A behavioural experiment testing the hypothesis that geometric field dynamics are what separate reactive behaviour from cognition — the tardigrade-vs-<em>C.&nbsp;elegans</em> question. Two staircases, one substrate: a 14-rung biological survival ladder (reactive brightness → homeostasis → concept abstraction → planning → hoarding → object permanence → tool use) and a 7-rung cognitive puzzle tower (shape fit → colour manifolds → copycat → error detection → occlusion → two-level abstraction → rule inference).</p>
+    <p>Everything runs on a single perceptron. No hidden layers, no training corpus, no loss function, no backprop. ARC-style rule inference (4 tasks passed from a single example each) sits at the top as one demonstration — the interesting part is the climb below it. Full write-up coming as its own section.</p>
+    <span class="proj-tag tested">TESTED</span>
+  </div>
+  <div class="project-card">
+    <h3>Retro Hardware Proof</h3>
+    <p>38+ BBC BASIC programs. Geometric operating system with XOR solving on a single perceptron. vine_ai engine: 96 commands across 10 domains, geometric navigation, &lt;1ms synthesis. Chess, language, Eliza, synth, story modules. 100K superposition benchmark. Near-transfer ratio 1.52&times; (paraphrases outscore exact keywords). Natural language &rarr; BBC BASIC code generation via geometric navigation.</p>
+    <span class="proj-tag working">WORKING</span>
+  </div>
+  <div class="project-card">
+    <h3>Geometric Debugger</h3>
+    <p>Translates source code into geometric form. Bugs appear as unreachable regions in the topology. 3D visualisation export. Rebranded under NEXICOG with security hardening.</p>
+    <span class="proj-tag tested">TESTED</span>
+  </div>
+  <div class="project-card">
+    <h3>Directory Search Engine</h3>
+    <p>TSP-based filesystem navigation. Fern agent resolves paths via spiral dynamics. Web UI with real-time streaming visualisation and emoji territory mapping.</p>
+    <span class="proj-tag working">WORKING</span>
+  </div>
+  <div class="project-card">
+    <h3>Negotiation Agents</h3>
+    <p>Alice-Bob dialogue system with geometric extensions. VINE-based PyTorch model initialisation. VINE seed embedding injection. 10,000-round self-play training completed.</p>
+    <span class="proj-tag tested">TESTED</span>
+  </div>
+</div>
+
+<h2 class="section-label">Integration Proofs</h2>
+<div class="project-grid">
+  <div class="project-card">
+    <h3>Cartographer World &amp; Autonomous NPCs</h3>
+    <p>635 Python files. Full world simulation: ecology, economy, celestial events, NPC actors with biorhythms and persistence. Self-coherence layer with metacognition. 642 merged pull requests. Going live shortly at <span class="inline-path">/cartographer</span>.</p>
+    <span class="proj-tag soon">LIVE SOON</span>
+  </div>
+  <div class="project-card">
+    <h3>ARC Puzzle Solver</h3>
+    <p>Geometric approach to the Abstraction and Reasoning Corpus. Visual reasoner, hypothesis-testing framework, 65 merged PRs. Active research.</p>
+    <span class="proj-tag research">RESEARCH</span>
+  </div>
+  <div class="project-card">
+    <h3>Emergent Locomotion</h3>
+    <p>Biped, quadruped, and hexapod shapes learn to walk via geometric basin formation. No pre-programmed animation or inverse kinematics. Limbs can be added mid-walk.</p>
+    <span class="proj-tag research">RESEARCH</span>
+  </div>
+  <div class="project-card">
+    <h3>Game AI Integrations</h3>
+    <p>Same algorithm applied to Pac-Man (JS), Conway's Game of Life (Pygame), an autonomous Roomba simulation (9 iterations, emergent personality), and route optimisation (TSP).</p>
+    <span class="proj-tag research">RESEARCH</span>
+  </div>
+</div>
+
+<h2 class="section-label">Autonomous Systems</h2>
+<div class="project-grid">
+  <div class="project-card">
+    <h3>Autonomous Drone Swarms</h3>
+    <p>Leaderless swarm coordination using geometric basin settling. Each drone settles into formation position via local spiral navigation — no central controller, no leader election, no broadcast consensus. The swarm acts as one because the geometry converges, not because anything tells it to.</p>
+    <span class="proj-tag tested">TESTED</span>
+  </div>
+  <div class="project-card">
+    <h3>Dynamic Dogfight Simulation</h3>
+    <p>Simulated air combat with real-time attack/defence switching. Engagement decisions settled geometrically — pursuit, evasion, wingman cover, and target handoff all emerge from basin proximity rather than scripted tactics. Same mechanism, adversarial domain.</p>
+    <span class="proj-tag tested">TESTED</span>
+  </div>
+</div>
+
+<h2 class="section-label">Space-Grade Compliance</h2>
+<p class="jpl-intro">NASA JPL enforces the <a href="https://spinroot.com/gerard/pdf/P10.pdf">Power of Ten</a> coding rules for safety-critical flight software — Mars rovers, life-support, flight controllers. VINE's geometric architecture doesn't just comply with these rules. The failure modes they protect against are topology-impossible.</p>
+<div class="jpl-table-wrap">
+<table class="jpl-table">
+  <thead>
+    <tr>
+      <th>JPL Rule</th>
+      <th>Status</th>
+      <th>How</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>No recursion</td><td class="ok">Full</td><td>All navigation is iterative. Nothing calls itself.</td></tr>
+    <tr><td>Provable loop bounds</td><td class="ok">Exceeds</td><td>Damping of 0.618 is inherently contractive. Convergence is bounded.</td></tr>
+    <tr><td>No dynamic memory after init</td><td class="ok">Full</td><td>Manifold fixed at boot. Agents settle into pre-existing space.</td></tr>
+    <tr><td>Max 60 lines per function</td><td class="ok">Exceeds</td><td>Core operation is minimal. Complexity via composition.</td></tr>
+    <tr><td>Min 2 assertions per function</td><td class="arch">Architectural</td><td>Geometry is the assertion. Tension must decrease; basins must settle.</td></tr>
+    <tr><td>Smallest scope for data</td><td class="ok">Full</td><td>Basin states local to settling computation. No global mutable state.</td></tr>
+    <tr><td>Check all return values</td><td class="ok">Full</td><td>Each step returns full state. Next step requires it to proceed.</td></tr>
+    <tr><td>Limited preprocessor</td><td class="ok">N/A</td><td>Python has no preprocessor.</td></tr>
+    <tr><td>No function pointers</td><td class="ok">Full</td><td>Routing via geometric position, not pointer tables.</td></tr>
+    <tr><td>Compile with all warnings</td><td class="arch">Structural</td><td>Incomplete geometric tour is a logical error detected before runtime.</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="jpl-note">8 of 10 rules met through architectural design. 2 met structurally rather than literally. The failure modes these rules protect against — stack overflow, unbounded loops, heap fragmentation, wild pointers, silent failures — are topology-impossible in the geometric core.</p>
+<p class="jpl-note">The same algorithm runs on a consumer laptop and in the production deployment on this server. No GPU required.</p>
+
+<h2 class="section-label">Timeline</h2>
+<div class="timeline">
+  <div class="timeline-item"><span class="timeline-date">Apr 2025</span><span class="timeline-text">First script — PyTorch self-attention experiment</span></div>
+  <div class="timeline-item"><span class="timeline-date">Mid 2025</span><span class="timeline-text">Single perceptron → multi-agent architecture → two-stage settling on a single perceptron</span></div>
+  <div class="timeline-item"><span class="timeline-date">Nov 2025</span><span class="timeline-text">17 repositories published in two weeks — domain proofs across multiple fields</span></div>
+  <div class="timeline-item"><span class="timeline-date">Dec 2025</span><span class="timeline-text">Cognitive tower (14 levels), GPT-2 geometric constraints, NPC world engine</span></div>
+  <div class="timeline-item"><span class="timeline-date">Jan 2026</span><span class="timeline-text">BBC BASIC retro proof, production deployment to vineai.net</span></div>
+  <div class="timeline-item"><span class="timeline-date">Feb 2026</span><span class="timeline-text">Full production deployment. ERP integration (27 ERPNext modules). Clinical triage. Internet search. Runtime language acquisition. Visitor awareness. Long-term memory.</span></div>
+</div>
+
+
+
+
+<section class="entry-list">
+  <h2 class="section-label">Recent Writing</h2>
+  <ul>
+    
+    <li class="entry-item">
+      <p class="entry-flavour">Portfolio · <time>2026-05-07</time></p>
+      <h3><a href="/research/portfolio/seed-unpack.html">Seed Unpack — What&#39;s Hiding In The Number You Picked</a></h3>
+      <p>An interactive piece that runs Java&#39;s LCG (the same one Minecraft uses for world generation) on whatever seed you type in, and draws the resulting state-trajectory as a network of points. Some seeds reveal a hidden lattice. Some scatter. The lattice is real, reproducible, and almost never examined in the systems that consume the seed.</p>
+      
+      <p class="tag-row">
+        <a class="tag" href="/research/tags/seeds.html">seeds</a><a class="tag" href="/research/tags/determinism.html">determinism</a><a class="tag" href="/research/tags/lattice.html">lattice</a><a class="tag" href="/research/tags/interactive.html">interactive</a><a class="tag" href="/research/tags/computing-lineage.html">computing-lineage</a>
+      </p>
+      
+    </li>
+    
+    <li class="entry-item">
+      <p class="entry-flavour">Portfolio · <time>2026-04-21</time></p>
+      <h3><a href="/research/portfolio/cartographer-01-overview.html">The Cartographer — Overview</a></h3>
+      <p>A living procedural world where every inhabitant and every tool is a VINE instance. Starting conditions, actors, animals, economy, council, sky, ecology, lore, library, fêtes, language, and licensing — the whole engine as one page.</p>
+      
+      <p class="tag-row">
+        <a class="tag" href="/research/tags/world.html">world</a><a class="tag" href="/research/tags/overview.html">overview</a>
+      </p>
+      
+    </li>
+    
+    <li class="entry-item">
+      <p class="entry-flavour">Portfolio · <time>2026-04-21</time></p>
+      <h3><a href="/research/portfolio/cartographer-02-starting-world.html">The Starting World</a></h3>
+      <p>Why nobody wakes up the same. Unequal starting conditions produce different immediate concerns, which determine what actors do first, which determines what they become. The social and economic tier system emerges from the first morning.</p>
+      
+      <p class="tag-row">
+        <a class="tag" href="/research/tags/world.html">world</a><a class="tag" href="/research/tags/emergence.html">emergence</a>
+      </p>
+      
+    </li>
+    
+    <li class="entry-item">
+      <p class="entry-flavour">Portfolio · <time>2026-04-21</time></p>
+      <h3><a href="/research/portfolio/cartographer-03-actors.html">The Actors</a></h3>
+      <p>Under the hood of the actors. Random starting state compounded with random building contents, emergent job picking, biorhythms, competing concerns in high-dimensional space, and the architectural independence that lets new content be added without destabilising the rest.</p>
+      
+      <p class="tag-row">
+        <a class="tag" href="/research/tags/world.html">world</a><a class="tag" href="/research/tags/architecture.html">architecture</a>
+      </p>
+      
+    </li>
+    
+    <li class="entry-item">
+      <p class="entry-flavour">Portfolio · <time>2026-04-21</time></p>
+      <h3><a href="/research/portfolio/cartographer-04-baker.html">The Baker</a></h3>
+      <p>How a VINE actor learns. Starts knowing flatbread, learns new recipes through practice or accidental library discoveries. No two bakers develop identically. A master flatbread baker, a leavened-bread prodigy, and a rye-learning wanderer — all real bakers, all different villages.</p>
+      
+      <p class="tag-row">
+        <a class="tag" href="/research/tags/world.html">world</a><a class="tag" href="/research/tags/learning.html">learning</a>
+      </p>
+      
+    </li>
+    
+    <li class="entry-item">
+      <p class="entry-flavour">Portfolio · <time>2026-04-21</time></p>
+      <h3><a href="/research/portfolio/cartographer-05-animals.html">The Animals</a></h3>
+      <p>Every animal is an individual AI agent. Chickens, cats, dogs, horses, pigs, sheep, cows, goats — each with species-appropriate concern dimensions. Clicker training via real timing. Flock abstraction for scale without flattening individual variation.</p>
+      
+      <p class="tag-row">
+        <a class="tag" href="/research/tags/world.html">world</a><a class="tag" href="/research/tags/animals.html">animals</a>
+      </p>
+      
+    </li>
+    
+  </ul>
+</section>
+
+
+
+<section class="tag-cloud">
+  <h2 class="section-label">Tags</h2>
+  <p>
+    <a class="tag" href="/research/tags/adaptation.html">adaptation</a><a class="tag" href="/research/tags/alice-bob.html">alice-bob</a><a class="tag" href="/research/tags/alignment.html">alignment</a><a class="tag" href="/research/tags/animals.html">animals</a><a class="tag" href="/research/tags/architecture.html">architecture</a><a class="tag" href="/research/tags/biology.html">biology</a><a class="tag" href="/research/tags/build.html">build</a><a class="tag" href="/research/tags/cognitive.html">cognitive</a><a class="tag" href="/research/tags/computing-lineage.html">computing-lineage</a><a class="tag" href="/research/tags/conductor.html">conductor</a><a class="tag" href="/research/tags/continuity.html">continuity</a><a class="tag" href="/research/tags/control.html">control</a><a class="tag" href="/research/tags/crawler.html">crawler</a><a class="tag" href="/research/tags/data.html">data</a><a class="tag" href="/research/tags/decoupling.html">decoupling</a><a class="tag" href="/research/tags/determinism.html">determinism</a><a class="tag" href="/research/tags/deterministic.html">deterministic</a><a class="tag" href="/research/tags/dragonfly.html">dragonfly</a><a class="tag" href="/research/tags/ecology.html">ecology</a><a class="tag" href="/research/tags/economy.html">economy</a><a class="tag" href="/research/tags/elegans.html">elegans</a><a class="tag" href="/research/tags/embeddings.html">embeddings</a><a class="tag" href="/research/tags/emergence.html">emergence</a><a class="tag" href="/research/tags/festivals.html">festivals</a><a class="tag" href="/research/tags/fluency.html">fluency</a><a class="tag" href="/research/tags/gait.html">gait</a><a class="tag" href="/research/tags/handbook.html">handbook</a><a class="tag" href="/research/tags/information.html">information</a><a class="tag" href="/research/tags/interactive.html">interactive</a><a class="tag" href="/research/tags/intro.html">intro</a><a class="tag" href="/research/tags/language.html">language</a><a class="tag" href="/research/tags/lattice.html">lattice</a><a class="tag" href="/research/tags/learning.html">learning</a><a class="tag" href="/research/tags/lemmatisation.html">lemmatisation</a><a class="tag" href="/research/tags/library.html">library</a><a class="tag" href="/research/tags/licensing.html">licensing</a><a class="tag" href="/research/tags/linguistics.html">linguistics</a><a class="tag" href="/research/tags/llm.html">llm</a><a class="tag" href="/research/tags/loss.html">loss</a><a class="tag" href="/research/tags/memory.html">memory</a><a class="tag" href="/research/tags/meta.html">meta</a><a class="tag" href="/research/tags/migration.html">migration</a><a class="tag" href="/research/tags/modes.html">modes</a><a class="tag" href="/research/tags/navigation.html">navigation</a><a class="tag" href="/research/tags/observations.html">observations</a><a class="tag" href="/research/tags/overview.html">overview</a><a class="tag" href="/research/tags/perception.html">perception</a><a class="tag" href="/research/tags/precursor.html">precursor</a><a class="tag" href="/research/tags/prediction.html">prediction</a><a class="tag" href="/research/tags/quantisation.html">quantisation</a><a class="tag" href="/research/tags/reward.html">reward</a><a class="tag" href="/research/tags/rnn.html">rnn</a><a class="tag" href="/research/tags/rules.html">rules</a><a class="tag" href="/research/tags/safety.html">safety</a><a class="tag" href="/research/tags/seeds.html">seeds</a><a class="tag" href="/research/tags/social.html">social</a><a class="tag" href="/research/tags/state.html">state</a><a class="tag" href="/research/tags/tardigrade.html">tardigrade</a><a class="tag" href="/research/tags/thresholds.html">thresholds</a><a class="tag" href="/research/tags/today.html">today</a><a class="tag" href="/research/tags/topology.html">topology</a><a class="tag" href="/research/tags/tower.html">tower</a><a class="tag" href="/research/tags/training-data.html">training-data</a><a class="tag" href="/research/tags/trajectory.html">trajectory</a><a class="tag" href="/research/tags/transformers.html">transformers</a><a class="tag" href="/research/tags/vine.html">vine</a><a class="tag" href="/research/tags/vision.html">vision</a><a class="tag" href="/research/tags/world.html">world</a>
+  </p>
+</section>
+
+
+
+<section class="note-box">
+  <h2>Working With Us</h2>
+  <p>Every project above uses the same core mechanism. No per-domain customisation. The geometric algorithm that runs 27 ERP modules is the same one that classifies 400,000 tweets, solves ARC puzzles, plays chess, and navigates a filesystem.</p>
+  <p>If you're a researcher, investor, or institution interested in reviewing the work, discussing licensing, or exploring collaboration — the door is open. Private demonstrations of any module can be arranged.</p>
+  <p><a href="mailto:raychell.langan@gmail.com">raychell.langan@gmail.com</a></p>
+</section>
+
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

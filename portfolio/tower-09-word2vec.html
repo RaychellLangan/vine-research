@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Floor 9 — Word2Vec: The Field Touches the Manifold and Flinches — VINE Research</title>
+  <meta name="description" content="In 2013, language became geometric for the first time at industrial scale. The vectors were real. The manifold under them was never quite named.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/tower/">Computing Lineage</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Computing Lineage</p>
+    <h1>Floor 9 — Word2Vec: The Field Touches the Manifold and Flinches</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-15">2026-04-15</time>
+      
+        · <a class="tag" href="/research/tags/tower.html">tower</a> <a class="tag" href="/research/tags/language.html">language</a> <a class="tag" href="/research/tags/continuity.html">continuity</a>
+      
+    </p>
+    <p class="entry-summary">In 2013, language became geometric for the first time at industrial scale. The vectors were real. The manifold under them was never quite named.</p>
+  </header>
+  <div class="entry-body">
+    <h2>The floor</h2>
+<p>In 2013, Tomáš Mikolov and colleagues at Google published
+<em>Efficient Estimation of Word Representations in Vector Space</em>. The
+paper introduced <strong>word2vec</strong> — a simple method for learning, from
+raw text alone, a 300-dimensional vector for every word in a
+vocabulary. Words used in similar contexts ended up with similar
+vectors. This had been tried before. It had never worked at this scale.</p>
+<p>And then the example that went viral:</p>
+<blockquote>
+<p><em>king − man + woman ≈ queen</em></p>
+</blockquote>
+<p>Arithmetic. On words. As if meaning had quietly always been addition
+and subtraction of directions in a high-dimensional room. The field,
+and the popular press, lost their minds. The word-embedding era had
+begun.</p>
+<p>For a moment, everyone working in NLP believed the geometry of meaning
+was about to be delivered to them on a plate.</p>
+<h2>What was picked</h2>
+<p><strong>Words as fixed vectors in a flat Euclidean space</strong>, compared with
+cosine similarity. A vocabulary of 100,000 words becomes a 100,000-point
+cloud in 300 dimensions. &quot;Nearby&quot; means &quot;used similarly.&quot; That is all.</p>
+<p>The choice looks continuous — vectors, not categories — and for the
+first time, genuinely, it is. You can take the midpoint between two
+words and ask what lives there. You can project the cloud onto two
+axes and see <em>cat</em> and <em>dog</em> and <em>kitten</em> form a family. This was not
+available before 2013 at this resolution.</p>
+<p>And yet, look closer. The geometry is <strong>flat</strong>. Every direction in the
+space has the same interpretation — or rather, no <em>designed</em>
+interpretation at all. Which axis is <em>emotional temperature</em>? Which
+axis is <em>formality</em>? Which axis is <em>uncertainty</em>? Nobody knows. The
+structure is accidental, discovered after the fact by probing, not
+designed in.</p>
+<p>The field had finally given words <strong>positions</strong>, but had given the
+manifold no <strong>shape</strong>.</p>
+<h2>What could have been picked</h2>
+<p>A space in which <strong>each dimension means something specific</strong>.
+A dimension for curiosity. A dimension for tension. A dimension for
+temporal tense. A dimension for politeness. A dimension for commitment.
+The coordinates are interpretable at inspection time; the word's
+position on each axis is set by how it is used, but the axes themselves
+are given meanings we choose.</p>
+<p>This is what linguistics had been quietly working on for decades.
+Componential semantics. Charles Osgood's semantic differential (1957),
+which measured every word on just three axes — evaluation, potency,
+activity — and accounted for a startling amount of human meaning.
+Roget's Thesaurus was, in effect, a hierarchical manifold drawn by
+hand.</p>
+<p>A world in which word2vec had been built on a <strong>designed manifold</strong> —
+the axes named, the basins known, the gradients chosen — would be a
+world in which the vectors did not just accidentally encode meaning.
+They would be <strong>maps of it.</strong> You could walk them.</p>
+<h2>What we missed</h2>
+<p>Interpretability. Almost entirely.</p>
+<p>For a decade now, the field has been pouring research into the problem
+of <em>what directions in embedding space mean</em>. Teams of brilliant
+people probing, clustering, visualising, reverse-engineering, hoping to
+find interpretable axes inside a space whose axes were never given
+meanings to begin with.</p>
+<p>If the axes had been chosen at design time — if the manifold had been
+given a <strong>shape</strong> — none of that archaeology would be necessary. The
+direction labelled <em>uncertainty</em> would just <em>be</em> uncertainty.</p>
+<p>The field got the vectors. It flinched at the manifold. In the alternate
+timeline, word2vec's successors were not embedding spaces you probe
+afterwards. They were <strong>named spaces</strong> you design first.</p>
+<h2>What the next floor will ask</h2>
+<p>If the interior is a geometric space, what does an architecture that
+<em>lives</em> in it look like?</p>
+<p>That's Floor 10. It's the one that is running right now, and it is the
+closest and the furthest at the same time.</p>
+
+  </div>
+
+  
+  <nav class="series-nav" aria-label="Within series">
+    <div class="series-prev">
+      
+      <a href="/research/portfolio/tower-08-backprop.html">
+        <span class="series-nav-label">← Previous</span>
+        <span class="series-nav-title">Floor 8 — Backprop Returns, and Brings the One-Hot With It</span>
+      </a>
+      
+    </div>
+    <div class="series-next">
+      
+      <a href="/research/portfolio/tower-10-transformers.html">
+        <span class="series-nav-label">Next →</span>
+        <span class="series-nav-title">Floor 10 — Transformers: The Brilliant Architecture With the Wrong Output</span>
+      </a>
+      
+    </div>
+  </nav>
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Deterministic English Fluency Layer — VINE Research</title>
+  <meta name="description" content="A ~50 KB cabinet of rule-based specialists that turn a typed semantic trace into fluent English. No neural network, no training, no GPU. Inflection, lemmatisation with etymological layering, article selection, verb conjugation. 104/104 tests pass. A reference implementation for the separation of semantic navigation and surface rendering.">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vine_theme.css">
+  <link rel="stylesheet" href="/research/static/library.css">
+  <link rel="alternate" type="application/rss+xml" title="Dev Log" href="/research/rss.xml">
+</head>
+<body class="flavour-portfolio">
+  <nav class="vine-nav">
+    <div class="vine-nav-left">
+      <a href="/" class="vine-nav-logo">VINE</a>
+      <button class="vine-nav-toggle" onclick="vineToggleMenu(event)" aria-label="Menu">&#9776;</button>
+      <div class="vine-nav-links">
+        <a href="/suite">Suite</a>
+        <a href="/about">About</a>
+        <a href="/play">Play</a>
+        <a href="/search">Search</a>
+        <div class="vine-nav-more">
+          <button class="vine-nav-more-btn">More</button>
+          <div class="vine-nav-more-dropdown">
+            <a href="/how-vine-learns">Learning</a>
+            <a href="/research" class="active">Research</a>
+            <a href="/cartographer">Cartographer</a>
+            <a href="/faq">FAQ</a>
+            <a href="/legal">Legal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vine-nav-right">
+      <div id="vine-auth"></div>
+      <span class="vine-beta-badge">BETA</span>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    
+
+<p class="breadcrumb">
+  <a href="/research/">Research</a> /
+  <a href="/research/portfolio/">Portfolio</a>
+  
+    / <a href="/research/portfolio/mechanism/">Mechanism</a>
+  
+</p>
+
+<article class="entry">
+  <header class="entry-head">
+    <p class="entry-flavour">Portfolio · Mechanism</p>
+    <h1>A Deterministic English Fluency Layer</h1>
+    <p class="entry-meta">
+      <time datetime="2026-04-20">2026-04-20</time>
+      
+        · <a class="tag" href="/research/tags/fluency.html">fluency</a> <a class="tag" href="/research/tags/architecture.html">architecture</a> <a class="tag" href="/research/tags/deterministic.html">deterministic</a> <a class="tag" href="/research/tags/language.html">language</a>
+      
+    </p>
+    <p class="entry-summary">A ~50 KB cabinet of rule-based specialists that turn a typed semantic trace into fluent English. No neural network, no training, no GPU. Inflection, lemmatisation with etymological layering, article selection, verb conjugation. 104/104 tests pass. A reference implementation for the separation of semantic navigation and surface rendering.</p>
+  </header>
+  <div class="entry-body">
+    <h1>A deterministic English fluency layer</h1>
+<h2>Rendering semantic intent to surface form without a transformer</h2>
+<hr />
+<h3>Summary</h3>
+<p><code>vine_mouth</code> is a small Python package that converts a typed semantic trace into fluent English. It replaces the portion of a language model's work that is responsible for <em>how to say</em> things that have already been decided, leaving <em>what to say</em> upstream. The implementation is deterministic, rule-based, around 50 KB of data, and passes 104 end-to-end tests. It covers inflection, lemmatisation with etymological layering, article selection, verb conjugation, modal auxiliaries, negation with do-support, pre-nominal adjective modifiers, and clause-level capitalisation and punctuation.</p>
+<p>The package does not do semantic reasoning or content selection. It is a narrow engineering artifact with a well-defined interface. Its usefulness is in two places: as a fluency back-end for systems that produce structured semantic output, and as a morphology corrector for language-model output that has degraded under quantisation, distillation, or distribution shift.</p>
+<hr />
+<h3>1. Background</h3>
+<p>Modern neural language models handle the full stack of language production — semantics, lexicon, syntax, morphology, orthography — inside a single inference pass. This coupling is usually regarded as a feature. In practice it also couples the failure modes: a model that produces <em>runned</em> instead of <em>ran</em> is failing at morphology, but the failure is not separable from whatever else the model is doing, and the fix (retraining, distillation, improved sampling) is expensive relative to the size of the problem.</p>
+<p>Most of the stack above morphology — content selection, role assignment, topicality — genuinely does benefit from large models, because the space of possible meanings is unbounded and statistically structured. The stack below, from morphology downward, does not. English morphology, article selection, and verb conjugation are rule-governed systems with finite inventories of exceptions. Every native English speaker knows them with complete determinism by mid-childhood, and the knowledge is a matter of a few hundred irregular forms and a small set of phonological constraints. A language model encodes this knowledge distributively across billions of parameters, paying for the privilege with model size, inference cost, and unpredictable failure under pressure.</p>
+<p>This package separates the two layers and implements the lower one as a cabinet of deterministic specialists with a typed interface between them.</p>
+<hr />
+<h3>2. Architecture</h3>
+<p>The system consists of a <strong>conductor interface</strong> (a trace format) and five <strong>specialists</strong>, composed by a small dispatch pipeline.</p>
+<h4>2.1 Trace format</h4>
+<p>The upstream system produces an ordered list of events. Each event is one of:</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NOMINAL</code></td>
+<td>A noun phrase</td>
+</tr>
+<tr>
+<td><code>VERB</code></td>
+<td>A verbal event (tense, aspect, agreement)</td>
+</tr>
+<tr>
+<td><code>MODAL</code></td>
+<td>A modal auxiliary (<em>can, could, will...</em>)</td>
+</tr>
+<tr>
+<td><code>ADJ</code></td>
+<td>A bare adjective (typically predicative)</td>
+</tr>
+<tr>
+<td><code>WORD</code></td>
+<td>A literal pass-through token</td>
+</tr>
+<tr>
+<td><code>CLAUSE_START</code> / <code>CLAUSE_END</code></td>
+<td>Clause boundaries</td>
+</tr>
+<tr>
+<td><code>COMMA</code> / <code>PUNCT</code></td>
+<td>Inline punctuation</td>
+</tr>
+</tbody>
+</table>
+<p>A NOMINAL event carries the head noun as a lemma together with structural attributes: definiteness (<code>definite | indefinite | generic | unique_the | unique_zero</code>), countability (<code>count | mass</code>), number (<code>singular | plural</code>), optional pre-modifiers, and an optional <code>generic_style</code> for generic expressions. A VERB event carries the verb as a lemma together with tense, aspect (<code>simple | progressive | perfect</code>), subject agreement features, optional negation, and optional form override. Full schema in <code>docs/trace_format.md</code>.</p>
+<p>The format is designed to be the minimum sufficient commitment for surface rendering. The upstream system decides <em>what the content is</em>; it does not need to know how any word is spelled.</p>
+<h4>2.2 Specialists</h4>
+<p>The five specialists are:</p>
+<p><strong>Inflection.</strong> Forward morphology. Given a lemma and a target form (<code>past | pp | ing | 3sg | plural | comp | sup</code>), produces the inflected surface form. Regular rules handle the productive cases; an irregulars table of ~150 verbs, ~20 nouns, and a small adjective set covers the exceptions. Polysyllabic final-stress handling (<em>refer → referred</em> but <em>open → opened</em>) uses a syllable-count heuristic with a small override list.</p>
+<p><strong>Lemmatisation.</strong> Reverse morphology, with etymological layering. Given a surface form, returns <code>(lemma, edge_tag, layer)</code>. The layer is <code>germanic | latin | greek | french | base</code>. Layer-appropriate collapse rules decide whether a form is grammatical variation of an existing concept (Germanic layer: <em>stillness → still</em>), a derivational nominalisation of a living verb (productive Latin: <em>decision → decide</em>), or a frozen borrowing that should stand on its own (frozen Latin: <em>mission</em>). Described in more detail in §3 below.</p>
+<p><strong>Articles.</strong> Selection of <em>the / a / an / ∅</em> from a small decision tree driven by definiteness, countability, number, and generic style. The a/an alternation is phonological rather than orthographic, with exception lists for silent-<em>h</em> words (<em>an hour, an honest mistake</em>) and /juː/-initial spellings (<em>a university, a European</em>).</p>
+<p><strong>Verbs.</strong> Tense × aspect × agreement. Builds simple, progressive, and perfect aspect forms using the inflection specialist and internal rules for <em>be</em> and <em>have</em> auxiliaries. Subject agreement features drive <em>-s / -es</em> selection for third-person singular present and plural/singular selection for <em>was / were</em>. Accepts an explicit <code>form</code> override that short-circuits tense logic when upstream events (modals, do-support) fix the verb's form.</p>
+<p><strong>Pipeline.</strong> Dispatches events to specialists, assembles tokens with correct spacing, attaches punctuation, handles capitalisation at clause boundaries, and implements the stateful behaviour required for modal priming and negation with do-support.</p>
+<h4>2.3 Determinism and size</h4>
+<p>Given the same trace, the pipeline always produces the same sentence. There are no learned parameters, no random sampling, and no floating-point intermediate states. Total code is 1,274 lines of Python; total data (irregulars tables, exception lists, phonological sets) is approximately 50 KB. The package runs on any machine with a standard Python interpreter and has no external dependencies.</p>
+<hr />
+<h3>3. Etymological layering</h3>
+<p>English is a stacked morphology. Germanic (Old English and Norse) provides the inflectional system and the basic function words. Latin provides institutional and scientific vocabulary with its own derivational morphology (<em>-tion, -ment, -ity, -able</em>). Greek provides compound roots (<em>-logy, -graph, -meter</em>). French (Norman) provides a further layer of borrowings (<em>-age, -ette, -esque</em>). The four layers coexist in modern English but behave differently under lemmatisation.</p>
+<p>A naive rule-based lemmatiser that treats all suffixes uniformly produces correct results on Germanic morphology (<em>softly → soft</em>, <em>stillness → still</em>) and unreliable results on Latin morphology. The difficulty is that Latin suffixes are sometimes productive in English — <em>decision</em> genuinely is the nominalisation of the living verb <em>decide</em> — and sometimes frozen — <em>mission</em> was borrowed whole and has no English verb root meaning &quot;to send.&quot; A rule that strips <em>-sion</em> and returns the stem will produce <em>decide</em> correctly and <em>miss</em> incorrectly, where <em>miss</em> exists as an English verb but means something entirely different.</p>
+<p>The lemmatiser resolves this by tagging each suffix with its etymological layer and applying layer-specific logic:</p>
+<ul>
+<li><strong>Germanic suffixes</strong> (<em>-ly, -ness, -ful, -less, -hood, -ship, -dom, -th</em>) always collapse. English productive morphology is sufficiently regular that the collapse is safe even when the underlying root is not in the vocabulary.</li>
+<li><strong>Latin suffixes</strong> (<em>-tion, -sion, -ment, -ity, -ance, -ence, -ive, -ous, -al, -able</em>) only collapse if the candidate root is present in the vocabulary. When no root is found, the word is tagged <code>base_latin_frozen</code> and retained as its own lemma.</li>
+<li><strong>Greek compounds</strong> (<em>-logy, -graphy, -meter, -scope, -phone...</em>) are not stripped at all. They are tagged with the Greek root name so that downstream systems can treat the word as a standalone concept with etymological-relative edges to its constituent morphemes.</li>
+<li><strong>French suffixes</strong> (<em>-age, -ette, -esque</em>) follow the same vocabulary-gated rule as Latin, and most are kept as frozen borrowings in practice.</li>
+</ul>
+<p>The lemmatiser therefore returns a three-tuple <code>(lemma, edge_tag, layer)</code>. The layer is semantically meaningful: it tells a downstream consumer whether the returned lemma represents the same concept as the input (productive collapse) or merely an etymological relative (frozen borrowing). When consumed by a concept-graph system, Germanic and productive-Latin edges connect variants of the same node, while frozen-Latin and Greek edges connect distinct nodes.</p>
+<p>A secondary consequence is that the layer distribution of a text is a measurable stylistic property. Across the test corpus (a 5,290-word prose chapter), Germanic-layer tokens and Latin-layer tokens varied by narrative scene in a way that tracked genre register: bureaucratic passages had Latin-layer token density of 16% against a baseline of 3-4%, without any conscious styling decision on the author's part.</p>
+<hr />
+<h3>4. Coverage and evaluation</h3>
+<p>The package includes 104 end-to-end tests covering:</p>
+<ul>
+<li>36 inflection cases (regular, irregular, polysyllabic stress, comparatives)</li>
+<li>22 lemmatisation cases (inflectional, derivational, layer disambiguation, possessives)</li>
+<li>10 a/an phonology cases</li>
+<li>14 verb conjugation cases across tense × aspect × person × number</li>
+<li>22 pipeline rendering cases (simple statements, questions, negation, modals, modifiers, serial lists, multi-clause)</li>
+</ul>
+<p>All 104 tests pass. The tests are the specification for correct behaviour; extensions are expected to preserve them. A bug-triage methodology document (<code>docs/bug_triage.md</code>) describes the process for classifying a failure (missing rule, missing exception, vocabulary gap, or upstream wrongness) and producing a one-line fix plus regression test.</p>
+<p>The system is deliberately not evaluated against a language-model benchmark. The task it performs — rendering a committed semantic trace — is not what a language model is benchmarked on, and the comparison would be category-confused. A language model trained on a dataset of (trace, sentence) pairs could be compared. That comparison has not been run.</p>
+<hr />
+<h3>5. Use cases</h3>
+<p><strong>As a fluency back-end for structured generators.</strong> Dialogue systems, templating systems, query-answering systems, and knowledge-graph verbalisers all produce structured semantic output that must be rendered to English. A trace is a natural target for such systems, and deterministic rendering removes a class of unpredictable behaviour that would otherwise need to be tested empirically. Size and latency are negligible relative to typical retrieval or reasoning costs.</p>
+<p><strong>As a morphology corrector for degraded language-model output.</strong> A 7B-parameter model quantised to 4-bit may begin to emit <em>runned</em> or <em>childs</em> at low temperatures or on out-of-distribution prompts. A post-hoc pass through the inflection specialist can identify and correct these forms without retraining. The package's <code>inflect()</code> function is the relevant entry point; a simple surface-form corrector can wrap it.</p>
+<p><strong>As an oracle for testing alternative implementations.</strong> Because the package is deterministic and its behaviour is specified by the test suite, it functions as a ground-truth reference for any alternative implementation of the same task. An alternative system's agreement with the reference on the 104 tests is a calibrated measure of its morphological correctness.</p>
+<hr />
+<h3>6. Limitations</h3>
+<p>What the package does not currently handle:</p>
+<ul>
+<li>Relative clauses (<em>the horse that ran</em>)</li>
+<li>Embedded clauses beyond one level of nesting</li>
+<li>Quoted direct speech</li>
+<li>Adverbs as verb or adjective modifiers (adverbs are currently passed through as literal tokens)</li>
+<li>Dialect variation (the phonological tables default to a mix of US and UK conventions; configurable)</li>
+</ul>
+<p>Each of these is a bounded extension of the existing specialists rather than a new capability. None are expected to require more than tens to low hundreds of additional lines of rules.</p>
+<p>What it does not aspire to do:</p>
+<ul>
+<li>Content selection, topic tracking, or discourse planning</li>
+<li>Translation or paraphrase</li>
+<li>Recognition of ungrammatical input</li>
+<li>Any form of learning from data</li>
+</ul>
+<hr />
+<h3>7. Availability</h3>
+<p>The package is pure Python with no runtime dependencies beyond the standard library. It is organised as:</p>
+<pre><code>vine_mouth/
+├── specialists/
+│   ├── inflection.py
+│   ├── lemmatiser.py
+│   ├── articles.py
+│   └── verbs.py
+├── pipeline/
+│   └── render.py
+├── tests/
+│   └── run_tests.py
+└── docs/
+    ├── trace_format.md
+    ├── design.md
+    └── bug_triage.md
+</code></pre>
+<p>Tests are run with <code>python3 -m vine_mouth.tests.run_tests</code>. The public API is exposed at package top level:</p>
+<pre><code class="language-python">from vine_mouth import render_trace, lemmatise, inflect
+</code></pre>
+<hr />
+<h3>Acknowledgements</h3>
+<p>The three-layer morphology framing — Germanic, Latin, Greek, with French as a fourth — is standard in historical linguistics but is not commonly used as a runtime distinction in lemmatisation. Its application here as a collapse-rule gate was motivated by the observation that treating English as a single morphology produces false derivations on borrowed vocabulary, and that the failure pattern is systematic.</p>
+<hr />
+<p><em>Raychell Langan · NEXICOG Ltd · Hampshire, UK</em></p>
+
+  </div>
+
+  
+</article>
+
+
+  </main>
+
+  <footer class="vine-footer">
+    <div class="vine-footer-inner">
+      <div class="vine-footer-links">
+        <a href="/legal">Privacy</a>
+        <a href="/legal">Terms</a>
+        <a href="/research/rss.xml">RSS</a>
+        <a href="mailto:raychell.langan@gmail.com">Contact</a>
+      </div>
+      <div class="vine-footer-tagline">Hay in the keyboard since 2024</div>
+      <div><a href="https://nexicog.com">NEXICOG Ltd</a></div>
+    </div>
+  </footer>
+
+  <script src="/vine_uptime.js" defer></script>
+  <script src="/vine_clerk.js"></script>
+  <script src="/vine_mobile.js" defer></script>
+</body>
+</html>
