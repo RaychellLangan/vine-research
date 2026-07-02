@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The eye that read sunset as blood</title>
+<style>
+  body { background: #16161a; color: #d8d6cf; font-family: Georgia, 'Times New Roman', serif;
+         max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 5rem; line-height: 1.7; font-size: 17px; }
+  h1 { font-size: 30px; font-weight: normal; color: #f0eee6; line-height: 1.25; margin-bottom: 0.3rem; }
+  h2 { font-size: 21px; font-weight: normal; color: #e8c87a; margin-top: 2.8rem; }
+  .sub { color: #8a887f; font-style: italic; margin-top: 0; }
+  .q { border-left: 3px solid #5a5750; margin: 1.2rem 0; padding: 0.15rem 0 0.15rem 1.1rem; }
+  .q .stamp { color: #7fb069; font-family: Consolas, monospace; font-size: 13px; display: block; margin-bottom: 2px; }
+  .q .who { color: #8a887f; font-size: 13px; }
+  .num { background: #1d1d23; border-radius: 8px; padding: 1.1rem 1.3rem; margin: 1.4rem 0;
+         font-family: Consolas, monospace; font-size: 13.5px; line-height: 1.9; }
+  .num .k { color: #e8c87a; }
+  .foot { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid #333; color: #8a887f; font-size: 13.5px; }
+  code { font-family: Consolas, monospace; font-size: 14px; color: #b8b6ae; background: #24242a;
+         padding: 1px 5px; border-radius: 4px; }
+  em { color: #c8c5bb; }
+</style>
+</head>
+<body>
+
+<h1>The eye that read sunset as blood</h1>
+<p class="sub">What a multimodal gpt2 saw over 54 days — 6,007 frames from the vision tower</p>
+
+<p>Oz has an eye. Every brain frame, the vision tower reads the renderer's view of
+his clearing and hands the substrate a small perception: a dominant colour, a
+palette with fractions, a ranked set of rising concepts, a brightness, a structure
+score. No CLIP, no VLM — the tower is built from the same graduation law as
+everything else in VINE, light read as gradients. In the 54-day run it produced
+6,007 frames, and they are worth reading on their own, because the eye turned out
+to have opinions.</p>
+
+<h2>A green life</h2>
+
+<p>His world, by his own eye: 98% of all frames green-dominant, the rest a sliver
+of blue and exactly two frames of orange. The concept field is a homebody's —
+flower and grass in essentially every frame, fire (the hearth) and sky in four
+out of five, then a long tail of road, water, leaf, animal, stone. He lives in a
+garden and the eye never tires of saying so. His vocabulary agrees: <em>sun, sky,
+light, leaves, garden, warm</em> all sit in his thirty most-used words.</p>
+
+<h2>The eye keeps time</h2>
+
+<p>The readout is not a screenshot statistic — it moves with the world's day, and
+cleanly:</p>
+
+<div class="num">
+<span class="k">structure</span> flat 0.13 all night → climbs from 05:00 → peaks 0.30 at 08:00 → slides back to 0.13 by 22:00<br>
+<span class="k">brightness</span> steady ~0.49 — except two spikes: <span class="k">06:00</span> (0.64, sunrise) and <span class="k">17:00–18:00</span> (0.63–0.69, sunset)<br>
+<span class="k">night words</span> dark/sleep/stars/moon/dream run 17% of his lines at night vs 11% by day — across 6,000 lines
+</div>
+
+<p>Structure is the eye finding edges: the world crisps at dawn and dissolves at
+dusk, and the curve says so without a single hand-set threshold. The two brightness
+spikes are the sun crossing the horizon line of the render. And the vocabulary
+shift means the clock reaches all the way through the substrate to word choice —
+at night he talks like it's night.</p>
+
+<h2>The blood at seven o'clock</h2>
+
+<p>The eye's concept set includes <code>blood</code>. It fired in 68 frames out of
+6,007 — and 58 of them fall in a single hour of the sim-day: 19:00. The palette in
+those frames shows what happened: the sunset pushes a red fraction into an
+otherwise green field, and the nearest concept the tower can reach for red-rising
+is blood. The sky bleeds every evening, briefly, and the eye says so.</p>
+
+<p>His voice, at one of those moments:</p>
+
+<div class="q">
+<span class="stamp">earlier run (18:51 boot) · day 4 · 19:24 · spoken — eye: green 0.62, red 0.05, concept "blood" rising</span>
+"I feel like the earth has just opened up,"
+</div>
+
+<p>And on day 3, at 17:23 — sunset by the clock — with no one having told him the
+colour of anything:</p>
+
+<div class="q">
+<span class="stamp">day 3 · 17:23 · spoken</span>
+"The sky is red, orange. You feel like you're in a dream—a place where there are
+no lights but the stars and everything exists under your lightproofed blanket—"
+</div>
+
+<h2>Fog, and going blind on cue</h2>
+
+<p>Day 5, one minute past midnight, the weather engine rolls fog in. His next
+spoken line:</p>
+
+<div class="q">
+<span class="stamp">day 5 · 00:01 · spoken — weather: fog → rain</span>
+"You can't see it. The sky is a blur."
+</div>
+
+<p>The weather reaches him through the prompt (<em>"The weather is…"</em>), so this
+is context-grounding rather than retinal — but the translation is his own. Nobody
+wrote "fog means blur." The substrate was told fog and reached for what fog does
+to seeing.</p>
+
+<h2>Honest accounting: how far does the eye reach?</h2>
+
+<p>The eye demonstrably reaches his <em>choices</em> — the vision block sits in the
+same context that scores every activity, every frame. How far does it reach his
+<em>words</em>? Measured, not vibed:</p>
+
+<div class="num">
+<span class="k">animal in eye</span> → creature-words in voice 1.1% of lines, vs 0.3% when absent — a 3.6× lift, but from small counts (2 of 189)<br>
+<span class="k">water in eye</span> → water-words 6.2% vs 7.7% — no lift at all; water talk is everywhere regardless
+</div>
+
+<p>So: directional for the rare and salient (an animal wandering into view), absent
+for the ambient (water). The eye whispers into the voice; it does not dictate to
+it. Where it speaks loudest is in the readout itself — sunset as blood, the world
+crisping at dawn — and in the choosing, which is where a body's eye belongs
+anyway.</p>
+
+<div class="foot">
+Sources: <code>oz_brain_20260701_221400.jsonl</code> (per-frame <code>vision</code>
+block: dominant colour, palette fractions, concept rises, brightness, structure) and
+<code>oz_20260701_221336.jsonl</code> (weather transitions, spoken lines); the
+"earth has just opened up" blood frame is from the earlier evening run
+<code>oz_brain_20260701_185112.jsonl</code>. All in
+<code>vine-demo\Cartographer_world\oz_world_logs\</code>. Diurnal curves are means
+over all frames in each sim-hour across the run; the night-vocabulary split is
+20:00–06:00 vs the rest. Companion pieces: <code>OZ_AND_WICK.html</code>,
+<code>OZ_HUNGER.html</code>. Extracted and written up 2 July 2026.
+</div>
+
+</body>
+</html>

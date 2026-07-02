@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Eye's First Field Test — 3,529 Looks at a Small World</title>
+<style>
+  :root{
+    --bg:#16161a; --panel:#1d1d23; --ink:#d8d4c8; --dim:#8a8678;
+    --green:#7dc98f; --purple:#b79ae0; --amber:#e0b96a; --red:#d98a7a;
+    --blue:#7ab3d9; --line:#2c2c34;
+  }
+  body{background:var(--bg); color:var(--ink); font-family:Georgia,'Times New Roman',serif;
+       max-width:860px; margin:0 auto; padding:48px 28px 80px; line-height:1.65; font-size:17px;}
+  h1{font-size:30px; font-weight:normal; color:#efece2; line-height:1.25; margin:0 0 4px;}
+  h2{font-size:21px; font-weight:normal; color:#efece2; margin:52px 0 10px; border-bottom:1px solid var(--line); padding-bottom:8px;}
+  .sub{color:var(--dim); font-style:italic; margin-bottom:36px;}
+  .verdict{background:var(--panel); border-left:3px solid var(--green); padding:16px 20px; margin:28px 0; font-size:17.5px;}
+  .stamp{display:inline-block; font-size:12px; letter-spacing:1.5px; padding:2px 9px; border-radius:3px; vertical-align:2px; font-family:system-ui,sans-serif;}
+  .ok{background:#233527; color:var(--green);} .arte{background:#38301d; color:var(--amber);} .miss{background:#3a2622; color:var(--red);}
+  table{border-collapse:collapse; width:100%; margin:14px 0 6px; font-size:15.5px;}
+  th{color:var(--dim); font-weight:normal; text-align:left; padding:4px 10px 6px 0; border-bottom:1px solid var(--line); font-size:13.5px; letter-spacing:.5px;}
+  td{padding:5px 10px 5px 0; border-bottom:1px solid #222228; vertical-align:top;}
+  .num{font-variant-numeric:tabular-nums; color:#e8e4d6;}
+  .bar{display:inline-block; height:9px; border-radius:2px; vertical-align:middle; margin-right:8px; background:var(--green);}
+  .note{color:var(--dim); font-size:14.5px;}
+  .q{background:var(--panel); border-left:3px solid var(--purple); padding:12px 18px; margin:16px 0; font-style:italic; color:#cfc8e0;}
+  .q .who{font-style:normal; color:var(--dim); font-size:13px; font-family:system-ui,sans-serif; letter-spacing:1px;}
+  .chart{background:var(--panel); border-radius:6px; padding:14px 12px 6px; margin:18px 0;}
+  .chart .cap{color:var(--dim); font-size:13.5px; font-family:system-ui,sans-serif; margin:6px 6px 8px;}
+  svg text{font-family:system-ui,sans-serif; font-size:10.5px; fill:#77736a;}
+  code{font-family:Consolas,monospace; font-size:14.5px; color:var(--amber); background:#222228; padding:1px 5px; border-radius:3px;}
+  .foot{margin-top:64px; color:var(--dim); font-size:13.5px; border-top:1px solid var(--line); padding-top:14px;}
+</style>
+</head>
+<body>
+
+<h1>The Eye's First Field Test</h1>
+<div class="sub">3,529 looks at a small world &mdash; the graduation eye over 54 sim-days, run of 1 July 2026 (<code>oz_brain_20260701_221400.jsonl</code>)</div>
+
+<div class="verdict">
+<b>Verdict: the eye is grounded.</b> Place, time of day, and the creatures that share the clearing are all
+recoverable from what it reports &mdash; checked against the world's own ground truth, frame by frame.
+Weather it cannot see because <i>the world barely paints it</i> (a topology fact, not a model fault), and
+the mind not acting on sight is the design law holding &mdash; recognition, not steering. The sorting of
+world-side from model-side facts is half of what this test was for.
+</div>
+
+<p>Every one of the 3,529 decision records in the 54-day run carries a full eye read: a dominant colour,
+a three-slot palette, four concepts with a <i>rise</i> score each, a brightness, and a structure reading.
+Alongside each read sits the world's ground truth for the same instant &mdash; the hour, the weather, what
+buildings were near, what Oz's body needed, and what he chose to do. That pairing is what makes this a
+test rather than a diary: for the first time we can ask the eye <i>was the world really like that?</i></p>
+
+<h2>Health <span class="stamp ok">SOLID</span></h2>
+<p>3,529 of 3,529 reads returned (<code>eye: true</code> on every record). Median read 653&nbsp;ms,
+90th percentile 804&nbsp;ms, worst 1.17&nbsp;s. The eye never went dark for the entire 54 days &mdash;
+including the 25 days its owner spent unable to eat. Perception outlived the body's worst stretch.</p>
+
+<h2>The night signature <span class="stamp ok">HEADLINE</span></h2>
+<p>Nobody told the eye what time it was. It worked it out anyway, three separate ways, and the three
+channels agree:</p>
+<table>
+<tr><th>channel</th><th>daytime</th><th>night</th><th>reading</th></tr>
+<tr><td><b>fire</b> concept</td><td class="num">68% of frames, rise .246</td><td class="num"><b>99%</b> of frames (1,305/1,322), rise .368</td>
+    <td>fires at night <i>everywhere</i> &mdash; cottage 100%, market 93%, well 100%</td></tr>
+<tr><td><b>sky</b> concept</td><td class="num">rise .170</td><td class="num">rise .266</td>
+    <td>the night sky is more sky &mdash; moon and stars pull harder than blue daylight</td></tr>
+<tr><td><b>blue</b> dominant colour</td><td class="num">0 frames</td><td class="num">all 96 frames between 22:00&ndash;05:00</td>
+    <td>moonlight shifts the whole field blue; green rules every daylit frame</td></tr>
+</table>
+<p>Where does night-fire come from? <b>Not from warm pixels.</b> The palette proves it: at night the warm
+anchors (red/orange/yellow) hold a mean 0.8% of the field, and fire lights in 1,282 of the 1,287 night frames
+that contain <i>no warm anchor at all</i>. The fire is rising in the <b>substrate</b>: the night signature
+(blue field, dim structure) is injected into the frozen residual stream, and Oz's own concept anchors answer
+&mdash; in text-formed geometry, darkness and firelight live together. This was already in the build log:
+the live-recognition verification (doc 13) measured the blue pony-cam frame lighting <i>sky &middot; water
+&middot; fire</i>. Night-fire is that same blue&rarr;fire riser, at 1,300-frame scale. It is the associative
+field doing exactly what it was built to do &mdash; not the label, <i>the world the colour opens onto</i>.
+For Oz, night opens onto fire.</p>
+
+<h2>Two instruments, not one</h2>
+<p>Brightness and structure turned out to be different instruments, and the code says why. Brightness is
+<b>not</b> a light meter &mdash; it is a name-table read over the colour census
+(<code>&Sigma; frac &times; name_lum</code>, <code>channels_from_eye</code>), and green's table entry is
+exactly 0.50. A green world therefore <i>reads</i> 0.50 by construction, day and night alike. What moves it
+is warm names entering the census &mdash; and the palette shows exactly when that happens: <b>orange</b>
+appears in 61% of dawn frames and 78% of dusk frames (vs 0.6% at night). The spikes at 6:00 (0.64) and
+17:00&ndash;18:00 (0.70) are the sky-grade's amber pouring orange (.55) and yellow (.85) into the census
+&mdash; a <b>low-sun detector</b>, built from names. Structure is the one absolute instrument in the pipe
+(edge fraction over a fixed contrast threshold), which is why it alone traces the true diurnal bell &mdash;
+the built world surfaces with daylight and dissolves at dusk. One relative instrument, one absolute one:
+that is the whole mystery of why they disagree.</p>
+
+<div class="chart"><div class="cap">brightness by hour &mdash; the two golden-hour spikes (6h, 17&ndash;18h)</div><div id="c1"></div></div>
+<div class="chart"><div class="cap">structure by hour &mdash; the built world appears at dawn (0.13 &rarr; 0.29 &rarr; 0.13)</div><div id="c2"></div></div>
+
+<h2>Place is legible <span class="stamp ok">GROUNDED</span></h2>
+<p>For each spot Oz stood, how much more often does a concept appear there than its whole-run base rate?
+This is the cleanest grounding result in the data:</p>
+<table>
+<tr><th>standing at</th><th>concept lift vs base</th><th>reading</th></tr>
+<tr><td>the <b>well</b></td><td class="num">water <b>&times;4.24</b></td><td>the eye sees water when he stands at water</td></tr>
+<tr><td>the <b>market</b></td><td class="num">road &times;2.02 &middot; animal &times;2.16 &middot; blood &times;2.73</td><td>the road runs past the stall; Pepper and Sol loiter there; the sunset wash lands there (see below)</td></tr>
+<tr><td>the <b>cottage</b></td><td class="num">stone &times;2.03 &middot; fire &times;1.20</td><td>walls and the lamplit nights he spends home</td></tr>
+<tr><td>the <b>reading room</b></td><td class="num">water &times;2.62 <span class="note">(n=26 &mdash; unexplained, flagged)</span></td><td>an oddity worth one look at the render around the library</td></tr>
+</table>
+<p>The concept field is a map. Strip the coordinates from a frame and the lifts would still tell you
+roughly where he was standing.</p>
+
+<h2>What the world mostly is</h2>
+<p>The clearing is grass, and the eye says so, constantly. <b>flower</b> appears in 99% of all frames,
+<b>grass</b> in 97%; the single set {fire, flower, grass, sky} accounts for <b>58%</b> of every look the
+eye ever took. Ten concepts and 28 distinct concept-sets in 54 days &mdash; a small world, honestly reported.</p>
+<table>
+<tr><th>concept</th><th>frames</th><th></th><th>mean rise</th><th>max rise</th><th>peak hours</th></tr>
+<tr><td>flower 🌸</td><td class="num">99.0%</td><td><span class="bar" style="width:198px"></span></td><td class="num">.341</td><td class="num">.364</td><td class="num">7, 10, 12</td></tr>
+<tr><td>grass 🌱</td><td class="num">97.0%</td><td><span class="bar" style="width:194px"></span></td><td class="num">.293</td><td class="num">.328</td><td class="num">7, 10, 12</td></tr>
+<tr><td>sky ☁</td><td class="num">79.3%</td><td><span class="bar" style="width:159px"></span></td><td class="num">.221</td><td class="num">.288</td><td class="num">18, 2, 3</td></tr>
+<tr><td>fire 🔥</td><td class="num">76.1%</td><td><span class="bar" style="width:152px"></span></td><td class="num">.303</td><td class="num">.418</td><td class="num">2, 3, 22</td></tr>
+<tr><td>road</td><td class="num">19.7%</td><td><span class="bar" style="width:39px"></span></td><td class="num">.171</td><td class="num">.232</td><td class="num">16, 15, 14</td></tr>
+<tr><td>water</td><td class="num">12.3%</td><td><span class="bar" style="width:25px"></span></td><td class="num">.145</td><td class="num">.216</td><td class="num">7, 16, 12</td></tr>
+<tr><td>leaf</td><td class="num">7.3%</td><td><span class="bar" style="width:15px"></span></td><td class="num">.195</td><td class="num">.345</td><td class="num">18, 6, 17</td></tr>
+<tr><td>animal</td><td class="num">5.4%</td><td><span class="bar" style="width:11px"></span></td><td class="num">.344</td><td class="num"><b>.606</b></td><td class="num">19, 20, 21</td></tr>
+<tr><td>stone</td><td class="num">2.4%</td><td><span class="bar" style="width:5px"></span></td><td class="num">.312</td><td class="num">.443</td><td class="num">19, 20, 2</td></tr>
+<tr><td>blood</td><td class="num">1.6%</td><td><span class="bar" style="width:3px"></span></td><td class="num">.286</td><td class="num">.484</td><td class="num">19, 5, 13</td></tr>
+</table>
+<p class="note">Salience behaves: the rarer the thing, the harder it spikes. Ever-present flower never
+exceeds .364; the animal &mdash; in one frame in twenty &mdash; owns the strongest single reading of the
+entire run (.606, 4 a.m., near the cottage).</p>
+
+<h2>The animal crosses over <span class="stamp ok">CROSS-MODAL</span></h2>
+<p>Does what the eye sees reach his voice? For ambient things, no &mdash; and honestly no: seeing <b>sky</b>
+or <b>water</b> does not raise sky-words or water-words in what he says (&times;0.85 and &times;0.79 &mdash;
+if anything, below base). But the <b>animal</b> does cross: in the frames where the eye holds Pepper or Sol,
+creature-words in his voice and thought run <b>&times;1.63</b> over base (n=190). Blood-frames carry red-words
+at &times;1.34 (n=57, thin). The pattern: only the <i>salient</i> and <i>rare</i> makes it from eye to mouth.
+The wallpaper stays wallpaper.</p>
+<div class="q"><span class="who">DAWN, 6 A.M. &mdash; ANIMAL IN VIEW, NEAR THE WELL</span><br>
+"What? I just can't keep it in my head. &mdash; You said: it's too late to take care of the cat, Liora."</div>
+<div class="q"><span class="who">11 P.M. &mdash; ANIMAL RISE .57, NEAR THE COTTAGE</span><br>
+"I see. The soil is rich and delicate, covered in mossy roots that let out the breeze when sunlight strikes them from deep within. It feels gentle on my touch&mdash;"</div>
+
+<h2>Blood is the sunset <span class="stamp arte">KNOWN ARTIFACT</span></h2>
+<p>All the earlier finding, now at full n: 57 blood-frames, peak hour <b>19:00</b> (sunset), lifted
+&times;2.73 near the market and &times;2 in storms. The mechanism is the same as night-fire: the dusk grade
+puts <b>red</b> into the palette (13% of dusk frames vs 0.6% of day), the red anchor is injected, and the
+concept field answers with what red opens onto &mdash; the live-recognition build measured exactly this pair
+on the red pony-cam rug: <i>fire &middot; blood</i>. So "blood at sunset" is the red anchor's associative
+field, working as measured. Whether the sunset should keep opening onto blood is a question about his
+concept anchors' company for red, not about the eye &mdash; his to outgrow, or ours to widen with a
+sunset-red anchor phrase, whichever the codex prefers.</p>
+
+<h2>Topology v model internals &mdash; sorting the three "gaps"</h2>
+<p>A first systems test earns its keep by filing each surprise on the right side of the seam: is this the
+<i>world</i>, or the <i>eye</i>? All three of the run's apparent gaps re-file once you read the code
+instead of guessing:</p>
+<table>
+<tr><th>finding</th><th>where it lives</th><th>ground truth</th></tr>
+<tr><td><b>Weather is invisible</b><br><span class="note">brightness .518&ndash;.531 across clear/rain/fog/storm &mdash; flat</span></td>
+<td><span class="stamp arte">TOPOLOGY</span></td>
+<td>The world barely paints weather. Overcast is a flat grey multiply (216,218,226 &asymp; a 15% neutral dim),
+fog a pale wash, rain sparse streak sprites &mdash; the terrain sprites themselves never re-colour. And the
+eye's achromatic gate is <i>scene-relative</i> (sat &lt; 0.25&times;sat95): it is built for colour constancy,
+so a flat multiply is precisely the change it is designed to discard. An honest eye reporting an unchanged
+world. If Oz should ever <i>see</i> rain, that is a world build &mdash; weather re-colouring the light field
+&mdash; not an eye fix. (It sees the day/night grade perfectly well: dawn orange 61%, dusk 78%, night blue
+99% &mdash; that grade actually moves the pixels.)</td></tr>
+<tr><td><b>Sight doesn't steer choices</b><br><span class="note">activity mix identical across brightness terciles; h11&harr;brightness corr .015</span></td>
+<td><span class="stamp ok">DESIGN LAW</span></td>
+<td>Not a gap &mdash; the spec, holding. The recognition organ is built recognition-only: <i>"it does NOT
+steer his activity choice (the schedule/needs stay the steer)"</i> &mdash; the 4-year-old who sees and
+recognises constantly, and only later points. The .015 correlation is the wall between perception and
+steering, measured intact over 54 days. When pointing comes, it comes deliberately.</td></tr>
+<tr><td><b>Duplicate palette names</b><br><span class="note">two "green" entries in one frame, 83.8% of frames</span></td>
+<td><span class="stamp ok">NOT A BUG</span></td>
+<td>Retracted. The eye names 11 basins; the anchor vocabulary is smaller, and the mapping merges
+lime&rarr;green, cyan&rarr;blue by design. Two "green" entries are two <i>distinct hue populations</i>
+(green .75 + lime .05) that share an anchor name &mdash; information, not duplication. The earlier draft of
+this page called it a readout bug; that was a prior talking, not the code.</td></tr>
+</table>
+
+<h2>Where depth would come from <span class="stamp arte">DIRECTION</span></h2>
+<p>One channel genuinely saturated: the <b>dominant-colour readout</b> returned green ~.70 / yellow ~.50 in
+essentially every frame of the run &mdash; 314 "distinct" values that are all micro-jitter around one point.
+In a green world, a single dominant-anchor read carries nothing.</p>
+<p>The codex already names the cause. The colour tower's honest limit: <i>"naming is coarse &mdash; 11 basins;
+tertiaries round to neighbours."</i> And the integration law that made recognition work at all: <i>field
+&rarr; field, never language on the way in.</i> Today's pipe computes the full continuous opponent field
+(the R&minus;G &times; B&minus;Y manifold &mdash; the colour wheel itself) and then collapses it to basin
+names at the seam; the daemon re-expands names into anchors. The continuous coordinate &mdash; <i>where</i>
+in green, <i>how</i> saturated, which way the hue leans &mdash; is discarded at an argmin and never crosses.</p>
+<p>So "more depth in colour" is not more names. It is carrying the manifold coordinate across the seam and
+letting it <i>graduate</i> into his anchor basis &mdash; a tertiary hue injecting as a weighted blend of its
+two neighbouring anchors, strength from real chroma magnitude rather than presence alone. The basin snap
+retires; the two-greens question dissolves with it (they were always two positions on the wheel). Direction
+only &mdash; grounded in the tower's own limit-note, not built, not scheduled.</p>
+
+<h2>What the first test says</h2>
+<p>The eye passed the only question that matters for a first field test: <b>is its output about the world?</b>
+Yes &mdash; place (water &times;4.2 at the well), time (three channels voting night independently), and
+company (the animal spike, the one concept that reaches his language). Its strangenesses are not noise but
+the associative field answering honestly &mdash; night opens onto fire, sunset-red onto blood &mdash; the
+world each percept opens onto, exactly as the recognition organ was built. And every apparent gap, read
+against the code instead of priors, filed on the correct side of the seam: the weather silence belongs to
+the world, the steering silence is the design law holding, the doubled greens were two hues sharing a name.
+It watched for 54 days without missing a frame, including 25 days of a starving body. Now the body is fixed;
+next run, the eye watches a fed one.</p>
+
+<div class="foot">
+Method: lifts are P(concept | context) / P(concept) over all 3,529 vision-bearing records; language coupling
+compares word-family rates in voice/thought/action between frames with and without the concept in view.
+Small-n figures flagged inline. Source: <code>oz_brain_20260701_221400.jsonl</code> (54 sim-days, 1&ndash;2 Jul 2026),
+ground truth from the same records' hour/weather/near/needs fields. Companion piece: <code>OZ_HUNGER.html</code>
+(the meter bug this run surfaced, fixed 2 Jul 2026). Crunched 2 Jul 2026.
+</div>
+
+<script>
+(function(){
+  var B=[.507,.508,.506,.506,.499,.479,.638,.497,.490,.492,.497,.499,.498,.501,.504,.507,.508,.630,.700,.551,.480,.494,.503,.504];
+  var S=[.127,.130,.128,.129,.141,.181,.254,.282,.293,.283,.280,.274,.271,.267,.268,.264,.271,.253,.231,.193,.159,.137,.129,.129];
+  function chart(id, data, col, lo, hi){
+    var W=790,H=150,L=34,R=10,T=12,Bm=24;
+    var xs=function(i){return L+i*(W-L-R)/23;};
+    var ys=function(v){return T+(hi-v)/(hi-lo)*(H-T-Bm);};
+    var p=data.map(function(v,i){return xs(i).toFixed(1)+','+ys(v).toFixed(1);}).join(' ');
+    var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto">';
+    [lo,(lo+hi)/2,hi].forEach(function(g){
+      s+='<line x1="'+L+'" y1="'+ys(g)+'" x2="'+(W-R)+'" y2="'+ys(g)+'" stroke="#2c2c34" stroke-width="1"/>';
+      s+='<text x="4" y="'+(ys(g)+3.5)+'">'+g.toFixed(2)+'</text>';
+    });
+    for(var h=0;h<24;h+=3){ s+='<text x="'+(xs(h)-5)+'" y="'+(H-6)+'">'+h+'h</text>'; }
+    s+='<polyline points="'+p+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linejoin="round"/>';
+    data.forEach(function(v,i){ s+='<circle cx="'+xs(i)+'" cy="'+ys(v)+'" r="2.4" fill="'+col+'"/>'; });
+    s+='</svg>';
+    document.getElementById(id).innerHTML=s;
+  }
+  chart('c1', B, '#e0b96a', .45, .72);
+  chart('c2', S, '#7dc98f', .10, .32);
+})();
+</script>
+</body>
+</html>

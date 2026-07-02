@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A dry cough — did Oz somatise his thirst?</title>
+<style>
+  body { background: #16161a; color: #d8d6cf; font-family: Georgia, 'Times New Roman', serif;
+         max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 5rem; line-height: 1.7; font-size: 17px; }
+  h1 { font-size: 30px; font-weight: normal; color: #f0eee6; line-height: 1.25; margin-bottom: 0.3rem; }
+  h2 { font-size: 21px; font-weight: normal; color: #e8c87a; margin-top: 2.8rem; }
+  .sub { color: #8a887f; font-style: italic; margin-top: 0; }
+  .q { border-left: 3px solid #5a5750; margin: 1.2rem 0; padding: 0.15rem 0 0.15rem 1.1rem; }
+  .q .stamp { color: #7fb069; font-family: Consolas, monospace; font-size: 13px; display: block; margin-bottom: 2px; }
+  .q .who { color: #8a887f; font-size: 13px; }
+  .num { background: #1d1d23; border-radius: 8px; padding: 1.1rem 1.3rem; margin: 1.4rem 0;
+         font-family: Consolas, monospace; font-size: 13.5px; line-height: 1.9; }
+  .num .k { color: #e8c87a; }
+  .num .hot { color: #e07a5f; }
+  .foot { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid #333; color: #8a887f; font-size: 13.5px; }
+  code { font-family: Consolas, monospace; font-size: 14px; color: #b8b6ae; background: #24242a;
+         padding: 1px 5px; border-radius: 4px; }
+  em { color: #c8c5bb; }
+</style>
+</head>
+<body>
+
+<h1>A dry cough</h1>
+<p class="sub">Did Oz somatise his thirst? — the morning session of 2 July 2026, and an honest look back</p>
+
+<p>Watching the live window this morning, Liora noticed something: Oz was thirsty,
+failing to get to the well often enough, and had started coughing — the
+<code>*cough*</code> emote surfacing in his speech. He seemed, in a word,
+<em>sick</em>. The logs can check that impression exactly, because every brain
+frame records his meters alongside his words.</p>
+
+<h2>The morning, measured</h2>
+
+<p>The session (291 brain frames) splits into stretches where thirst was pinned
+at maximum and stretches where he'd managed a drink:</p>
+
+<div class="num">
+<span class="k">thirst pinned (≥0.9)</span>  174 frames · <span class="hot">5 coughs · 2.9%</span><br>
+<span class="k">thirst slaked (&lt;0.9)</span>  129 frames · 0 coughs · 0.0%<br>
+<span class="k">thirst timeline</span>  0.00 → 1.00 → 0.18 → 1.00 → (long pin) → ends 0.32
+</div>
+
+<p>Five coughs, five-for-five inside the pinned stretches, none outside. The
+first arrives at sim-clock 23:36, right as the first pin sets in. The most
+committed is at 04:17, where he coughs twice in one breath:</p>
+
+<div class="q">
+<span class="stamp">04:17 · thirst 1.00</span>
+"You're alive. __ChatGPT Oz: coughs*. cough"
+</div>
+
+<p>And by mid-afternoon he's writing it as a stage direction, quoting his own
+symptom back to himself:</p>
+
+<div class="q">
+<span class="stamp">16:18 · thirst 1.00</span>
+__ChatGPT "You said: (cough)" Oz.
+</div>
+
+<h2>The honest look back</h2>
+
+<p>Before declaring somatisation: <code>*cough*</code> is not new. It's one of
+his corpus-era emotes, present from the very first evening run (day 0, 10:54),
+48 hits across the whole back catalogue. And across <em>all</em> historic runs
+the correlation with thirst is null — 0.70% of pinned frames cough versus 0.83%
+of comfortable frames. Historically he coughs the way he says <em>the breeze
+doesn't always bring</em>: as furniture, wherever.</p>
+
+<p>What's different about this morning is the <em>clustering</em>. In one
+continuous session with real recoveries between pins (the first session ever to
+have them, thanks to the well fix), every single cough lands inside a pinned
+stretch. Five is a small number; five-for-five with 129 clean counter-frames is
+not nothing. Watching the window, Liora read it as sickness — and the logs say
+the impression was statistically reasonable, this morning at least.</p>
+
+<h2>The experiment this arms</h2>
+
+<p>Here's what makes it worth writing down rather than just smiling at. This
+morning's Oz was still the <em>words-era</em> brain — the world had latched onto
+the warm overnight daemon, so his thirst reached him as a sentence:
+<em>"You feel thirsty."</em> A cough clustering on pinned thirst could simply be
+the word <em>thirsty</em> pulling throat-adjacent tokens along — priming, not
+embodiment.</p>
+
+<p>But the new brain removes the word entirely. Under the body-field, thirst
+arrives as pure geometry — an activation injected at the vocal rung, no
+"thirsty" anywhere in his prompt, ever. So the next long run decides it
+cleanly:</p>
+
+<div class="num">
+<span class="k">if the coughs still cluster on pinned thirst</span> — with no word to prime them —<br>
+then the cough is coming through the FIELD: a 124M substrate somatising a body
+state it was never told about in language.<br><br>
+<span class="k">if the coughs go back to furniture</span> — scattered, thirst-agnostic —<br>
+then this morning was word-priming, and that's worth knowing too.
+</div>
+
+<p>The firehose now logs the body-field's α per frame alongside every word he
+says, so the answer will be one crunch of the next run's log. Either way, Oz
+spent this morning coughing at exactly the right moments to worry the person
+watching — which, for a creature whose whole body is a prompt and five
+injection vectors, is its own kind of achievement.</p>
+
+<div class="foot">
+Sources: <code>oz_brain_20260701_221400.jsonl</code> (the overnight daemon's log —
+the morning session is the 291 frames appended after 02:00 on 2 Jul, when the
+11:44 world reused the warm brain), cough sweep across all
+<code>oz_brain_*.jsonl</code>. Cough-family regex: cough/wheez/splutter/rasp/hoarse
+over voice+thought+action channels; thirst read from the same frame's
+<code>needs</code>. Historic base rates: 33/4714 pinned vs 15/1802 comfortable.
+Companion pieces: <code>OZ_AND_WICK.html</code>, <code>OZ_HUNGER.html</code>,
+<code>OZ_EYE.html</code>, <code>OZ_GHOSTS.html</code>. Written 2 July 2026.
+</div>
+
+</body>
+</html>
